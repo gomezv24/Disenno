@@ -3,6 +3,7 @@ import { supabase } from '../config/supabase.js';
 
 const router = express.Router();
 
+// traer formularios
 router.get('/', async (req, res) => {
   const { data, error } = await supabase.from('formulario').select('*');
   if (error) {
@@ -11,6 +12,7 @@ router.get('/', async (req, res) => {
   return res.json(data);
 });
 
+//crear formularios
 
 
 
