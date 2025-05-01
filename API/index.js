@@ -8,7 +8,11 @@ import routerFormularios from './src/endpoints/Formulario.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Reemplaza con tu URL de frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
 
 app.use('/usuarios', routerUsuarios);

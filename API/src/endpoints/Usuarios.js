@@ -1,5 +1,8 @@
 import express from 'express';
 import { supabase } from '../config/supabase.js';
+import bcrypt from 'bcrypt';
+
+const saltRounds = 10;
 
 const router = express.Router();
 
@@ -48,21 +51,20 @@ router.get('/estudiante/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const { identificacion, nombre, correoinstitucional, contrasena, telefono, idsede, idtipousuario } = req.body;
 
-  if (!identificacion || !nombre || !correoinstitucional || !contrasena || !telefono || !idsede || !idtipousuario) {
-    return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
-  }
+
+  //se hashea la contrasena para encriptar
+  const hashedPassword = await bcrypt.hash(contrasena, 10);
 
   //verifica que no existan usuarios con a mism aidentificacion
     const { data: idActual, error: idError} = await supabase.from('usuario').select('*').eq('identificacion', identificacion);
-    console.log(idActual);
-    console.log(idError)
-    if( idError) {
+
+    if( idActual.length == 0){ 
         //Verifica que el correo
         const { data: existingUser, error: checkError } = await supabase.from('usuario').select('*').eq('correoinstitucional', correoinstitucional).single();
-        console.log(existingUser);
+
         if (checkError) {
             const { data, error } = await supabase.from('usuario').insert([
-                { identificacion, nombre, correoinstitucional, contrasena, telefono, idsede }
+                { identificacion, nombre, correoinstitucional, contrasena: hashedPassword, telefono, idsede, idtipousuario }
             ]);
             if (error) {
                 return res.status(500).json({ error: error.message });
@@ -83,7 +85,7 @@ router.post('/', async (req, res) => {
                     return res.status(500).json({ error: errorCoordinadora.message });
                 }
             }*/
-            return res.status(201).json(data, { message: 'Usuario creado exitosamente.' });
+            return res.status(201).json(data);
         }
         if (existingUser) {
             return res.status(400).json({ error: 'El correo ya está en uso.' });
@@ -93,5 +95,44 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'El usuario ya existe.' });
     }
 });
+
+
+// obtener el rol del usuario
+router.get('/rol/:id', async (req, res) => {
+  const { id } = req.params;
+  const { data, error } = await supabase.from('usuario').select('idtipousuario').eq('idusuario', id).single();
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  //trae el tipo de usuario 
+  const { data: tipoUsuario, error: errorTipoUsuario } = await supabase.from('tipousuario').select('nombre').eq('idtipousuario', data.idtipousuario).single();
+  if (errorTipoUsuario) {
+    return res.status(500).json({ error: errorTipoUsuario.message });
+  }
+
+  return res.json(tipoUsuario);
+});
+
+//autenticar
+router.post('/login', async (req, res) => {
+
+
+  const { correoinstitucional, contrasena } = req.body;
+
+
+  const { data, error } = await supabase.from('usuario').select('*').eq('correoinstitucional', correoinstitucional).single();
+
+  if (!data || error) {
+    return res.status(401).json({ error: 'Credenciales inválidas' });
+  }
+  const iguales = await bcrypt.compare(contrasena, data.contrasena);
+  if (!iguales) {
+    return res.status(401).json({ error: 'Credenciales inválidas' });
+  }
+  return res.json(data);
+});
+
+
 
 export default router;
