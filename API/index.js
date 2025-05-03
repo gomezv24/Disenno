@@ -4,6 +4,7 @@ import { supabase } from './src/config/supabase.js';
 import routerUsuarios from './src/endpoints/Usuarios.js';
 import routerEstudiantes from './src/endpoints/Estudiantes.js';
 import routerFormularios from './src/endpoints/Formulario.js';
+import routerEstadisticas from './src/endpoints/Estadisticas.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/usuarios', routerUsuarios);
 app.use('/estudiantes', routerEstudiantes);
 app.use('/formularios', routerFormularios);
+app.use('/estadisticas', routerEstadisticas);
 
 
 app.get('/', (req, res) => {

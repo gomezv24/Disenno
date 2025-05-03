@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.no-truncate {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  word-break: break-word !important;
+}
+.pro-sidebar .pro-menu .pro-menu-item:hover {
+  background-color: #9362ee !important;
+  color: #2d0163 !important;
+}
+
+/* Fondo del sidebar */
+.pro-sidebar {
+  background-color: #326cd1 !important;
+}
