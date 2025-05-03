@@ -1,101 +1,133 @@
-// src/modules/estudiantes/HomePageInclusiones.jsx
-
 import React from 'react';
-import { Container, Typography, Button, Box } from '@mui/material';
-import imagenRegistro from '../../assets/logoTec.png';
-import imagenUsuario from '../../assets/imagenUsuario.png';
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText
+} from '@mui/material';
 
+import HomeIcon from '@mui/icons-material/Home';
+import SchoolIcon from '@mui/icons-material/School';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import PersonIcon from '@mui/icons-material/Person';
+
+import imagenRegistro from '../../assets/logoTec.png';
 
 const HomePageInclusiones = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    
+  const menuItems = [
+    { text: 'Inicio', icon: <HomeIcon />, path: '/' },
+    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/inclusiones' },
+    { text: 'Levantamientos', icon: <TrendingUpIcon />, path: '/levantamientos' },
+    { text: 'Retiros', icon: <ExitToAppIcon />, path: '/retiros' },
+    { text: 'Seguimiento', icon: <AssignmentTurnedInIcon />, path: '/seguimiento' },
+    { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' }
+  ];
+
   return (
-    <Container disableGutters sx={{ maxWidth: '1400px', mx: 'auto', px: 2, py: 6 }}>
-      
-      {/*-------------------------------------------------------------------------------*/}
-      {/*                             LOGO Y TEXTO                                      */}
-      {/*-------------------------------------------------------------------------------*/}
-      <Box sx={{ mb: 5 }}>
-        {/* Fila superior: logo + usuario */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <img src={imagenRegistro} alt="TEC" style={{ height: '60px' }} />
-          <img src={imagenUsuario} alt="Usuario" style={{ height: '60px', borderRadius: '50%' }} />
-        </Box>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
 
-        {/* Fila inferior: texto alineado a la izquierda */}
-        <Box sx={{ mt: 5 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#062043' }}>
+      {/* ======================= MENÚ DE NAVEGACIÓN ======================= */}
+      <nav aria-label="Menú principal" style={{ width: '250px', backgroundColor: '#ffffff', color: '#062043', padding: '32px 0', boxShadow: '2px 0 5px rgba(0,0,0,0.1)', borderRight: '1px solid #ddd', height: '100vh' }}>
+        <Box sx={{ mb: 4, textAlign: 'center' }}>
+          <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
+        </Box>
+        <List>
+          {menuItems.map((item) => (
+            <ListItem
+              button
+              key={item.text}
+              component={Link}
+              to={item.path}
+              selected={location.pathname === item.path}
+              sx={{
+                color: '#062043',
+                minHeight: '3.5rem',
+                '&.Mui-selected': { backgroundColor: '#f0f0f0', fontWeight: 'bold' },
+                '&:hover': { backgroundColor: '#f9f9f9' }
+              }}
+            >
+              <ListItemIcon sx={{ color: '#062043' }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+        </List>
+      </nav>
+
+      {/* ======================= CONTENIDO PRINCIPAL ======================= */}
+      <main style={{ flex: 1 }}>
+        <Container disableGutters sx={{ px: 5, py: 2 }}>
+
+          {/* ------------------ CONTENIDO DE INCLUSIONES ------------------ */}
+          <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mb: 3 }}>
             Inclusión a cursos
           </Typography>
-        </Box>
-      </Box>
 
-      {/*-------------------------------------------------------------------------------*/}
-      {/*                         DESCRIPCIÓN GENERAL                                   */}
-      {/*-------------------------------------------------------------------------------*/}
-      <Typography sx={{ mb: 2 }}>
-        El proceso de inclusión permite ocupar espacios disponibles en algunos grupos tras el periodo de matrícula. 
-        Solo muestra los cursos con cupo disponible para solicitar una inclusión. Las solicitudes serán procesadas tras el cierre del formulario.
-      </Typography>
+          <section>
+            <Typography sx={{ mb: 2 }}>
+              El proceso de inclusión permite ocupar espacios disponibles en algunos grupos tras el periodo de matrícula. 
+              Solo muestra los cursos con cupo disponible para solicitar una inclusión. Las solicitudes serán procesadas tras el cierre del formulario.
+            </Typography>
+          </section>
 
-      {/*-------------------------------------------------------------------------------*/}
-      {/*                         INFORMACIÓN IMPORTANTE                                */}
-      {/*-------------------------------------------------------------------------------*/}
-      <Box sx={{ backgroundColor: '#E0E7FF', p: 2, borderRadius: 2, mb: 2 }}>
-        <Typography variant="h6" sx={{ mb: 1, fontWeight: 'bold' }}>Información importante</Typography>
-        <ul>
-          <li>La solicitud debe completarse en su totalidad; datos falsos o incompletos no serán tramitados.</li>
-          <li>La existencia de cupo no garantiza la aprobación de la inclusión.</li>
-          <li>No se aprobarán solicitudes que generen choques de horario o excedan el límite de créditos permitidos.</li>
-          <li>Al enviar la solicitud, autoriza a la Escuela de Ingeniería en Computación a matricularlo en caso de asignación de cupo.</li>
-        </ul>
-      </Box>
+          <section aria-labelledby="info-importante">
+            <Box sx={{ backgroundColor: '#E0E7FF', p: 2, borderRadius: 2, mb: 2 }}>
+              <Typography id="info-importante" variant="h2" sx={{ mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>Información importante</Typography>
+              <ul>
+                <li>La solicitud debe completarse en su totalidad; datos falsos o incompletos no serán tramitados.</li>
+                <li>La existencia de cupo no garantiza la aprobación de la inclusión.</li>
+                <li>No se aprobarán solicitudes que generen choques de horario o excedan el límite de créditos permitidos.</li>
+                <li>Al enviar la solicitud, autoriza a la Escuela de Ingeniería en Computación a matricularlo en caso de asignación de cupo.</li>
+              </ul>
+            </Box>
+          </section>
 
-      {/*-------------------------------------------------------------------------------*/}
-      {/*                         FECHAS Y CONSULTAS                                    */}
-      {/*-------------------------------------------------------------------------------*/}
+          <section>
+            <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>Periodo de solicitud</Typography>
+            <Typography sx={{ mb: 2 }}>
+              27 de junio de 2024 al 28 de junio de 2024 (hasta las 2:00 p.m.)
+            </Typography>
 
-      {/* Periodo de solicitud */}
-      <Typography variant="h6" sx={{ mt: 4, mb: 1, fontWeight: 'bold' }}>Periodo de solicitud</Typography>
-      <Typography sx={{ mb: 2 }}>
-        27 de junio de 2024 al 28 de junio de 2024 (hasta las 2:00 p.m.)
-      </Typography>
+            <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>Publicación de resultados</Typography>
+            <Typography sx={{ mb: 2 }}>
+              17 de julio de 2024
+            </Typography>
 
-      {/* Publicación de resultados */}
-      <Typography variant="h6" sx={{ mt: 4, mb: 1, fontWeight: 'bold' }}>Publicación de resultados</Typography>
-      <Typography sx={{ mb: 2 }}>
-        17 de julio de 2024
-      </Typography>
+            <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>Consultas</Typography>
+            <Typography>Dudas generales: <b>bdittel@itcr.ac.cr</b></Typography>
+            <Typography>Situaciones particulares: <b>eshuman@itcr.ac.cr</b> (se atenderán tras el cierre del formulario).</Typography>
+          </section>
 
-      {/* Consultas */}
-      <Typography variant="h6" sx={{ mt: 4, mb: 1, fontWeight: 'bold' }}>Consultas</Typography>
-      <Typography>Dudas generales: <b>bdittel@itcr.ac.cr</b></Typography>
-      <Typography>Situaciones particulares: <b>eshuman@itcr.ac.cr</b> (se atenderán tras el cierre del formulario).</Typography>
-
-      {/*-------------------------------------------------------------------------------*/}
-      {/*                          BOTÓN FORMULARIO                                     */}
-      {/*-------------------------------------------------------------------------------*/}
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Button
-            variant="contained"
-            size="large"
-            sx={{
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="contained"
+              size="large"
+              sx={{
                 mt: 5,
                 backgroundColor: '#3b5998',
                 textTransform: 'none',
                 fontWeight: 'bold',
                 px: 8,
                 fontSize: '1rem'
-            }}
-            onClick={() => navigate('/formulario-inclusiones')}
+              }}
+              onClick={() => navigate('/formulario-inclusiones')}
             >
-            Formulario
-        </Button>
-      </Box>
+              Formulario
+            </Button>
+          </Box>
 
-    </Container>
+        </Container>
+      </main>
+    </Box>
   );
 };
 
