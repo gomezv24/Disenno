@@ -20,11 +20,9 @@ import {
   Radio,
   RadioGroup,
   FormControl,
-  FormLabel,
   FormControlLabel,
   MenuItem,
   Select,
-  InputLabel,
   List,
   ListItem,
   ListItemIcon,
@@ -39,7 +37,6 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 import imagenRegistro from '../../assets/logoTec.png';
-import imagenUsuario from '../../assets/imagenUsuario.png';
 import PersonIcon from '@mui/icons-material/Person';
 
 const FormularioInclusion = () => {
