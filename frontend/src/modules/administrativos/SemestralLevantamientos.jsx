@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Button, Box, Card, CardContent, TextField } from '@mui/material';
-import { Sedes, levantamientos, totallevantamientos, totallevAprobados } from '../administrativos/Funciones/estadisticas';
+import { Sedes, levantamientos, totallevantamientos, totallevAprobados, levantamientosAprobados, totallevRN } from '../administrativos/Funciones/estadisticas';
 import imagenDosUsers from '../../assets/dosUsers.png';
 import imagenSumatoria from '../../assets/Sumatoria.png';
 import { useNavigate } from 'react-router-dom';
@@ -23,17 +23,20 @@ const SemestralLevantamientos = () => {
   const [loading, setLoading] = useState(true);
   const [totalLevantamientos, setTotalLevantamientos] = useState('');
   const [totalLevAprobados, setTotalLevAprobados] = useState('');
-  //const [datosLevantamientosAprob, setDatosLevantamientosAprob] = useState([]);
+  const [datosLevantamientosAprob, setDatosLevantamientosAprob] = useState([]);
+  const [totalLevRN, setTotallevRN] = useState('');
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [sedesData, levantamientosData, totalLevantamientosData, totalLevAprobados] = await Promise.all([
+        const [sedesData, levantamientosData, totalLevantamientosData, totalLevAprobados, datosLevantamientosAprob, totalLevRN] = await Promise.all([
           Sedes(),
           levantamientos(),
           totallevantamientos(),
-          totallevAprobados()
+          totallevAprobados(),
+          levantamientosAprobados(),
+          totallevRN()
 
         ]);
         
@@ -41,6 +44,8 @@ const SemestralLevantamientos = () => {
         setDatosLevantamientos(levantamientosData);
         setTotalLevantamientos(totalLevantamientosData); // Asumiendo que el total es el primer elemento del array
         setTotalLevAprobados(totalLevAprobados); // Asumiendo que el total es el primer elemento del array
+        setDatosLevantamientosAprob(datosLevantamientosAprob); // Asumiendo que el total es el primer elemento del array
+        setTotallevRN(totalLevRN); // Asumiendo que el total es el primer elemento del array
       } catch (error) {
         console.error('Error al cargar datos:', error);
         // Datos de respaldo
@@ -48,6 +53,8 @@ const SemestralLevantamientos = () => {
         setDatosLevantamientos([0, 0, 0]);
         setTotalLevantamientos('0');
         setTotalLevAprobados('0');
+        setDatosLevantamientosAprob([0, 0, 0]);
+        setTotallevRN('0');
       } finally {
         setLoading(false);
       }
@@ -68,8 +75,8 @@ const SemestralLevantamientos = () => {
       },
       {
         label: 'Solicitudes Aprobadas',
-        data: [8, 15, 2, 4, 1, 2].slice(0, datosLevantamientos.length), // Ajusta al tamaño de los datos
-        backgroundColor: 'rgba(59, 117, 197, 0.71)',
+        data: datosLevantamientosAprob, // Ajusta al tamaño de los datos
+        backgroundColor: 'rgba(59, 117, 197, 0.86)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
       },
@@ -106,7 +113,7 @@ const SemestralLevantamientos = () => {
     {
       id: 3,
       title: 'Total de levantamiento de RN aprobados',
-      description: 'Humans depend on plants and animals for survival.',
+      description: totalLevRN,
       imagen: imagenSumatoria,
     },
   ];
@@ -150,7 +157,7 @@ const SemestralLevantamientos = () => {
                   }} 
                 />
               </Box>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" fontSize={28}>
                 {card.description}
               </Typography>
             </CardContent>

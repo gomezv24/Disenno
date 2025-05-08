@@ -120,6 +120,7 @@ export async function levantamientosAprobados() {
       else if (lev === 4) levantamientosSede[3]++;
       else if (lev === 5) levantamientosSede[4]++;
     });
+    console.log("levantamientos aprobados",levantamientosSede);
     return levantamientosSede;
 
   }
@@ -143,4 +144,22 @@ export async function totallevAprobados() {
     throw error; // Propaga el error para manejarlo en otro lugar si es necesario
   }
   
-}
+};
+
+
+export async function totallevRN() {
+  try {
+    const response = await fetch("http://localhost:5000/estadisticas/seguimiento/levantamientos/rn");
+    if (!response.ok) {
+      throw new Error('Error en la respuesta de la API');
+    }
+    const data = await response.json();
+    let total = data.length; // Total de levantamientos
+    console.log("totallevRN",total);
+    return total.toString();
+  } catch (error) {
+    console.error('Error al obtener los levantamientos:', error);
+    throw error; // Propaga el error para manejarlo en otro lugar si es necesario
+  }
+  
+};
