@@ -2,9 +2,6 @@ import React from 'react';
 import { Container, Typography, Button, Box, Card, CardContent, TextField } from '@mui/material';
 import imagenRegistro from '../../assets/logoTec.png';
 import imagenUsuario from '../../assets/imagenUsuario.png';
-import imagenInclu from '../../assets/imagenInclu.png';
-import imagenLeva from '../../assets/imagenLeva.png';
-import imagenReti from '../../assets/imagenReti.png';
 import { useNavigate } from 'react-router-dom';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import TabContext from '@mui/lab/TabContext';
@@ -12,7 +9,6 @@ import TabList from '@mui/lab/TabList';  // Import corregido
 import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
 import SemestralLevantamientos from './SemestralLevantamientos';
-
 
 const AdministrativosLevantamientos = () => {
   const navigate = useNavigate();
@@ -86,6 +82,9 @@ const AdministrativosLevantamientos = () => {
             </Box>
           </Box>
           <SemestralLevantamientos />
+        </Container>
+        <Container maxWidth="xl" sx={{ py: 5 }}>
+         
         </Container>
       </Box>
     </Box>

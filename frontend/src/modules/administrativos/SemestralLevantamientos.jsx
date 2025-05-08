@@ -1,28 +1,106 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Typography, Button, Box, Card, CardContent, TextField } from '@mui/material';
-import imagenRegistro from '../../assets/logoTec.png';
-import imagenUsuario from '../../assets/imagenUsuario.png';
-import imagenInclu from '../../assets/imagenInclu.png';
-import imagenLeva from '../../assets/imagenLeva.png';
-import imagenReti from '../../assets/imagenReti.png';
+import { Sedes, levantamientos, totallevantamientos, totallevAprobados } from '../administrativos/Funciones/estadisticas';
 import imagenDosUsers from '../../assets/dosUsers.png';
 import imagenSumatoria from '../../assets/Sumatoria.png';
 import { useNavigate } from 'react-router-dom';
 import CardActionArea from '@mui/material/CardActionArea';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const SemestralLevantamientos = () => {
+  const [sedes, setSedes] = useState([]);
+  const [datosLevantamientos, setDatosLevantamientos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [totalLevantamientos, setTotalLevantamientos] = useState('');
+  const [totalLevAprobados, setTotalLevAprobados] = useState('');
+  //const [datosLevantamientosAprob, setDatosLevantamientosAprob] = useState([]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [sedesData, levantamientosData, totalLevantamientosData, totalLevAprobados] = await Promise.all([
+          Sedes(),
+          levantamientos(),
+          totallevantamientos(),
+          totallevAprobados()
+
+        ]);
+        
+        setSedes(sedesData);
+        setDatosLevantamientos(levantamientosData);
+        setTotalLevantamientos(totalLevantamientosData); // Asumiendo que el total es el primer elemento del array
+        setTotalLevAprobados(totalLevAprobados); // Asumiendo que el total es el primer elemento del array
+      } catch (error) {
+        console.error('Error al cargar datos:', error);
+        // Datos de respaldo
+        setSedes(['Sede 1', 'Sede 2', 'Sede 3']);
+        setDatosLevantamientos([0, 0, 0]);
+        setTotalLevantamientos('0');
+        setTotalLevAprobados('0');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
+  const data = {
+    labels: sedes,
+    datasets: [
+      {
+        label: 'Solicitudes de Levantamiento',
+        data: datosLevantamientos,
+        backgroundColor: '#062043',
+        borderColor: 'rgb(10, 49, 99)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Solicitudes Aprobadas',
+        data: [8, 15, 2, 4, 1, 2].slice(0, datosLevantamientos.length), // Ajusta al tamaño de los datos
+        backgroundColor: 'rgba(59, 117, 197, 0.71)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Solicitudes por Sede',
+      },
+    },
+  };
+
   const cards = [
     {
       id: 1,
       title: 'Total de solicitudes de levantamientos',
-      description: 'Plants are essential for all life.',
+      description: totalLevantamientos,
       imagen: imagenDosUsers,
     },
     {
       id: 2,
       title: 'Total de levantamiento de requisitos aprobados',
-      description: 'Animals are a part of nature.',
+      description: totalLevAprobados,
       imagen: imagenSumatoria,
     },
     {
@@ -32,54 +110,73 @@ const SemestralLevantamientos = () => {
       imagen: imagenSumatoria,
     },
   ];
-  
 
-    return (
+  if (loading) {
+    return <Typography>Cargando datos...</Typography>;
+  }
+
+  return (
+    <Box sx={{ 
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 3,
+      padding: 2
+    }}>
       <Box sx={{ 
         display: 'flex', 
-        alignItems: 'center',
-        flexDirection: { xs: 'column', sm: 'row' }, // Columna en móvil, fila en desktop
-        gap: { xs: 1, sm: 2 },
-        textAlign: { xs: 'center', sm: 'left' }
+        flexWrap: 'wrap',
+        gap: 2,
+        justifyContent: 'center'
       }}>
-
-        {cards.map((card, index) => (
-          <Card>
-            
-              <CardContent sx={{ height: '100%' }}>
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', // Alinea verticalmente imagen y texto
-                  gap: 2, // Espacio entre imagen y texto
-                  mb: 1 // Margen inferior para separar del texto secundario
-                }}>
-                  <Typography variant="body1" component="div" sx={{ fontWeight: 'bold' }}>
-                    {card.title}
-                  </Typography>
-                  <img 
-                    src={card.imagen} 
-                    alt={card.title} 
-                    style={{ 
-                      width: '60px', // Tamaño fijo para uniformidad
-                      height: '60px', 
-                      objectFit: 'contain' // Mantiene proporciones de la imagen
-                    }} 
-                  />
-                  
-                </Box>
-                
-                <Typography variant="body2" color="text.secondary">
-                  {card.description}
+        {cards.map((card) => (
+          <Card key={card.id} sx={{ minWidth: 275, maxWidth: 350 }}>
+            <CardContent>
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                gap: 2,
+                mb: 1
+              }}>
+                <Typography variant="body1" component="div" sx={{ fontWeight: 'bold' }}>
+                  {card.title}
                 </Typography>
-              </CardContent>
-
-            </Card>
+                <img 
+                  src={card.imagen} 
+                  alt={card.title} 
+                  style={{ 
+                    width: '60px',
+                    height: '60px', 
+                    objectFit: 'contain'
+                  }} 
+                />
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                {card.description}
+              </Typography>
+            </CardContent>
+          </Card>
         ))}
       </Box>
-    );
-  
+      
+      <Card sx={{ boxShadow: 3 }}>
+        <CardContent>
+          <Typography variant="h6" component="div" gutterBottom>
+            Estadísticas de Levantamientos
+          </Typography>
+          <Box sx={{ height: '400px', position: 'relative' }}>
+            <Bar 
+              data={data} 
+              options={options}
+              key={JSON.stringify(sedes)} // Esto fuerza recreación del gráfico cuando cambian las sedes
+            />
+          </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            Datos actualizados al {new Date().toLocaleDateString()}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Box>
+  );
 };
-
-
 
 export default SemestralLevantamientos;
