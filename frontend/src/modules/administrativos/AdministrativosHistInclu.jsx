@@ -8,10 +8,10 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';  // Import corregido
 import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
-import SemestralInclusiones from './SemestralInclusiones';
-import HistInclusiones from './HistInclusiones';
+import SemestralLevantamientos from './SemestralLevantamientos';
+import HistLevantamientos from './HistLevantamientos';
 
-const AdministrativosLevantamientos = () => {
+const AdministrativosHistInclu= () => {
   const navigate = useNavigate();
 
   const [value, setValue] = React.useState('1');
@@ -58,36 +58,20 @@ const AdministrativosLevantamientos = () => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 5 ,flexDirection: { xs: 'column', md: 'row' },position: 'relative'  }}>
             <Box sx={{ flex: 1, minWidth: '50%', mb: { xs: 2, md: 0 }, order: 1}}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mt: 1 }}>
-              Estadísticas de solicitudes de inclusión
+              Información histórica Inclusiones 
               </Typography>
               <Typography variant="body1" component="p">
-              A continuación, se presentan diferentes gráficos con información sobre las inclusiones 
+              A continuación, se listan las inclusiones realizadas por los estudiantes y su estado 
               </Typography>
             </Box >
            
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: { md: 'absolute' }, right: 0, top: 0, order: 2 }}>
-              <TabContext value={value}>
-                <Box sx={{ width: 'auto' }}>
-                  <TabList onChange={handleChange} aria-label="lab API tabs example">
-                    <Tab label="Semestral" value="1" />
-                    <Tab label="Histórico" value="2" />
-                  </TabList>
-                </Box>
-                <TabPanel value="1"></TabPanel>
-                <TabPanel value="2"></TabPanel>
-              </TabContext>
-            </Box>
+            
             <Box sx={{ order: 3 }}>
               <img src={imagenUsuario} alt="Usuario" style={{ height: '50px', borderRadius: '50%' }} 
               />
             </Box>
           </Box>
-          {/* Renderizado condicional de componentes */}
-          {value === '1' ? (
-            <SemestralInclusiones tipoVista={value} />
-          ) : (
-            <HistInclusiones tipoVista={value} />
-          )}
+        
         </Container>
         <Container maxWidth="xl" sx={{ py: 5 }}>
          
@@ -127,4 +111,4 @@ const sidebarStyle = {
 };
 
 
-export default AdministrativosLevantamientos;
+export default AdministrativosHistInclu;

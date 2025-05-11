@@ -9,6 +9,7 @@ import TabList from '@mui/lab/TabList';  // Import corregido
 import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
 import SemestralLevantamientos from './SemestralLevantamientos';
+import HistLevantamientos from './HistLevantamientos';
 
 const AdministrativosLevantamientos = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const AdministrativosLevantamientos = () => {
           <img src={imagenRegistro} alt="TEC" style={{ height: '50px' , marginLeft: '20px', marginTop: '15px', marginBottom: '20px'} } />
             <MenuItem style={menuItemStyle} onClick={() => navigate('/administrativo')}>Inclusiones</MenuItem>
             <MenuItem style={menuItemStyle} onClick={() => navigate('/administrativo/levantamientos')}>Levantamientos y condición RN</MenuItem>
-            <MenuItem style={menuItemStyle} onClick={() => navigate('/administrativo/historico/inclusiones')}>Histórico de inclusiones</MenuItem>
+            <MenuItem style={menuItemStyle} onClick={() => navigate('/administrativo/historico/inclusiones/informacion')}>Histórico de inclusiones</MenuItem>
             <MenuItem style={menuItemStyle} onClick={() => navigate('/administrativo/historico/levantamientos')}>Histórico de levantamientos</MenuItem>
           </Menu>
         </Sidebar>
@@ -81,7 +82,12 @@ const AdministrativosLevantamientos = () => {
               />
             </Box>
           </Box>
-          <SemestralLevantamientos />
+          {/* Renderizado condicional de componentes */}
+          {value === '1' ? (
+            <SemestralLevantamientos tipoVista={value} />
+          ) : (
+            <HistLevantamientos tipoVista={value} />
+          )}
         </Container>
         <Container maxWidth="xl" sx={{ py: 5 }}>
          
