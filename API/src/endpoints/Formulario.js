@@ -157,5 +157,52 @@ router.get('/inclusionesF', async (req, res) => {
     return res.json(combinedData);
 });
 
+//fromulario de la tabla seguimiento
+router.get('/seguimiento/:id', async (req, res) => {
+    
+    const { id } = req.params;
+
+    const { data, errorL} = await supabase.from('seguimientoformulario').select('*').eq('idformulario', id);
+    if (errorL) {
+        return res.status(500).json({ error: errorL.message });
+    }
+    
+    return res.json(data);
+});
+
+//devuelve el estado del formulario
+router.get('/estado/:id', async (req, res) => {
+    
+    const { id } = req.params;
+    const { data, errorL} = await supabase.from('estadosolicitud').select('*').eq('idestado', id);
+    if (errorL) {
+        return res.status(500).json({ error: errorL.message });
+    }
+    return res.json(data);
+});
+
+//sede por id
+router.get('/sede/:id', async (req, res) => {
+    
+    const { id } = req.params;
+    const { data, errorL} = await supabase.from('sede').select('*').eq('idsede', id);
+    if (errorL) {
+        return res.status(500).json({ error: errorL.message });
+    }
+    
+    return res.json(data);
+});
+
+//becas
+router.get('/tipobeca/:id', async (req, res) => {
+    
+    const { id } = req.params;
+    const { data, errorL} = await supabase.from('tipobeca').select('*').eq('idtipobeca', id);
+    if (errorL) {
+        return res.status(500).json({ error: errorL.message });
+    }
+    
+    return res.json(data);
+});
 
 export default router;

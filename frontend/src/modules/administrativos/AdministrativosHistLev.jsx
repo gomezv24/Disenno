@@ -7,13 +7,14 @@ import { Link, useLocation } from 'react-router-dom';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import { TablePagination } from '@mui/material';
-import { informacion } from './Funciones/historicoInclusiones';
+import { informacion } from './Funciones/historicoLev';
 import { useNavigate } from 'react-router-dom';
 import DownloadIcon from '@mui/icons-material/Download';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import * as XLSX from 'xlsx';
 
 
-const AdministrativosHistInclu = () => {
+const AdministrativosHistLev = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [value, setValue] = React.useState('1');
@@ -100,20 +101,20 @@ const AdministrativosHistInclu = () => {
   const exportToExcel = () => {
     // Preparar los datos para exportar
     const datosExportar = filteredSolicitudes.map(sol => ({
-      "Nombre Estudiante": sol.nombre,
-      Carnet: sol.carnet,
-      "Fecha de Solicitud": sol.fecha,
-      Grupo: sol.grupo,
-      Curso: sol.curso,
-      Profesor: sol.profesor,
-      Correo: sol.correo,
-      "Estado Solicitud": sol.estado,
-      Carrera: sol.carrera,
-      Consideraciones: sol.consideraciones,
-      "Tiene requisitos": sol.requisitos,
-      "Tiene choque horario": sol.choquehorario,
-      Beca: sol.beca,
-      Sede: sol.sede,
+      "Nombre Estudiante": sol.nombre || '',
+      Carnet: sol.carnet || '',
+      "Fecha de Solicitud": sol.fecha || '',
+      "Curso a matricular": sol.curso || '',
+      "Requisito a levantar": sol.requisito || '',
+      Estado: sol.estado || '',
+      Correo: sol.correo || '',
+      "Estado Solicitud": sol.estado || '',
+      Carrera: sol.carrera || '',
+      Consideraciones: sol.consideraciones || '',
+      "Tipo de solicitud": sol.tiposolicitud || '',
+      "Plan de estudio": sol.planestudio || '',
+      Sede: sol.sede || '',
+      Comentarios: sol.comentario || '',
     }));
 
     // Crear hoja de trabajo
@@ -128,38 +129,41 @@ const AdministrativosHistInclu = () => {
   };
 
   const exportSingleToExcel = (sol) => {
-      // Preparar los datos para exportar (como array con un solo elemento)
-      const datosExportar = [{
-      "Nombre Estudiante": sol.nombre,
-      Carnet: sol.carnet,
-      "Fecha de Solicitud": sol.fecha,
-      Grupo: sol.grupo,
-      Curso: sol.curso,
-      Profesor: sol.profesor,
-      Correo: sol.correo,
-      "Estado Solicitud": sol.estado,
-      Carrera: sol.carrera,
-      Consideraciones: sol.consideraciones,
-      "Tiene requisitos": sol.requisitos,
-      "Tiene choque horario": sol.choquehorario,
-      Beca: sol.beca,
-      Sede: sol.sede,
-  }];
-      try {
-        // Crear hoja de trabajo
-        const ws = XLSX.utils.json_to_sheet(datosExportar);
-  
-        // Crear libro de trabajo
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "DatosLevantamiento");
-  
-        // Exportar el archivo con nombre personalizado
-        XLSX.writeFile(wb, `Inclusion_${sol.carnet || 'estudiante'}.xlsx`);
-      } catch (error) {
-        console.error("Error al exportar a Excel:", error);
-        alert("Ocurrió un error al exportar los datos");
-      }
-    };
+    // Preparar los datos para exportar (como array con un solo elemento)
+    const datosExportar = [{
+
+      "Nombre Estudiante": sol.nombre || '',
+      Carnet: sol.carnet || '',
+      "Fecha de Solicitud": sol.fecha || '',
+      "Curso a matricular": sol.curso || '',
+      "Requisito a levantar": sol.requisito || '',
+      Estado: sol.estado || '',
+      Correo: sol.correo || '',
+      "Estado Solicitud": sol.estado || '',
+      Carrera: sol.carrera || '',
+      Consideraciones: sol.consideraciones || '',
+      "Tipo de solicitud": sol.tiposolicitud || '',
+      "Plan de estudio": sol.planestudio || '',
+      Sede: sol.sede || '',
+      Comentarios: sol.comentario || '',
+
+    }];
+
+    try {
+      // Crear hoja de trabajo
+      const ws = XLSX.utils.json_to_sheet(datosExportar);
+
+      // Crear libro de trabajo
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "DatosLevantamiento");
+
+      // Exportar el archivo con nombre personalizado
+      XLSX.writeFile(wb, `levantamiento_${sol.carnet || 'estudiante'}.xlsx`);
+    } catch (error) {
+      console.error("Error al exportar a Excel:", error);
+      alert("Ocurrió un error al exportar los datos");
+    }
+  };
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -210,10 +214,10 @@ const AdministrativosHistInclu = () => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 5, flexDirection: { xs: 'column', md: 'row' }, position: 'relative' }}>
             <Box sx={{ flex: 1, minWidth: '50%', mb: { xs: 2, md: 0 }, order: 1 }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mt: 1 }}>
-                Información histórica Inclusiones
+                Información Histórica Levantamiento de requisitos y condición RN
               </Typography>
               <Typography variant="body1" component="p">
-                A continuación, se listan las inclusiones realizadas por los estudiantes y su estado
+                A continuación, se listan las solicitudes de levantamiento de requisitos y conición RN realizadas por los estudiantes y su estado
               </Typography>
             </Box >
             <Box sx={{
@@ -277,9 +281,8 @@ const AdministrativosHistInclu = () => {
                   <TableCell sx={{ fontWeight: 'bold' }}>Sede</TableCell>
                   <TableCell sx={{ fontWeight: 'bold' }}>Carnet</TableCell>
                   <TableCell sx={{ fontWeight: 'bold' }}>Nombre estudiante</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Grupo</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Curso</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Profesor</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Curso a matricular</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Requisito a levantar</TableCell>
                   <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
                   <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
                 </TableRow>
@@ -305,16 +308,19 @@ const AdministrativosHistInclu = () => {
                         <TableCell>{sol.sede}</TableCell>
                         <TableCell>{sol.carnet}</TableCell>
                         <TableCell>{sol.nombre}</TableCell>
-                        <TableCell>{sol.grupo}</TableCell>
                         <TableCell>{sol.curso}</TableCell>
-                        <TableCell>{sol.profesor}</TableCell>
+                        <TableCell>{sol.requisito}</TableCell>
                         <TableCell>
                           <Box sx={colorEstado(sol.estado)}>
                             {sol.estado}
                           </Box>
                         </TableCell>
                         <TableCell>
-                          <IconButton aria-label="Ver detalles de la solicitud" color="primary" onClick={() => navigate('/administrativo/vista', { state: { sol } })}>
+                          <IconButton aria-label="Ver detalles de la solicitud"
+                            color="primary"
+                            size="small"
+                            onClick={() => navigate('/administrativo/vista/levantamiento', { state: { sol } })}>
+
                             <Visibility />
                             <IconButton
                               aria-label="Descargar"
@@ -362,4 +368,4 @@ const AdministrativosHistInclu = () => {
 
 
 
-export default AdministrativosHistInclu;
+export default AdministrativosHistLev;
