@@ -1,147 +1,158 @@
 import React from 'react';
-import { Container, Typography, Button, Box, Card, CardContent, TextField } from '@mui/material';
+import { Container, Typography, Button, Box, Card, CardContent, TextField, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import imagenRegistro from '../../assets/logoTec.png';
 import imagenUsuario from '../../assets/imagenUsuario.png';
-import imagenInclu from '../../assets/imagenInclu.png';
-import imagenLeva from '../../assets/imagenLeva.png';
-import imagenReti from '../../assets/imagenReti.png';
-import { useNavigate } from 'react-router-dom';
-import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';  // Import corregido
+import TabPanel from '@mui/lab/TabPanel';
+import Tab from '@mui/material/Tab';
+import { Link, useLocation } from 'react-router-dom';
+import SemestralInclusiones from './SemestralInclusiones';
+import HistInclusiones from './HistInclusiones';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import ViewListIcon from '@mui/icons-material/ViewList';
 
-const HomePageAdministrativos = () => {
-  const navigate = useNavigate();
+
+const AdministrativosLevantamientos = () => {
+  const location = useLocation();
+  
+
+  const [value, setValue] = React.useState('1');
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  
+  const menuItems = [
+      { text: 'Inclusiones', icon: <BarChartIcon />, path: '/administrativo' },
+      { text: 'Levantamientos', icon: <BarChartIcon />, path: '/administrativo/levantamientos' },
+      { text: 'Histórico de inclusiones', icon: <ViewListIcon />, path: '/administrativo/historico/inclusiones/informacion' },
+      { text: 'Histórico de levantamientos', icon: <ViewListIcon />, path: '/administrativo/historico/levantamientos' },
+    ];
+
   return (
-      <Box sx={{ display: 'flex', height: '100vh' }}>
-        {/* Sidebar fijo a la izquierda */}
-        <Box sx={{ 
-          width: '280px', 
-          flexShrink: 0,
-          position: 'fixed',
-          height: '100vh',
-          zIndex: 1000,
-          backgroundColor: 'background.paper',
-          boxShadow: 2
-        }}>
-          <Sidebar rootStyles={sidebarStyle} >
-            <Menu iconShape="square" >
-            <img src={imagenRegistro} alt="TEC" style={{ height: '50px' , marginLeft: '20px', marginTop: '15px', marginBottom: '20px'} } />
-              <MenuItem style={menuItemStyle} onClick={() => navigate('/administrativo')}>Inclusiones</MenuItem>
-              <MenuItem style={menuItemStyle} onClick={() => navigate('/administrativo/levantamientos')}>Levantamientos y condición RN</MenuItem>
-              <MenuItem style={menuItemStyle} onClick={() => navigate('/administrativo/historico/inclusiones')}>Histórico de inclusiones</MenuItem>
-              <MenuItem style={menuItemStyle} onClick={() => navigate('/administrativo/historico/levantamientos')}>Histórico de levantamientos</MenuItem>
-            </Menu>
-          </Sidebar>
+    <Box sx={{ display: 'flex', height: '100vh' }}>
+      <nav
+        aria-label="Menú principal"
+        style={{
+          width: '325px',
+          backgroundColor: '#ffffff',
+          color: '#062043',
+          padding: '32px 0',
+          boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
+          borderRight: '1px solid #ddd',
+          height: '100vh'
+        }}
+      >
+        {/* Logo institucional */}
+        <Box sx={{ mb: 4, textAlign: 'center' }}>
+          <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
         </Box>
-  
-        {/* Contenido principal */}
-        <Box sx={{ 
-          flexGrow: 1, 
-          marginLeft: '250px',
-          padding: 3,
-          width: 'calc(100% - 250px)'
-        }}>
-          <Container maxWidth="xl" sx={{ py: 5 }}>
-            {/* Logo arriba y "Gestión de Fondos" debajo, usuario a la derecha */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 5 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
-                <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mt: 1 }}>
-                Estadísticas solicitudes de Inclusiones
-                </Typography>
-              </Box>
-              <img src={imagenUsuario} alt="Usuario" style={{ height: '50px', borderRadius: '50%' }} />
+
+        {/* Lista de navegación */}
+        <List>
+          {menuItems.map((item) => (
+            <ListItem
+              button
+              key={item.text}
+              component={Link}
+              to={item.path}
+              selected={location.pathname === item.path}
+              sx={{
+                color: '#062043',
+                minHeight: '3.5rem',
+                '&.Mui-selected': { backgroundColor: '#f0f0f0', fontWeight: 'bold' },
+                '&:hover': { backgroundColor: '#f9f9f9' }
+              }}
+            >
+              <ListItemIcon sx={{ color: '#062043' }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+        </List>
+      </nav>
+      {/* Contenido principal */}
+      <Box sx={{ 
+        flexGrow: 1, 
+        marginLeft: '10px',
+        padding: 3,
+        width: 'calc(100% - 250px)'
+      }}>
+        <Container maxWidth="xl" sx={{ px: 0, py: 5 }}>
+
+        
+
+          {/* Logo arriba y "Gestión de Fondos" debajo, usuario a la derecha */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 5 ,flexDirection: { xs: 'column', md: 'row' },position: 'relative'  }}>
+            <Box sx={{ flex: 1, minWidth: '10%', mb: { xs: 0, md: 0 }, order: 1}}>
+              <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mt: 1 }}>
+              Estadísticas de solicitudes de inclusión
+              </Typography>
+              <Typography variant="body1" component="p">
+              A continuación, se presentan diferentes gráficos con información sobre las inclusiones 
+              </Typography>
+            </Box >
+           
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: { md: 'absolute' }, right: 0, top: 0, order: 2 }}>
+              <TabContext value={value}>
+                <Box sx={{ width: 'auto' }}>
+                  <TabList onChange={handleChange} aria-label="lab API tabs example">
+                    <Tab label="Semestral" value="1" />
+                    <Tab label="Histórico" value="2" />
+                  </TabList>
+                </Box>
+                <TabPanel value="1"></TabPanel>
+                <TabPanel value="2"></TabPanel>
+              </TabContext>
             </Box>
-  
-            {/* Buscador grande y botón de seguimiento */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 5, flexWrap: 'wrap', gap: 2 }}>
-              <TextField
-                variant="outlined"
-                placeholder="Buscar formularios o procesos..."
-                size="medium"
-                sx={{ flexGrow: 1, minWidth: '300px', maxWidth: '600px' }}
+            <Box sx={{ order: 3 }}>
+              <img src={imagenUsuario} alt="Usuario" style={{ height: '50px', borderRadius: '50%' }} 
               />
-              <Button variant="contained" sx={{ backgroundColor: '#062043', height: '56px' }}>
-                Seguimiento
-              </Button>
             </Box>
-  
-            {/* Tarjetas */}
-            <Box sx={{ display: 'flex', gap: 5, flexWrap: 'wrap', justifyContent: 'center' }}>
-              {/* Inclusión */}
-              <Card sx={{ flex: '1 1 300px', maxWidth: '350px', p: 2 }}>
-                <CardContent sx={{ textAlign: 'center' }}>
-                  <img src={imagenInclu} alt="Inclusión" style={{ width: '60px', marginBottom: '16px' }} />
-                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                    Inclusión a cursos
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 3 }}>
-                    Solicita la incorporación a asignaturas cuando no has logrado matricular por situaciones específicas...
-                  </Typography>
-                  <Button variant="contained" size="small">Más información</Button>
-                </CardContent>
-              </Card>
-  
-              {/* Levantamiento */}
-              <Card sx={{ flex: '1 1 300px', maxWidth: '350px', p: 2 }}>
-                <CardContent sx={{ textAlign: 'center' }}>
-                  <img src={imagenLeva} alt="Levantamiento" style={{ width: '60px', marginBottom: '16px' }} />
-                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                    Levantamiento de requisitos y condición RN
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 3 }}>
-                    Permite pedir levantamiento de requisitos o solicitar matrícula bajo condición especial RN...
-                  </Typography>
-                  <Button variant="contained" size="small">Más información</Button>
-                </CardContent>
-              </Card>
-  
-              {/* Retiro */}
-              <Card sx={{ flex: '1 1 300px', maxWidth: '350px', p: 2 }}>
-                <CardContent sx={{ textAlign: 'center' }}>
-                  <img src={imagenReti} alt="Retiro" style={{ width: '60px', marginBottom: '16px' }} />
-                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                    Retiro de cursos
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 3 }}>
-                    Gestiona la solicitud para darte de baja de un curso previamente matriculado si así lo necesitas...
-                  </Typography>
-                  <Button variant="contained" size="small">Más información</Button>
-                </CardContent>
-              </Card>
-            </Box>
-          </Container>
-        </Box>
+          </Box>
+          {/* Renderizado condicional de componentes */}
+          {value === '1' ? (
+            <SemestralInclusiones tipoVista={value} />
+          ) : (
+            <HistInclusiones tipoVista={value} />
+          )}
+        </Container>
+        <Container maxWidth="xl" sx={{ py: 5 }}>
+         
+        </Container>
       </Box>
-    );
-  };
-  
-  const menuItemStyle = {
-    padding: '15px 20px',
-    fontWeight: 'bold',
-    color: '#062043',
-    whiteSpace: 'normal',
-    wordBreak: 'break-word',
-    lineHeight: '1.3',
+    </Box>
+  );
+};
+
+const menuItemStyle = {
+  padding: '15px 20px',
+  fontWeight: 'bold',
+  color: '#062043',
+  whiteSpace: 'normal',
+  wordBreak: 'break-word',
+  lineHeight: '1.3',
+  '&:hover': {
+    backgroundColor: '#c21b31', // Morado claro
+    borderRadius: '4px', // Opcional: agrega bordes redondeados
+  },
+  transition: 'all 0.3s ease', // Transición suave para todos los cambios
+};
+
+// Asegúrate de que tu Sidebar tenga la prop "rootStyles" para heredar estilos
+const sidebarStyle = {
+  height: '100%',
+  width: '100%',
+  '& .pro-sidebar-inner': {
+    background: '#c21b31 !important', // Fuerza el color de fondo
+  },
+  '& .pro-menu-item': {
     '&:hover': {
-      backgroundColor: '#c21b31', // Morado claro
-      borderRadius: '4px', // Opcional: agrega bordes redondeados
+      background: '#c21b31 !important',
+      color: '#c21b31 !important',
     },
-    transition: 'all 0.3s ease', // Transición suave para todos los cambios
-  };
-  
-  // Asegúrate de que tu Sidebar tenga la prop "rootStyles" para heredar estilos
-  const sidebarStyle = {
-    height: '100%',
-    width: '100%',
-    '& .pro-sidebar-inner': {
-      background: '#c21b31 !important', // Fuerza el color de fondo
-    },
-    '& .pro-menu-item': {
-      '&:hover': {
-        background: '#c21b31 !important',
-        color: '#c21b31 !important',
-      },
-    },
-  };
+  },
+};
 
 
-export default HomePageAdministrativos;
+export default AdministrativosLevantamientos;

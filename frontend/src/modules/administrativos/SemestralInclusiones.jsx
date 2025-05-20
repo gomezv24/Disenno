@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Button, Box, Card, CardContent, TextField } from '@mui/material';
-import { Sedes, levantamientos, totallevantamientos, totallevAprobados, levantamientosAprobados, totallevRN, levantamientosAprobadosTotal } from '../administrativos/Funciones/estadisticas';
+import { Sedes, inclusiones, totalinclusiones, inclusionesAprobadas, totalincluAprob} from './Funciones/estadisticas';
 import imagenDosUsers from '../../assets/dosUsers.png';
 import imagenSumatoria from '../../assets/Sumatoria.png';
 import { useNavigate } from 'react-router-dom';
@@ -17,44 +17,45 @@ ChartJS.register(
   Legend
 );
 
-const SemestralLevantamientos = ({tipoVista}) => {
+const SemestralInclusiones = ({tipoVista}) => {
   const [sedes, setSedes] = useState([]);
-  const [datosLevantamientos, setDatosLevantamientos] = useState([]);
+  const [datosInclusionesData, setDatosInclusionesData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [totalLevantamientos, setTotalLevantamientos] = useState('');
-  const [totalLevAprobados, setTotalLevAprobados] = useState('');
-  const [datosLevantamientosAprob, setDatosLevantamientosAprob] = useState([]);
-  const [totalLevRN, setTotallevRN] = useState('');
+  const [totalInclusiones, setTotalInclusiones] = useState('');
+  const [totalIncluAprobadas, setTotalIncluAprobadas] = useState('');
+  const [datosInlcuAprob, setDatosIncluAprob] = useState([]);
+
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [sedesData, levantamientosData, totalLevantamientosData, totalLevAprobados, datosLevantamientosAprob, totalLevRN] = await Promise.all([
+        const [sedesData, totalInclusiones, datosInclusionesData, totalIncluAprobadas, datosIncluAprob] = await Promise.all([
           Sedes(),
-          levantamientos(tipoVista),
-          totallevantamientos(tipoVista),
-          totallevAprobados(tipoVista),
-          levantamientosAprobadosTotal(tipoVista),
-          totallevRN(tipoVista)
+          totalinclusiones(tipoVista),
+          inclusiones(tipoVista),
+          totalincluAprob(tipoVista),
+          inclusionesAprobadas(tipoVista)
 
         ]);
         
         setSedes(sedesData);
-        setDatosLevantamientos(levantamientosData);
-        setTotalLevantamientos(totalLevantamientosData); 
-        setTotalLevAprobados(totalLevAprobados); 
-        setDatosLevantamientosAprob(datosLevantamientosAprob); // Asumiendo que el total es el primer elemento del array
-        setTotallevRN(totalLevRN); // Asumiendo que el total es el primer elemento del array
+        setTotalInclusiones(totalInclusiones);
+        setDatosInclusionesData(datosInclusionesData); 
+        setTotalIncluAprobadas(totalIncluAprobadas);
+        setDatosIncluAprob(datosIncluAprob); 
+
+
       } catch (error) {
         console.error('Error al cargar datos:', error);
         // Datos de respaldo
         setSedes(['Sede 1', 'Sede 2', 'Sede 3']);
-        setDatosLevantamientos([0, 0, 0]);
-        setTotalLevantamientos('0');
-        setTotalLevAprobados('0');
-        setDatosLevantamientosAprob([0, 0, 0]);
-        setTotallevRN('0');
+        setDatosInclusionesData([0, 0, 0]);
+        setTotalInclusiones('0');
+        setTotalIncluAprobadas('0');
+        setDatosIncluAprob([0, 0, 0]);
+
+
       } finally {
         setLoading(false);
       }
@@ -67,15 +68,15 @@ const SemestralLevantamientos = ({tipoVista}) => {
     labels: sedes,
     datasets: [
       {
-        label: 'Solicitudes de Levantamiento',
-        data: datosLevantamientos,
+        label: 'Solicitudes de Inclusiones',
+        data: datosInclusionesData,
         backgroundColor: '#062043',
         borderColor: 'rgb(10, 49, 99)',
         borderWidth: 1,
       },
       {
         label: 'Solicitudes Aprobadas',
-        data: datosLevantamientosAprob, // Ajusta al tamaño de los datos
+        data: datosInlcuAprob, // Ajusta al tamaño de los datos
         backgroundColor: 'rgba(59, 117, 197, 0.86)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
@@ -100,22 +101,17 @@ const SemestralLevantamientos = ({tipoVista}) => {
   const cards = [
     {
       id: 1,
-      title: 'Total de solicitudes de levantamientos',
-      description: totalLevantamientos,
+      title: 'Total de solicitudes de inclusiones',
+      description: totalInclusiones,
       imagen: imagenDosUsers,
     },
     {
       id: 2,
-      title: 'Total de levantamiento de requisitos aprobados',
-      description: totalLevAprobados,
+      title: 'Total de inclusiones aprobados',
+      description: totalIncluAprobadas,
       imagen: imagenSumatoria,
     },
-    {
-      id: 3,
-      title: 'Total de levantamiento de RN aprobados',
-      description: totalLevRN,
-      imagen: imagenSumatoria,
-    },
+
   ];
 
   if (loading) {
@@ -168,13 +164,13 @@ const SemestralLevantamientos = ({tipoVista}) => {
       <Card sx={{ boxShadow: 3 }}>
         <CardContent>
           <Typography variant="h6" component="div" gutterBottom>
-            Estadísticas de Levantamientos
+            Estadísticas de Inclusiones
           </Typography>
           <Box sx={{ height: '400px', position: 'relative' }}>
             <Bar 
               data={data} 
               options={options}
-              key={JSON.stringify(sedes)} // Esto fuerza recreación del gráfico cuando cambian las sedes
+              key={JSON.stringify(sedes)} 
             />
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
@@ -186,4 +182,4 @@ const SemestralLevantamientos = ({tipoVista}) => {
   );
 };
 
-export default SemestralLevantamientos;
+export default SemestralInclusiones;
