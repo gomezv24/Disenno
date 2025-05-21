@@ -1,8 +1,9 @@
 import React from 'react';
-import { AppBar, Toolbar, IconButton, Box, Typography, Avatar } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
+import { AppBar, Toolbar, IconButton, Box } from '@mui/material';
+import HomeIcon from '../../assets/home.png';
+import PersonIcon from '../../assets/imagenUsuario.png';
 import { useNavigate } from 'react-router-dom';
+import imagenRegistro from '../../assets/logoTec.png'; // así como lo usa tu compañera
 
 const NavbarAdmin = () => {
   const navigate = useNavigate();
@@ -13,19 +14,20 @@ const NavbarAdmin = () => {
         {/* Logo TEC */}
         <Box display="flex" alignItems="center">
           <img
-            src="/tec-logo.png"
+            src={imagenRegistro}
             alt="Logo Tecnológico de Costa Rica"
-            style={{ height: 50, marginRight: 16 }}
+            style={{ height: 50, marginRight: 20 }}
           />
         </Box>
 
         {/* Iconos a la derecha */}
         <Box display="flex" gap={2}>
-          <IconButton onClick={() => navigate('/administrativo')}>
-            <HomeIcon sx={{ color: '#1A4C8B' }} />
+          <IconButton onClick={() => navigate('/administrativo')}> {/* aqui cambio la ruta al panel */}
+            <img src={HomeIcon} alt="Inicio" style={{ width: 50, height: 50 }} />
           </IconButton>
+
           <IconButton onClick={() => navigate('/perfil')}>
-            <PersonIcon sx={{ color: '#1A4C8B' }} />
+            <img src={PersonIcon} alt="Perfil" style={{ width: 50, height: 50 }} />
           </IconButton>
         </Box>
       </Toolbar>

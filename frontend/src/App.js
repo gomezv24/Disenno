@@ -7,6 +7,7 @@ import HomePageAdministrativos from './modules/administrativos/homePageAdminitra
 import AdministrativosLevantamientos from './modules/administrativos/AdministrativosLevantamientos';
 import SemestralLevantamientos from './modules/administrativos/SemestralLevantamientos';
 import ReglamentoLevantamiento from './modules/administrativos/ReglamentoLevantamiento';
+import PanelControl from './modules/administrativos/PanelCoordinadora';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/administrativo/levantamientos' element={<AdministrativosLevantamientos/>} />
         <Route path="/administrativo/semestral" element={<SemestralLevantamientos />} />
         <Route path="/administrativo/reglamento" element={<ReglamentoLevantamiento />} />
+        <Route path="/administrativo/panelControl" element={<PanelControl />} />
       </Routes>
     </BrowserRouter>
   );
