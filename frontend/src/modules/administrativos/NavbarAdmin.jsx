@@ -5,6 +5,7 @@ import PersonIcon from '../../assets/imagenUsuario.png';
 import { useNavigate } from 'react-router-dom';
 import imagenRegistro from '../../assets/logoTec.png'; // así como lo usa tu compañera
 
+
 const NavbarAdmin = () => {
   const navigate = useNavigate();
 
@@ -16,18 +17,36 @@ const NavbarAdmin = () => {
           <img
             src={imagenRegistro}
             alt="Logo Tecnológico de Costa Rica"
-            style={{ height: 50, marginRight: 20 }}
+            style={{ height: 60, marginRight: 30 }}
           />
         </Box>
 
         {/* Iconos a la derecha */}
         <Box display="flex" gap={2}>
-          <IconButton onClick={() => navigate('/administrativo')}> {/* aqui cambio la ruta al panel */}
-            <img src={HomeIcon} alt="Inicio" style={{ width: 50, height: 50 }} />
+          {/* Botón de inicio */}
+          <IconButton
+            onClick={() => navigate('/administrativo/panelControl')}
+            aria-label="Ir al panel de control"
+            sx={{ p: 0, borderRadius: '50%', overflow: 'hidden' }}
+          >
+            <img
+              src={HomeIcon}
+              alt="Ícono de inicio"
+              style={{ width: 60, height: 60 }}
+            />
           </IconButton>
 
-          <IconButton onClick={() => navigate('/perfil')}>
-            <img src={PersonIcon} alt="Perfil" style={{ width: 50, height: 50 }} />
+          {/* Botón de perfil */}
+          <IconButton
+            onClick={() => navigate('/perfil')}
+            aria-label="Ir al perfil de usuario"
+            sx={{ p: 0, borderRadius: '50%', overflow: 'hidden' }}
+          >
+            <img
+              src={PersonIcon}
+              alt="Foto de perfil"
+              style={{ width: 60, height: 60, objectFit: 'cover' }}
+            />
           </IconButton>
         </Box>
       </Toolbar>

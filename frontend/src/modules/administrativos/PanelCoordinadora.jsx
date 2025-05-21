@@ -3,9 +3,13 @@ import { Box, Typography, Button, Card, CardContent, Grid } from '@mui/material'
 import imagenRegistro from '../../assets/logoTec-sinFondo.png';
 import iconPersona from '../../assets/dosUsers.png';
 import iconSuma from '../../assets/Sumatoria.png';
+import PersonIcon from '../../assets/imagenUsuario.png';
+import { useNavigate } from 'react-router-dom';
+import { IconButton } from '@mui/material';
 
 
 const PanelCoordinadora = () => {
+    const navigate = useNavigate();  
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       
@@ -33,7 +37,9 @@ const PanelCoordinadora = () => {
                 '&:hover': {
                 backgroundColor: '#324b73',
                 },
-            }}>
+            }}
+            onClick={() => navigate('/administrativo/reglamento')}//falta desarrollar
+            aria-label="Ver las inclusiones">
             Acceder a inclusiones
           </Button>
 
@@ -47,7 +53,9 @@ const PanelCoordinadora = () => {
                 '&:hover': {
                 backgroundColor: '#324b73',
                 },
-            }}>
+            }}
+            onClick={() => navigate('/administrativo/reglamento')}//falta desarrollar pantalla
+            aria-label="Ir a levantamientos y estados RN">
             Acceder a levantamientos y RN
           </Button>
           <Button fullWidth variant="contained" 
@@ -58,7 +66,9 @@ const PanelCoordinadora = () => {
                 '&:hover': {
                 backgroundColor: '#324b73',
                 },
-            }}>
+            }} 
+            onClick={() => navigate('/administrativo/reglamento')}
+            aria-label="Ir al reglamento">
             Reglamento de Levantamientos
             
           </Button>
@@ -70,7 +80,9 @@ const PanelCoordinadora = () => {
                 '&:hover': {
                 backgroundColor: '#324b73',
                 },
-            }}>
+            }}
+            onClick={() => navigate('/administrativo/reglamento')}//falta la pantalla
+            aria-label="Ver listado de levantamientos automáticos">
             Lista de levantamientos automáticos
           </Button>
         </Box>
@@ -82,7 +94,23 @@ const PanelCoordinadora = () => {
           <Typography variant="h4" fontWeight="bold" sx={{ color: '#001B3D' }} >
             Panel de Coordinadora de la carrera
           </Typography>
-          <Box sx={{ width: 40, height: 40, backgroundColor: '#1A4C8B', borderRadius: '50%' }} />
+            <IconButton
+                onClick={() => navigate('/perfil')}
+                aria-label="Ir al perfil de usuario"
+                sx={{
+                    width: 60,
+                    height: 60,
+                    p: 0,
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                }}
+                >
+                <img
+                    src={PersonIcon}
+                    alt="Foto de perfil"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+            </IconButton>
         </Box>
 
         <Typography variant="body1" mb={4}>
@@ -122,7 +150,7 @@ const PanelCoordinadora = () => {
 
 
         {/* Gráficos simulados */}
-        <Grid container spacing={14}>
+        <Grid container spacing={8}>
           <Grid item xs={20} sm={6}>
             <Card sx={{ p: 2 }}>
               <Typography variant="subtitle1" fontWeight="bold" mb={2}>

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ReglamentosLevantamiento = () => {
   const navigate = useNavigate();
-  
+
   return (
     <>
       <NavbarAdmin />
@@ -87,7 +87,14 @@ const ReglamentosLevantamiento = () => {
                   Para conocer los requisitos automáticos puedes seleccionar el siguiente botón:
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                <Button variant="contained" size="small" onClick={() => navigate('/perfil')}>
+                <Button variant="contained" size="small" onClick={() => navigate('/perfil')} sx={{
+                mb: 3,
+                backgroundColor: '#405F90',
+                color: '#fff',
+                '&:hover': {
+                backgroundColor: '#324b73',
+                },
+                }}>
                     Levantamientos automáticos
                   </Button>
                 </Box>
