@@ -6,6 +6,8 @@ import routerEstudiantes from './src/endpoints/Estudiantes.js';
 import routerFormularios from './src/endpoints/Formulario.js';
 import routerEstadisticas from './src/endpoints/Estadisticas.js';
 
+import procesosRouter from './src/endpoints/Procesos.js';
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -21,6 +23,7 @@ app.use('/estudiantes', routerEstudiantes);
 app.use('/formularios', routerFormularios);
 app.use('/estadisticas', routerEstadisticas);
 
+app.use('/procesos', procesosRouter);
 
 app.get('/', (req, res) => {
   res.send('Welcome to the API!');

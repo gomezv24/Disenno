@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Container,
@@ -22,6 +22,34 @@ import imagenRegistro from '../../assets/logoTec.png';
 
 const InfoUsuario = () => {
   const location = useLocation();
+  const [datosUsuario, setDatosUsuario] = useState(null);
+
+  useEffect(() => {
+  const idUsuario = localStorage.getItem('idusuario');
+  console.log("➡️ ID desde localStorage:", idUsuario);
+
+  if (!idUsuario) return;
+
+  const fetchUsuario = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/usuario/estudiante/${idUsuario}`);
+      const data = await response.json();
+      console.log('📦 Respuesta del backend:', data);
+
+      if (data.error) {
+        console.error('❌ Error recibido del backend:', data.error);
+        return;
+      }
+
+      setDatosUsuario(data);
+    } catch (error) {
+      console.error('❌ Error al cargar datos del usuario:', error);
+    }
+  };
+
+  fetchUsuario();
+}, []);
+
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/' },
@@ -32,19 +60,8 @@ const InfoUsuario = () => {
     { text: 'Usuario', icon: <PersonIcon />, path: '/usuario' }
   ];
 
-  const datosUsuario = {
-    nombre: 'Ana Pérez López',
-    correo: 'ana.perezlopez@estudiantec.cr',
-    telefono: '+506 8888-8888',
-    sede: 'Cartago',
-    carrera: 'Ingeniería en Computación',
-    planEstudio: 'Plan 411',
-    beca: 'Beca socioeconómica'
-  };
-
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-
       {/* MENÚ LATERAL */}
       <nav
         aria-label="Menú principal"
@@ -89,16 +106,65 @@ const InfoUsuario = () => {
             Información del Usuario
           </Typography>
 
-          <Paper sx={{ p: 4, backgroundColor: '#f7faff' }}>
-            {Object.entries(datosUsuario).map(([label, value]) => (
-              <Box key={label} sx={{ mb: 3 }}>
+          {datosUsuario ? (
+            <Paper sx={{ p: 4, backgroundColor: '#f7faff' }}>
+              <Box sx={{ mb: 3 }}>
                 <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                  {label.charAt(0).toUpperCase() + label.slice(1).replace(/([A-Z])/g, ' $1')}:
+                  Nombre:
                 </Typography>
-                <Typography variant="body1">{value}</Typography>
+                <Typography variant="body1">{datosUsuario.nombre}</Typography>
               </Box>
-            ))}
-          </Paper>
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                  Correo institucional:
+                </Typography>
+                <Typography variant="body1">{datosUsuario.correoinstitucional}</Typography>
+              </Box>
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                  Teléfono:
+                </Typography>
+                <Typography variant="body1">{datosUsuario.telefono}</Typography>
+              </Box>
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                  Sede:
+                </Typography>
+                <Typography variant="body1">{datosUsuario.idsede}</Typography>
+              </Box>
+
+              {/* Datos de estudiante si existen */}
+              {datosUsuario.estudiante && (
+                <>
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                      Carrera:
+                    </Typography>
+                    <Typography variant="body1">{datosUsuario.estudiante.carrera || 'No registrada'}</Typography>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                      Plan de estudio:
+                    </Typography>
+                    <Typography variant="body1">{datosUsuario.estudiante.plan || 'No registrado'}</Typography>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                      Beca:
+                    </Typography>
+                    <Typography variant="body1">{datosUsuario.estudiante.beca || 'Sin beca'}</Typography>
+                  </Box>
+                </>
+              )}
+            </Paper>
+          ) : (
+            <Typography>Cargando datos del usuario...</Typography>
+          )}
         </Container>
       </main>
     </Box>

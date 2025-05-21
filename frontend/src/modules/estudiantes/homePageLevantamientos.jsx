@@ -1,15 +1,4 @@
-//------------------------------------------------------------------------------
-// HOME PAGE LEVANTAMIENTOS
-// 
-// Página principal de proceso de retiros
-// Contiene una barra lateral accesible con navegación a funcionalidades clave
-// como Inclusiones, Levantamientos, Retiros, Seguimiento y Perfil de Usuario.
-// contiene un cuerpo principal con información clara sobre el proceso
-// de solicitud, fechas importantes, restricciones y contactos.
-// Permite acceso directo al formulario para realizar la solicitud de levantamientos.
-//------------------------------------------------------------------------------
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -22,9 +11,6 @@ import {
   ListItemText
 } from '@mui/material';
 
-//-------------------------
-// Íconos para el menú lateral
-//-------------------------
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -37,10 +23,22 @@ import imagenRegistro from '../../assets/logoTec.png';
 const HomePageLevantamientos = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [info, setInfo] = useState(null);
 
-  //--------------------------------------------------------------------------
-  // Rutas y elementos de navegación del menú lateral
-  //--------------------------------------------------------------------------
+  useEffect(() => {
+    const fetchLevantamientoInfo = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/procesos/Levantamiento%20de%20requisitos');
+        const data = await response.json();
+        console.log("📦 Data levantamientos:", data);
+        setInfo(data[0]); // ✅ toma el primer objeto del array
+      } catch (error) {
+        console.error('❌ Error al obtener la información de levantamientos:', error);
+      }
+    };
+
+    fetchLevantamientoInfo();
+  }, []);
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/' },
@@ -53,10 +51,6 @@ const HomePageLevantamientos = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-
-      {/*--------------------------------*/}
-      {/*           MENÚ LATERAL         */}
-      {/*--------------------------------*/}
       <nav aria-label="Menú principal">
         <Box
           sx={{
@@ -72,12 +66,10 @@ const HomePageLevantamientos = () => {
             height: '100vh'
           }}
         >
-          {/* Logo institucional */}
           <Box sx={{ mb: 4 }}>
             <img src={imagenRegistro} alt="Logo del Tecnológico de Costa Rica" style={{ height: '60px' }} />
           </Box>
 
-          {/* Enlaces del menú */}
           <List sx={{ width: '100%' }}>
             {menuItems.map((item) => (
               <ListItem
@@ -89,13 +81,8 @@ const HomePageLevantamientos = () => {
                 sx={{
                   color: '#062043',
                   minHeight: '3.5rem',
-                  '&.Mui-selected': {
-                    backgroundColor: '#f0f0f0',
-                    fontWeight: 'bold'
-                  },
-                  '&:hover': {
-                    backgroundColor: '#f9f9f9'
-                  }
+                  '&.Mui-selected': { backgroundColor: '#f0f0f0', fontWeight: 'bold' },
+                  '&:hover': { backgroundColor: '#f9f9f9' }
                 }}
               >
                 <ListItemIcon sx={{ color: '#062043' }}>{item.icon}</ListItemIcon>
@@ -106,30 +93,20 @@ const HomePageLevantamientos = () => {
         </Box>
       </nav>
 
-      {/*--------------------------------*/}
-      {/*       CONTENIDO PRINCIPAL      */}
-      {/*--------------------------------*/}
       <main style={{ flex: 1 }}>
-
-        {/* ENCABEZADO */}
         <header>
-          <Container sx={{ px: 5, pt: 6 }}></Container>
+          <Container sx={{ px: 5, pt: 6 }} />
         </header>
 
-        {/* CUERPO DE LA PÁGINA */}
         <Container sx={{ px: 5, py: 2 }}>
-
-          {/* Título principal */}
           <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mb: 3 }}>
             Levantamiento de requisitos y condición RN
           </Typography>
 
-          {/* Descripción del proceso */}
           <Typography sx={{ mb: 2 }}>
-            Solicita el levantamiento de requisitos o condición RN para cursos específicos del II Semestre 2024.
+            {info?.informacion || 'Cargando información del proceso...'}
           </Typography>
 
-          {/* Sección de información importante */}
           <section>
             <Box sx={{ backgroundColor: '#E0E7FF', p: 2, borderRadius: 2, mb: 2 }}>
               <Typography variant="h2" sx={{ fontWeight: 'bold', fontSize: '1.3rem', mb: 1 }}>
@@ -143,31 +120,24 @@ const HomePageLevantamientos = () => {
             </Box>
           </section>
 
-          {/* Fechas y contacto */}
           <section>
             <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
               Periodo de solicitud
             </Typography>
             <Typography sx={{ mb: 2 }}>
-              27 de junio de 2024 al 28 de junio de 2024 (hasta las 2:00 p.m.)
-            </Typography>
-
-            <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
-              Importante
-            </Typography>
-            <Typography sx={{ mb: 2 }}>
-              No se recibirán solicitudes fuera del periodo establecido.
+              {info?.fechaInicio && info?.fechaFin
+                ? `${info.fechaInicio} al ${info.fechaFin}`
+                : 'Cargando fechas...'}
             </Typography>
 
             <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
               Consultas
             </Typography>
             <Typography>
-              Coordinar sesión escribiendo a: <b>eshuman@itcr.ac.cr</b>
+              {info?.Consultas || 'Cargando correos de contacto...'}
             </Typography>
           </section>
 
-          {/* Botón para acceder al formulario */}
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               variant="contained"
