@@ -9,7 +9,7 @@
 // Permite acceso directo al formulario para realizar la solicitud de inclusión.
 //------------------------------------------------------------------------------
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -22,9 +22,6 @@ import {
   ListItemText
 } from '@mui/material';
 
-//-------------------------
-// Íconos para el menú lateral
-//-------------------------
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -37,10 +34,24 @@ import imagenRegistro from '../../assets/logoTec.png';
 const HomePageInclusiones = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [info, setInfo] = useState(null);
 
-  //--------------------------------------------------------------------------
-  // Definición de las rutas del menú lateral
-  //--------------------------------------------------------------------------
+  useEffect(() => {
+    const fetchInclusionInfo = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/procesos/Inclusi%C3%B3n%20de%20curso');
+        const data = await response.json();
+        console.log("Data inclusión:", data);
+        setInfo(data[0]); 
+      } catch (error) {
+        console.error('Error al obtener la información de inclusión:', error);
+      }
+    };
+
+    fetchInclusionInfo();
+  }, []);
+
+    
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/' },
@@ -53,10 +64,7 @@ const HomePageInclusiones = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-
-      {/*--------------------------------*/}
-      {/*           MENÚ LATERAL         */}
-      {/*--------------------------------*/}
+      {/* Menú lateral */}
       <nav
         aria-label="Menú principal"
         style={{
@@ -69,12 +77,10 @@ const HomePageInclusiones = () => {
           height: '100vh'
         }}
       >
-        {/* Logo institucional en la parte superior del menú */}
         <Box sx={{ mb: 4, textAlign: 'center' }}>
           <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
         </Box>
 
-        {/* Lista de enlaces de navegación */}
         <List>
           {menuItems.map((item) => (
             <ListItem
@@ -97,31 +103,23 @@ const HomePageInclusiones = () => {
         </List>
       </nav>
 
-      {/*--------------------------------*/}
-      {/*       CONTENIDO PRINCIPAL      */}
-      {/*--------------------------------*/}
+      {/* Cuerpo principal */}
       <main style={{ flex: 1 }}>
-
-        {/* ENCABEZADO */}
         <header>
-          <Container sx={{ px: 5, pt: 6 }}></Container>
+          <Container sx={{ px: 5, pt: 6 }} />
         </header>
 
-        {/* CUERPO DE LA PÁGINA */}
         <Container sx={{ px: 5, py: 2 }}>
           <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mb: 3 }}>
             Inclusiones a cursos
           </Typography>
 
-          {/* Descripción general del proceso */}
           <section>
             <Typography sx={{ mb: 2 }}>
-              El proceso de inclusión permite ocupar espacios disponibles en algunos grupos tras el periodo de matrícula. 
-              Solo muestra los cursos con cupo disponible para solicitar una inclusión. Las solicitudes serán procesadas tras el cierre del formulario.
+              {info?.informacion || 'Cargando información del proceso...'}
             </Typography>
           </section>
 
-          {/* Sección con advertencias e información importante */}
           <section aria-labelledby="info-importante">
             <Box sx={{ backgroundColor: '#E0E7FF', p: 2, borderRadius: 2, mb: 2 }}>
               <Typography id="info-importante" variant="h2" sx={{ mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
@@ -136,30 +134,26 @@ const HomePageInclusiones = () => {
             </Box>
           </section>
 
-          {/* Fechas importantes del proceso */}
+          {/* Periodo de solicitud */}
           <section>
             <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
               Periodo de solicitud
             </Typography>
             <Typography sx={{ mb: 2 }}>
-              27 de junio de 2024 al 28 de junio de 2024 (hasta las 2:00 p.m.)
-            </Typography>
-
-            <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
-              Publicación de resultados
-            </Typography>
-            <Typography sx={{ mb: 2 }}>
-              17 de julio de 2024
+              {info?.fechaInicio && info?.fechaFin
+                ? `${info.fechaInicio} al ${info.fechaFin}`
+                : 'Cargando fechas...'}
             </Typography>
 
             <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
               Consultas
             </Typography>
-            <Typography>Dudas generales: <b>bdittel@itcr.ac.cr</b></Typography>
-            <Typography>Situaciones particulares: <b>eshuman@itcr.ac.cr</b> (se atenderán tras el cierre del formulario).</Typography>
+            <Typography>
+              {info?.Consultas || 'Cargando correos de contacto...'}
+            </Typography>
           </section>
 
-          {/* Botón para acceder al formulario */}
+          {/* Botón */}
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               variant="contained"
@@ -177,7 +171,6 @@ const HomePageInclusiones = () => {
               Formulario
             </Button>
           </Box>
-
         </Container>
       </main>
     </Box>

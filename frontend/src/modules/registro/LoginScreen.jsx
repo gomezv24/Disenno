@@ -1,40 +1,27 @@
-// src/modules/registro/LoginScreen.jsx
-
-import React from 'react';
-import { Container, Typography, TextField, Button, Link, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; 
+import React, { useState, useContext } from 'react';
+import { Container, Typography, TextField, Button, Link, Box, Alert, Snackbar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import imagenRegistro from '../../assets/imagenRegistro.png';
 import { Autenticar } from '../../functions/autenticacion';
-import { useState } from 'react';
-import { Alert, Snackbar } from '@mui/material';
+import { UserContext } from '../../context/UserContext';
+
 
 const LoginScreen = () => {
+  const [valores, setValores] = useState({ email: '', password: '' });
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('error');
   const navigate = useNavigate();
-
-  const [valores, setValores] = useState({
-    email: '',
-    contrasenna: ''
-  });
-
-  const [error, setError] = useState('');
- 
+  const { setUsuario } = useContext(UserContext); // Acceder al contexto
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setValores({
-        ...valores,
-        [name]: value,
-    });
-  }
-
+    setValores({ ...valores, [name]: value });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-  
+
     if (!valores.email || !valores.password) {
       setAlertMessage('Por favor ingresa tu correo y contraseña');
       setAlertSeverity('error');
@@ -44,25 +31,24 @@ const LoginScreen = () => {
 
     try {
       const response = await Autenticar({
-        "correoinstitucional": valores.email,
-        "contrasena": valores.password
+        correoinstitucional: valores.email,
+        contrasena: valores.password,
       });
 
-      const rol= response.data.idtipousuario;
-      console.log(rol);
-
-      
-  
       if (response.status === 200) {
-        console.log('Autenticación exitosa:', response);
+        const usuario = response.data;
+        setUsuario(usuario); // Guardar en contexto
+        localStorage.setItem('usuario', JSON.stringify(usuario)); // Guardar en localStorage (opcional)
+        console.log('Autenticación exitosa:', usuario);
+
+        const rol = usuario.idtipousuario;
         if (rol === 1) {
           navigate('/administrador');
         } else if (rol === 2) {
           navigate('/coordinadora');
         } else if (rol === 3) {
           navigate('/estudiantes');
-        }
-        else if (rol === 4) {
+        } else if (rol === 4) {
           navigate('/administrativo');
         }
       } else {
@@ -71,12 +57,12 @@ const LoginScreen = () => {
         setOpenAlert(true);
       }
     } catch (err) {
+      console.error('Error en autenticación:', err);
       setAlertMessage('Error al conectar con el servidor');
       setAlertSeverity('error');
       setOpenAlert(true);
-      console.error('Error en autenticación:', err);
     }
-  }
+  };
 
   return (
     <Container maxWidth="xl" sx={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
@@ -129,20 +115,17 @@ const LoginScreen = () => {
           ¿Tienes problemas para acceder?
         </Link>
       </Box>
+
       <Snackbar
-    open={openAlert}
-    autoHideDuration={6000}
-    onClose={() => setOpenAlert(false)}
-    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-  >
-    <Alert 
-      onClose={() => setOpenAlert(false)}
-      severity={alertSeverity}
-      sx={{ width: '100%' }}
-    >
-      {alertMessage}
-    </Alert>
-  </Snackbar>
+        open={openAlert}
+        autoHideDuration={6000}
+        onClose={() => setOpenAlert(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setOpenAlert(false)} severity={alertSeverity} sx={{ width: '100%' }}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
