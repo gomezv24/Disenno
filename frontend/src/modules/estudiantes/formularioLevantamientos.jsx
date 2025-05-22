@@ -54,6 +54,16 @@ const FormularioLevantamiento = () => {
     sede: ''
   });
 
+  const [academicDetails, setAcademicDetails] = useState({
+    curso: '',
+    grupo: '',
+    plan: '',
+    tipoSolicitud: '',
+    requisito: '',
+    motivo: '',
+    detalle: ''
+  });
+
   useEffect(() => {
     const fetchUsuarioDetallado = async () => {
       if (!usuario?.idusuario) return;
@@ -89,6 +99,48 @@ const FormularioLevantamiento = () => {
 
   const handleNext = () => setActiveStep((prev) => prev + 1);
   const handleBack = () => setActiveStep((prev) => prev - 1);
+
+  const handleAcademicChange = (e) => {
+    const { name, value } = e.target;
+    setAcademicDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleMotivoChange = (e) => {
+    const { name, value } = e.target;
+    setAcademicDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async () => {
+    const body = {
+      carnet: formValues.carnet,
+      nombre: formValues.nombre,
+      correo: formValues.correo,
+      carrera: formValues.carrera,
+      idsede: formValues.sede,
+      plandeestudio: academicDetails.plan,
+      cursoalevantar: academicDetails.curso,
+      requisitoalevantar: academicDetails.requisito,
+      comentariosolicitud: academicDetails.motivo,
+      otrodetalle: academicDetails.detalle,
+      // idtiposolicitud, idregla pueden agregarse si los manejas en el frontend
+    };
+    try {
+      const res = await fetch('http://localhost:5000/formularios/levantamientos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Solicitud enviada correctamente');
+        setActiveStep(0);
+      } else {
+        alert('Error al enviar la solicitud: ' + (data.error || 'Error desconocido'));
+      }
+    } catch (error) {
+      alert('Error de red al enviar la solicitud');
+    }
+  };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -203,15 +255,24 @@ const FormularioLevantamiento = () => {
 
                   <Typography>Seleccione el curso que necesita matricular</Typography>
                   <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select defaultValue="">
+                    <Select name="curso" value={academicDetails.curso} onChange={handleAcademicChange}>
                       <MenuItem value={"CI1311"}>CI1311 - Introducción a la Programación</MenuItem>
                       <MenuItem value={"CI1330"}>CI1330 - Estructuras de Datos</MenuItem>
                       <MenuItem value={"CB1022"}>CB1022 - Cálculo Diferencial</MenuItem>
                     </Select>
                   </FormControl>
 
+                  <Typography>Grupo</Typography>
+                  <TextField fullWidth sx={{ mb: 2 }} name="grupo" value={academicDetails.grupo} onChange={handleAcademicChange} />
+
+                  <Typography>Plan de estudio</Typography>
+                  <TextField fullWidth sx={{ mb: 2 }} name="plan" value={academicDetails.plan} onChange={handleAcademicChange} />
+
+                  <Typography>Tipo de solicitud</Typography>
+                  <TextField fullWidth sx={{ mb: 2 }} name="tipoSolicitud" value={academicDetails.tipoSolicitud} onChange={handleAcademicChange} />
+
                   <Typography>Requisito a levantar</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} />
+                  <TextField fullWidth sx={{ mb: 2 }} name="requisito" value={academicDetails.requisito} onChange={handleAcademicChange} />
                 </fieldset>
               </form>
             )}
@@ -227,18 +288,25 @@ const FormularioLevantamiento = () => {
                     Comentario por el que solicita el Levantamiento de Requisitos.
                   </Typography>
 
-                  <FormControl component="fieldset">
-                    <FormGroup>
-                      <FormControlLabel control={<Checkbox />} label="Código de curso no coincide con el de mi plan de estudios" />
-                      <FormControlLabel control={<Checkbox />} label="Modificación de nota pendiente" />
-                      <FormControlLabel control={<Checkbox />} label="Adelantar curso en mi plan de estudios" />
-                    </FormGroup>
-                  </FormControl>
-
-                  <Typography sx={{ mt: 3 }}>Otro:</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} />
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={3}
+                    sx={{ mb: 2 }}
+                    name="motivo"
+                    value={academicDetails.motivo}
+                    onChange={handleMotivoChange}
+                  />
                   <Typography sx={{ mt: 3 }}>Cualquier otro detalle que desee ampliar:</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} />
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={2}
+                    sx={{ mb: 2 }}
+                    name="detalle"
+                    value={academicDetails.detalle}
+                    onChange={handleMotivoChange}
+                  />
                 </fieldset>
               </form>
             )}
@@ -254,7 +322,7 @@ const FormularioLevantamiento = () => {
               </Button>
               <Button
                 variant="contained"
-                onClick={handleNext}
+                onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
                 sx={{ backgroundColor: '#3b5998', textTransform: 'none', fontWeight: 'bold' }}
               >
                 {activeStep === steps.length - 1 ? 'Enviar solicitud' : 'Siguiente'}
