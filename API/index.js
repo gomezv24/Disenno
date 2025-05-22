@@ -5,6 +5,7 @@ import routerUsuarios from './src/endpoints/Usuarios.js';
 import routerEstudiantes from './src/endpoints/Estudiantes.js';
 import routerFormularios from './src/endpoints/Formulario.js';
 import routerEstadisticas from './src/endpoints/Estadisticas.js';
+import usuarioDetalladoRouter from './src/endpoints/usuarioDetallado.js';
 
 import procesosRouter from './src/endpoints/Procesos.js';
 
@@ -12,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Reemplaza con tu URL de frontend
+  origin: 'http://localhost:3000', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -22,6 +23,9 @@ app.use('/usuarios', routerUsuarios);
 app.use('/estudiantes', routerEstudiantes);
 app.use('/formularios', routerFormularios);
 app.use('/estadisticas', routerEstadisticas);
+app.use('/usuariodetallado', usuarioDetalladoRouter);
+
+
 
 app.use('/procesos', procesosRouter);
 

@@ -6,7 +6,7 @@
 // como Inclusiones, Levantamientos, Retiros, Seguimiento y Perfil de Usuario.
 // contiene un todos los campos necesarios para llenar la solicitud de levantamientos
 //------------------------------------------------------------------------------
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Box,
   Button,
@@ -38,11 +38,45 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 import imagenRegistro from '../../assets/logoTec.png';
 import PersonIcon from '@mui/icons-material/Person';
+import { UserContext } from '../../context/UserContext';
 
 const FormularioLevantamiento = () => {
   const [activeStep, setActiveStep] = useState(0);
   const steps = ['Datos personales', 'Detalles académicos', 'Motivo de solicitud', 'Confirmación'];
   const location = useLocation();
+
+  const { usuario } = useContext(UserContext);
+  const [formValues, setFormValues] = useState({
+    carnet: '',
+    nombre: '',
+    correo: '',
+    carrera: '',
+    sede: ''
+  });
+
+  useEffect(() => {
+    const fetchUsuarioDetallado = async () => {
+      if (!usuario?.idusuario) return;
+      try {
+        const res = await fetch(`http://localhost:5000/usuariodetallado/${usuario.idusuario}`);
+        const data = await res.json();
+        if (res.ok) {
+          setFormValues({
+            carnet: data.estudiante?.carnet || '',
+            nombre: data.nombre || '',
+            correo: data.correoinstitucional || '',
+            carrera: data.estudiante?.carrera || '',
+            sede: data.idsede || ''
+          });
+        } else {
+          console.error('Error al cargar datos detallados:', data.error);
+        }
+      } catch (error) {
+        console.error('Error de red al consultar datos detallados:', error);
+      }
+    };
+    fetchUsuarioDetallado();
+  }, [usuario]);
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/' },
@@ -56,70 +90,69 @@ const FormularioLevantamiento = () => {
   const handleNext = () => setActiveStep((prev) => prev + 1);
   const handleBack = () => setActiveStep((prev) => prev - 1);
 
- 
-   return (
-     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
- 
-       {/*--------------------------------*/}
-       {/*           MENÚ LATERAL         */}
-       {/*--------------------------------*/}
-       <nav
-         aria-label="Menú principal"
-         style={{
-           width: '250px',
-           backgroundColor: '#ffffff',
-           color: '#062043',
-           padding: '32px 0',
-           boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
-           borderRight: '1px solid #ddd',
-           height: '100vh'
-         }}
-       >
-         {/* Logo institucional */}
-         <Box sx={{ mb: 4, textAlign: 'center' }}>
-           <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
-         </Box>
- 
-         {/* Lista de navegación */}
-         <List>
-           {menuItems.map((item) => (
-             <ListItem
-               button
-               key={item.text}
-               component={Link}
-               to={item.path}
-               selected={location.pathname === item.path}
-               sx={{
-                 color: '#062043',
-                 minHeight: '3.5rem',
-                 '&.Mui-selected': { backgroundColor: '#f0f0f0', fontWeight: 'bold' },
-                 '&:hover': { backgroundColor: '#f9f9f9' }
-               }}
-             >
-               <ListItemIcon sx={{ color: '#062043' }}>{item.icon}</ListItemIcon>
-               <ListItemText primary={item.text} />
-             </ListItem>
-           ))}
-         </List>
+  return (
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+
+      {/*--------------------------------*/}
+      {/*           MENÚ LATERAL         */}
+      {/*--------------------------------*/}
+      <nav
+        aria-label="Menú principal"
+        style={{
+          width: '250px',
+          backgroundColor: '#ffffff',
+          color: '#062043',
+          padding: '32px 0',
+          boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
+          borderRight: '1px solid #ddd',
+          height: '100vh'
+        }}
+      >
+        {/* Logo institucional */}
+        <Box sx={{ mb: 4, textAlign: 'center' }}>
+          <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
+        </Box>
+
+        {/* Lista de navegación */}
+        <List>
+          {menuItems.map((item) => (
+            <ListItem
+              button
+              key={item.text}
+              component={Link}
+              to={item.path}
+              selected={location.pathname === item.path}
+              sx={{
+                color: '#062043',
+                minHeight: '3.5rem',
+                '&.Mui-selected': { backgroundColor: '#f0f0f0', fontWeight: 'bold' },
+                '&:hover': { backgroundColor: '#f9f9f9' }
+              }}
+            >
+              <ListItemIcon sx={{ color: '#062043' }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+        </List>
 
       </nav>
-          {/*--------------------------------*/}
-          {/*       CONTENIDO PRINCIPAL      */}
-          {/*--------------------------------*/}
-          <main style={{ flex: 1 }}>
-    
-            {/* ENCABEZADO */}
-            <header>
-              <Container sx={{ px: 5, pt: 6 }}></Container>
-            </header>
-    
-            {/* CUERPO DE LA PÁGINA */}
-            <Container sx={{ px: 5, py: 2 }}>
-    
-              {/* Título principal */}
-              <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mb: 3 }}>
-              Levantamiento de requisitos y condición RN
-              </Typography>
+      {/*--------------------------------*/}
+      {/*       CONTENIDO PRINCIPAL      */}
+      {/*--------------------------------*/}
+      <main style={{ flex: 1 }}>
+
+        {/* ENCABEZADO */}
+        <header>
+          <Container sx={{ px: 5, pt: 6 }}></Container>
+        </header>
+
+        {/* CUERPO DE LA PÁGINA */}
+        <Container sx={{ px: 5, py: 2 }}>
+
+          {/* Título principal */}
+          <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mb: 3 }}>
+            Levantamiento de requisitos y condición RN
+          </Typography>
 
           <Box sx={{ backgroundColor: '#EAF0FF', p: 4, borderRadius: 2 }}>
             <Typography variant="h6" align="center" sx={{ mb: 3, fontWeight: 'bold', backgroundColor: '#DDE8FF', py: 1, borderRadius: 1 }}>
@@ -140,40 +173,23 @@ const FormularioLevantamiento = () => {
                   <Typography component="legend" sx={{ fontWeight: 'bold', mb: 1 }}>Datos personales</Typography>
 
                   <Typography sx={{ mt: 2 }}>Carnet</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} />
+                  <TextField fullWidth sx={{ mb: 2 }} value={formValues.carnet} disabled />
 
                   <Typography>Nombre completo</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} />
+                  <TextField fullWidth sx={{ mb: 2 }} value={formValues.nombre} disabled />
 
                   <Typography>Correo electrónico</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} />
+                  <TextField fullWidth sx={{ mb: 2 }} value={formValues.correo} disabled />
 
                   <Typography>Carrera</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} />
+                  <TextField fullWidth sx={{ mb: 2 }} value={formValues.carrera} disabled />
 
                   <Typography>Sede</Typography>
                   <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select defaultValue="">
+                    <Select value={formValues.sede} disabled>
                       <MenuItem value={1}>Cartago</MenuItem>
                       <MenuItem value={2}>San José</MenuItem>
                       <MenuItem value={3}>San Carlos</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <Typography>Tipo de solicitud</Typography>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select defaultValue="">
-                      <MenuItem value={1}>Requisito</MenuItem>
-                      <MenuItem value={2}>Condición RN</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <Typography>Plan de estudio</Typography>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select defaultValue="">
-                      <MenuItem value={410}>410</MenuItem>
-                      <MenuItem value={411}>411</MenuItem>
-                      <MenuItem value={412}>412</MenuItem>
                     </Select>
                   </FormControl>
                 </fieldset>
@@ -226,7 +242,6 @@ const FormularioLevantamiento = () => {
                 </fieldset>
               </form>
             )}
-
 
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
               <Button

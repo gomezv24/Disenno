@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Container,
@@ -19,37 +19,30 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PersonIcon from '@mui/icons-material/Person';
 
 import imagenRegistro from '../../assets/logoTec.png';
+import { UserContext } from '../../context/UserContext';
 
 const InfoUsuario = () => {
   const location = useLocation();
-  const [datosUsuario, setDatosUsuario] = useState(null);
+  const { usuario } = useContext(UserContext);
 
-  useEffect(() => {
-  const idUsuario = localStorage.getItem('idusuario');
-  console.log("➡️ ID desde localStorage:", idUsuario);
-
-  if (!idUsuario) return;
-
-  const fetchUsuario = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/usuario/estudiante/${idUsuario}`);
-      const data = await response.json();
-      console.log('📦 Respuesta del backend:', data);
-
-      if (data.error) {
-        console.error('❌ Error recibido del backend:', data.error);
-        return;
-      }
-
-      setDatosUsuario(data);
-    } catch (error) {
-      console.error('❌ Error al cargar datos del usuario:', error);
-    }
+  // Diccionario de sedes
+  const sedes = {
+    1: 'Cartago',
+    2: 'San José',
+    3: 'Alajuela',
+    4: 'Limón',
+    5: 'San Carlos',
+    6: 'San Francisco de Dos Ríos',
+    7: 'Santa Clara',
   };
 
-  fetchUsuario();
-}, []);
-
+  // Diccionario de roles
+  const roles = {
+    1: 'Administrador',
+    2: 'Coordinadora',
+    3: 'Estudiante',
+    4: 'Funcionario Administrativo',
+  };
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/' },
@@ -57,7 +50,7 @@ const InfoUsuario = () => {
     { text: 'Levantamientos', icon: <TrendingUpIcon />, path: '/levantamientos' },
     { text: 'Retiros', icon: <ExitToAppIcon />, path: '/retiros' },
     { text: 'Seguimiento', icon: <AssignmentTurnedInIcon />, path: '/seguimiento' },
-    { text: 'Usuario', icon: <PersonIcon />, path: '/usuario' }
+    { text: 'Usuario', icon: <PersonIcon />, path: '/infoUsuario' }
   ];
 
   return (
@@ -106,64 +99,70 @@ const InfoUsuario = () => {
             Información del Usuario
           </Typography>
 
-          {datosUsuario ? (
+          {usuario ? (
             <Paper sx={{ p: 4, backgroundColor: '#f7faff' }}>
               <Box sx={{ mb: 3 }}>
                 <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
                   Nombre:
                 </Typography>
-                <Typography variant="body1">{datosUsuario.nombre}</Typography>
+                <Typography variant="body1">{usuario.nombre}</Typography>
               </Box>
 
               <Box sx={{ mb: 3 }}>
                 <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
                   Correo institucional:
                 </Typography>
-                <Typography variant="body1">{datosUsuario.correoinstitucional}</Typography>
+                <Typography variant="body1">{usuario.correoinstitucional}</Typography>
               </Box>
 
               <Box sx={{ mb: 3 }}>
                 <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
                   Teléfono:
                 </Typography>
-                <Typography variant="body1">{datosUsuario.telefono}</Typography>
+                <Typography variant="body1">{usuario.telefono}</Typography>
               </Box>
 
               <Box sx={{ mb: 3 }}>
                 <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
                   Sede:
                 </Typography>
-                <Typography variant="body1">{datosUsuario.idsede}</Typography>
+                <Typography variant="body1">{sedes[usuario.idsede] || 'Sede desconocida'}</Typography>
               </Box>
 
-              {/* Datos de estudiante si existen */}
-              {datosUsuario.estudiante && (
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                  Rol:
+                </Typography>
+                <Typography variant="body1">{roles[usuario.idtipousuario] || 'Rol desconocido'}</Typography>
+              </Box>
+
+              {usuario.estudiante && (
                 <>
                   <Box sx={{ mb: 3 }}>
                     <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
                       Carrera:
                     </Typography>
-                    <Typography variant="body1">{datosUsuario.estudiante.carrera || 'No registrada'}</Typography>
+                    <Typography variant="body1">{usuario.estudiante.carrera || 'No registrada'}</Typography>
                   </Box>
 
                   <Box sx={{ mb: 3 }}>
                     <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
                       Plan de estudio:
                     </Typography>
-                    <Typography variant="body1">{datosUsuario.estudiante.plan || 'No registrado'}</Typography>
+                    <Typography variant="body1">{usuario.estudiante.plan || 'No registrado'}</Typography>
                   </Box>
 
                   <Box sx={{ mb: 3 }}>
                     <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
                       Beca:
                     </Typography>
-                    <Typography variant="body1">{datosUsuario.estudiante.beca || 'Sin beca'}</Typography>
+                    <Typography variant="body1">{usuario.estudiante.beca || 'Sin beca'}</Typography>
                   </Box>
                 </>
               )}
             </Paper>
           ) : (
-            <Typography>Cargando datos del usuario...</Typography>
+            <Typography color="error">No se ha iniciado sesión o no hay datos disponibles.</Typography>
           )}
         </Container>
       </main>
