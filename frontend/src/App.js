@@ -18,6 +18,8 @@ import InfoUsuario from './modules/estudiantes/infoUsuario';
 import VistaAdministrativos from './modules/administrativos/AdministrativosVistaInclu';
 import AdministrativosHistLev from './modules/administrativos/AdministrativosHistLev';
 import AdministrativosVistaLev from './modules/administrativos/AdministrativosVistaLev';
+import AdministradorHistInclu from './modules/administrador/AdministradorHistInclu';
+import AdministradorHistLev from './modules/administrador/AdministradorHistLev';
 
 
 function App() {
@@ -42,6 +44,10 @@ function App() {
         <Route path="/administrativo/vista" element={<VistaAdministrativos/>} />
         <Route path="/administrativo/vista/levantamiento" element={<AdministrativosVistaLev/>} />
 
+
+        <Route path="/administrador" element={<AdministradorHistInclu/>} />
+        <Route path="/administrador/inclusiones" element={<AdministradorHistInclu/>} />
+        <Route path="/administrador/levantamientos" element={<AdministradorHistLev/>} />
 
       </Routes>
     </BrowserRouter>
