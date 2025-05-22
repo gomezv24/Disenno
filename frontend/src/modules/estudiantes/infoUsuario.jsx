@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Container,
@@ -19,9 +19,30 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PersonIcon from '@mui/icons-material/Person';
 
 import imagenRegistro from '../../assets/logoTec.png';
+import { UserContext } from '../../context/UserContext';
 
 const InfoUsuario = () => {
   const location = useLocation();
+  const { usuario } = useContext(UserContext);
+
+  // Diccionario de sedes
+  const sedes = {
+    1: 'Cartago',
+    2: 'San José',
+    3: 'Alajuela',
+    4: 'Limón',
+    5: 'San Carlos',
+    6: 'San Francisco de Dos Ríos',
+    7: 'Santa Clara',
+  };
+
+  // Diccionario de roles
+  const roles = {
+    1: 'Administrador',
+    2: 'Coordinadora',
+    3: 'Estudiante',
+    4: 'Funcionario Administrativo',
+  };
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/' },
@@ -29,22 +50,11 @@ const InfoUsuario = () => {
     { text: 'Levantamientos', icon: <TrendingUpIcon />, path: '/levantamientos' },
     { text: 'Retiros', icon: <ExitToAppIcon />, path: '/retiros' },
     { text: 'Seguimiento', icon: <AssignmentTurnedInIcon />, path: '/seguimiento' },
-    { text: 'Usuario', icon: <PersonIcon />, path: '/usuario' }
+    { text: 'Usuario', icon: <PersonIcon />, path: '/infoUsuario' }
   ];
-
-  const datosUsuario = {
-    nombre: 'Ana Pérez López',
-    correo: 'ana.perezlopez@estudiantec.cr',
-    telefono: '+506 8888-8888',
-    sede: 'Cartago',
-    carrera: 'Ingeniería en Computación',
-    planEstudio: 'Plan 411',
-    beca: 'Beca socioeconómica'
-  };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-
       {/* MENÚ LATERAL */}
       <nav
         aria-label="Menú principal"
@@ -89,16 +99,71 @@ const InfoUsuario = () => {
             Información del Usuario
           </Typography>
 
-          <Paper sx={{ p: 4, backgroundColor: '#f7faff' }}>
-            {Object.entries(datosUsuario).map(([label, value]) => (
-              <Box key={label} sx={{ mb: 3 }}>
+          {usuario ? (
+            <Paper sx={{ p: 4, backgroundColor: '#f7faff' }}>
+              <Box sx={{ mb: 3 }}>
                 <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                  {label.charAt(0).toUpperCase() + label.slice(1).replace(/([A-Z])/g, ' $1')}:
+                  Nombre:
                 </Typography>
-                <Typography variant="body1">{value}</Typography>
+                <Typography variant="body1">{usuario.nombre}</Typography>
               </Box>
-            ))}
-          </Paper>
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                  Correo institucional:
+                </Typography>
+                <Typography variant="body1">{usuario.correoinstitucional}</Typography>
+              </Box>
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                  Teléfono:
+                </Typography>
+                <Typography variant="body1">{usuario.telefono}</Typography>
+              </Box>
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                  Sede:
+                </Typography>
+                <Typography variant="body1">{sedes[usuario.idsede] || 'Sede desconocida'}</Typography>
+              </Box>
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                  Rol:
+                </Typography>
+                <Typography variant="body1">{roles[usuario.idtipousuario] || 'Rol desconocido'}</Typography>
+              </Box>
+
+              {usuario.estudiante && (
+                <>
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                      Carrera:
+                    </Typography>
+                    <Typography variant="body1">{usuario.estudiante.carrera || 'No registrada'}</Typography>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                      Plan de estudio:
+                    </Typography>
+                    <Typography variant="body1">{usuario.estudiante.plan || 'No registrado'}</Typography>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                      Beca:
+                    </Typography>
+                    <Typography variant="body1">{usuario.estudiante.beca || 'Sin beca'}</Typography>
+                  </Box>
+                </>
+              )}
+            </Paper>
+          ) : (
+            <Typography color="error">No se ha iniciado sesión o no hay datos disponibles.</Typography>
+          )}
         </Container>
       </main>
     </Box>
