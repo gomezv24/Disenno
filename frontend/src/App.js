@@ -8,7 +8,7 @@ import AdministrativosLevantamientos from './modules/administrativos/Administrat
 import SemestralLevantamientos from './modules/administrativos/SemestralLevantamientos';
 import ReglamentoLevantamiento from './modules/administrativos/ReglamentoLevantamiento';
 import PanelControl from './modules/administrativos/PanelCoordinadora';
-import LevantamientosRN from './modules/administrativos/LevantamientosRn';
+
 
 function App() {
   return (
@@ -21,7 +21,6 @@ function App() {
         <Route path="/administrativo/semestral" element={<SemestralLevantamientos />} />
         <Route path="/administrativo/reglamento" element={<ReglamentoLevantamiento />} />
         <Route path="/administrativo/panelControl" element={<PanelControl />} />
-        <Route path="/administrativo/levantamientosRN" element={<LevantamientosRN />} />
       </Routes>
     </BrowserRouter>
   );
