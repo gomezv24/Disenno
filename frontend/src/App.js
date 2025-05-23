@@ -20,7 +20,7 @@ import AdministrativosHistLev from './modules/administrativos/AdministrativosHis
 import AdministrativosVistaLev from './modules/administrativos/AdministrativosVistaLev';
 import AdministradorHistInclu from './modules/administrador/AdministradorHistInclu';
 import AdministradorHistLev from './modules/administrador/AdministradorHistLev';
-
+import AdministradorUsuarios from './modules/administrador/AdministradorUsuarios';
 
 function App() {
   return (
@@ -45,7 +45,7 @@ function App() {
         <Route path="/administrativo/vista/levantamiento" element={<AdministrativosVistaLev/>} />
 
 
-        <Route path="/administrador" element={<AdministradorHistInclu/>} />
+        <Route path="/administrador" element={<AdministradorUsuarios/>} />
         <Route path="/administrador/inclusiones" element={<AdministradorHistInclu/>} />
         <Route path="/administrador/levantamientos" element={<AdministradorHistLev/>} />
 
