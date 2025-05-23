@@ -50,9 +50,9 @@ const menuItems = [
 ];
 
 const summaryCards = [
-  { title: 'Total de levantamientos', subtitle: 'Todos los levantamientos registrados', count: 100, icon: <DescriptionIcon /> },
-  { title: 'Pendientes', subtitle: 'Levantamientos que requieren revisión', count: 40, icon: <AccessTimeIcon /> },
-  { title: 'Automáticos', subtitle: 'Levantamientos aprobados automáticamente', count: 80, icon: <SettingsIcon /> }
+  { title: 'Todas las inclusiones', subtitle: 'Todas las inclusiones realizadas', count: 100, icon: <DescriptionIcon /> },
+  { title: 'Pendientes', subtitle: 'Inclusiones que requieren revisión', count: 40, icon: <AccessTimeIcon /> },
+  { title: 'Revisados', subtitle: 'Inclusiones aprobadas o rechazadas', count: 80, icon: <SettingsIcon /> }
 ];
 
 const getEstadoChip = (estado) => {
@@ -68,18 +68,7 @@ const getEstadoChip = (estado) => {
   }
 };
 
-const getTipoChip = (tipo) => {
-  switch (tipo) {
-    case 'Automática':
-      return <Chip label="Automática" sx={{ backgroundColor: '#e3f2fd', color: '#1976d2', fontWeight: 'bold' }} />;
-    case 'Manual':
-      return <Chip label="Manual" sx={{ backgroundColor: '#f3e5f5', color: '#8e24aa', fontWeight: 'bold' }} />;
-    default:
-      return <Chip label={tipo} />;
-  }
-};
-
-const LevantamientosRN = () => {
+const ListaInclusiones = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -106,10 +95,10 @@ const LevantamientosRN = () => {
       {/* Main content */}
       <Box component="main" role="main" sx={{ flexGrow: 1, p: 5 }}>
         <Typography variant="h4" fontWeight="bold" color="#062043">
-          Levantamiento de requisitos y condición RN
+          Inclusiones
         </Typography>
         <Typography variant="body1" sx={{ mt: 1, mb: 4 }}>
-          A continuación, se listan los levantamientos de requisitos requisitos y condición RN, su estado y tipo
+          A continuación, se listan las inclusiones realizadas por los estudiantes y su estado.
         </Typography>
 
         {/* Summary Cards */}
@@ -133,7 +122,7 @@ const LevantamientosRN = () => {
         {/* Filters and search */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 2 }}>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {['Todos', 'Pendientes', 'Aprobados', 'Rechazados', 'Manuales', 'Automáticos'].map((label) => (
+            {['Todos', 'Pendientes', 'Aprobados', 'Rechazados'].map((label) => (
               <Button key={label} variant="contained" size="small">{label}</Button>
             ))}
           </Box>
@@ -155,16 +144,16 @@ const LevantamientosRN = () => {
 
         {/* Table */}
         <TableContainer component={Paper}>
-          <Table aria-label="Tabla de levantamientos">
+          <Table aria-label="Tabla de Inclusiones">
             <TableHead>
               <TableRow>
                 <TableCell>Sede</TableCell>
                 <TableCell>Carnet</TableCell>
                 <TableCell>Nombre del estudiante</TableCell>
-                <TableCell>Cursos a matricular</TableCell>
-                <TableCell>Requisito a Levantar</TableCell>
+                <TableCell>Grupo</TableCell>
+                <TableCell>Curso</TableCell>
+                <TableCell>Profesor</TableCell>
                 <TableCell>Estado</TableCell>
-                <TableCell>Tipo</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -174,10 +163,10 @@ const LevantamientosRN = () => {
                   <TableCell>San José</TableCell>
                   <TableCell>2022438535</TableCell>
                   <TableCell>Méndez Abarca María</TableCell>
+                  <TableCell>01</TableCell>
                   <TableCell>IC1803 - TALLER DE PROGRAMACIÓN</TableCell>
-                  <TableCell>IC1803 - TALLER DE PROGRAMACIÓN</TableCell>
-                  <TableCell>{getEstadoChip('Aprobado')}</TableCell>
-                  <TableCell>{getTipoChip('Automática')}</TableCell>
+                  <TableCell>Mario Chacon</TableCell>
+                  <TableCell>{getEstadoChip(i % 2 === 0 ? 'Aprobado' : 'Rechazada')}</TableCell>
                   <TableCell>
                     <IconButton aria-label="Aprobar"><CheckIcon /></IconButton>
                     <IconButton aria-label="Rechazar"><CloseIcon /></IconButton>
@@ -204,5 +193,4 @@ const LevantamientosRN = () => {
   );
 };
 
-export default LevantamientosRN;
-
+export default ListaInclusiones;
