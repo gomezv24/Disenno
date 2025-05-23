@@ -10,6 +10,7 @@ import ReglamentoLevantamiento from './modules/administrativos/ReglamentoLevanta
 import PanelControl from './modules/administrativos/PanelCoordinadora';
 import LevantamientosRn from './modules/administrativos/LevantamientosRn';
 import ListadoInclusiones from './modules/administrativos/ListaInclusiones';
+import RequisitosAuto from './modules/administrativos/RequisitosAutomaticos';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/administrativo/panelControl" element={<PanelControl />} />
         <Route path="/administrativo/levantamientorn" element={<LevantamientosRn/>} />
         <Route path="/administrativo/listadoInclusiones" element={<ListadoInclusiones/>} />
+        <Route path="/administrativo/requisitosAuto" element={<RequisitosAuto/>} />
       </Routes>
     </BrowserRouter>
   );
