@@ -26,11 +26,11 @@ const ReglamentosLevantamiento = () => {
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
-    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/inclusiones' },
-    { text: 'Levantamientos', icon: <TrendingUpIcon />, path: '/administrativo/levantamientos' },
-    { text: 'Levantamientos automáticos', icon: <AssignmentTurnedInIcon />, path: '/administrativo/seguimiento' },
+    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+    { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
     { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
   ];
+
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -160,15 +160,21 @@ const ReglamentosLevantamiento = () => {
                     Para conocer los requisitos automáticos puedes seleccionar el siguiente botón:
                   </Typography>
                   <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                    <Button variant="contained" size="small" onClick={() => navigate('/perfil')} sx={{
-                      mb: 3,
-                      backgroundColor: '#405F90',
-                      color: '#fff',
-                      '&:hover': {
-                        backgroundColor: '#324b73',
-                      },
-                    }}>
-                      Levantamientos automáticos
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => navigate('/administrativo/requisitosAuto')}
+                      aria-label="Ver lista de requisitos automáticos"
+                      sx={{
+                        mb: 3,
+                        backgroundColor: '#405F90',
+                        color: '#fff',
+                        '&:hover': {
+                          backgroundColor: '#324b73',
+                        },
+                      }}
+                    >
+                      Requisitos automáticos
                     </Button>
                   </Box>
                 </>

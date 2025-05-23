@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -9,27 +9,34 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
-  IconButton,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PersonIcon from '@mui/icons-material/Person';
 import imagenRegistro from '../../assets/logoTec.png';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const menuItems = [
   { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
-  { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/inclusiones' },
-  { text: 'Levantamientos', icon: <TrendingUpIcon />, path: '/administrativo/levantamientos' },
-  { text: 'Levantamientos automáticos', icon: <AssignmentTurnedInIcon />, path: '/administrativo/seguimiento' },
+  { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+  { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
+  { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
   { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
 ];
 
 const FormularioRequisitoAutomatico = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setOpenSnackbar(true);
+  };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -55,7 +62,7 @@ const FormularioRequisitoAutomatico = () => {
             Formulario de nuevo requisito automático
           </Typography>
 
-          <form aria-label="Formulario nuevo requisito automático">
+          <form aria-label="Formulario nuevo requisito automático" onSubmit={handleSubmit}>
             <Box sx={{ mb: 2 }}>
               <label htmlFor="curso" style={{ fontWeight: 'bold' }}>1. Curso a matricular</label>
               <TextField fullWidth id="curso" name="curso" variant="outlined" aria-label="Curso a matricular" />
@@ -77,11 +84,17 @@ const FormularioRequisitoAutomatico = () => {
             </Box>
 
             <Box textAlign="center">
-              <Button variant="contained" sx={{ backgroundColor: '#405F90', '&:hover': { backgroundColor: '#324b73' } }}>
+              <Button type="submit" variant="contained" sx={{ backgroundColor: '#405F90', '&:hover': { backgroundColor: '#324b73' } }} aria-label="Insertar nuevo requisito automático">
                 Insertar
               </Button>
             </Box>
           </form>
+
+          <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+            <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+              ¡Requisito guardado exitosamente! ¿Desea ingresar otro?
+            </Alert>
+          </Snackbar>
         </Paper>
       </Box>
     </Box>
@@ -89,4 +102,5 @@ const FormularioRequisitoAutomatico = () => {
 };
 
 export default FormularioRequisitoAutomatico;
+
 

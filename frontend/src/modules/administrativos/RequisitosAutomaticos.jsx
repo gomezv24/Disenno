@@ -19,24 +19,27 @@ import {
   Button
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import imagenRegistro from '../../assets/logoTec.png';
+
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PersonIcon from '@mui/icons-material/Person';
-import DeleteIcon from '@mui/icons-material/Delete';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import imagenRegistro from '../../assets/logoTec.png';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+
 const menuItems = [
-  { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
-  { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/inclusiones' },
-  { text: 'Levantamientos', icon: <TrendingUpIcon />, path: '/administrativo/levantamientos' },
-  { text: 'Levantamientos automáticos', icon: <AssignmentTurnedInIcon />, path: '/administrativo/seguimiento' },
-  { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
-];
+    { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
+    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+    { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
+    { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
+    { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
+  ];
 
 const requisitosData = [
   { curso: 'Investigación de Operaciones (IC6400)', requisito: 'Estadística (MA3405)', regla: 'Haber aprobado Probabilidades (MA2404)' },
@@ -76,7 +79,19 @@ const ListaRequisitosAutomaticos = () => {
           <Typography variant="h4" fontWeight="bold" color="#062043">
             Requisitos automáticos
           </Typography>
-          <Button variant="contained" sx={{ backgroundColor: '#405F90', '&:hover': { backgroundColor: '#324b73' } }}>+ Nuevo Requisito automático</Button>
+          <Button
+            variant="contained"
+            onClick={() => navigate('/administrativo/formularioAuto')}
+            aria-label="Ir al formulario para agregar un nuevo requisito automático"
+            sx={{
+              backgroundColor: '#405F90',
+              '&:hover': {
+                backgroundColor: '#324b73'
+              }
+            }}
+          >
+            + Nuevo Requisito automático
+          </Button>
         </Box>
 
         <Typography variant="body1" sx={{ mb: 4 }}>

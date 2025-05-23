@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -23,12 +23,13 @@ import {
   TableRow,
   Pagination,
   Chip,
-  Menu
+  Menu,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -39,13 +40,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import imagenRegistro from '../../assets/logoTec.png';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const menuItems = [
   { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
-  { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/inclusiones' },
-  { text: 'Levantamientos', icon: <TrendingUpIcon />, path: '/administrativo/levantamientos' },
-  { text: 'Levantamientos automáticos', icon: <AssignmentTurnedInIcon />, path: '/administrativo/seguimiento' },
+  { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+  { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
   { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
 ];
 
@@ -82,13 +83,37 @@ const getTipoChip = (tipo) => {
 const LevantamientosRN = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [levantamientos, setLevantamientos] = useState(
+    [...Array(8)].map((_, i) => ({
+      id: i,
+      sede: 'San José',
+      carnet: '2022438535',
+      nombre: 'Méndez Abarca María',
+      curso: 'IC1803 - TALLER DE PROGRAMACIÓN',
+      requisito: 'IC1803 - TALLER DE PROGRAMACIÓN',
+      estado: 'Pendiente',
+      tipo: 'Automática'
+    }))
+  );
+
   const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
 
+  const handleAccion = (tipo, index) => {
+    const updated = [...levantamientos];
+    updated[index].estado = tipo === 'aprobar' ? 'Aprobado' : 'Rechazada';
+    setLevantamientos(updated);
+    setSnackbar({
+      open: true,
+      message: tipo === 'aprobar' ? 'Solicitud aprobada correctamente.' : 'Solicitud rechazada correctamente.',
+      severity: tipo === 'aprobar' ? 'success' : 'error'
+    });
+  };
+
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      {/* Sidebar */}
       <Box component="nav" role="navigation" aria-label="Menú principal" sx={{ width: '260px', backgroundColor: '#fff', borderRight: '1px solid #ddd', p: 3, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 2 }}>
         <Box sx={{ mb: 4, textAlign: 'center' }}>
           <img src={imagenRegistro} alt="Logo del TEC" style={{ height: 60 }} />
@@ -103,7 +128,6 @@ const LevantamientosRN = () => {
         </List>
       </Box>
 
-      {/* Main content */}
       <Box component="main" role="main" sx={{ flexGrow: 1, p: 5 }}>
         <Typography variant="h4" fontWeight="bold" color="#062043">
           Levantamiento de requisitos y condición RN
@@ -112,7 +136,6 @@ const LevantamientosRN = () => {
           A continuación, se listan los levantamientos de requisitos requisitos y condición RN, su estado y tipo
         </Typography>
 
-        {/* Summary Cards */}
         <Grid container spacing={3} mb={4}>
           {summaryCards.map((card) => (
             <Grid item xs={12} sm={4} key={card.title}>
@@ -130,7 +153,6 @@ const LevantamientosRN = () => {
           ))}
         </Grid>
 
-        {/* Filters and search */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 2 }}>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             {['Todos', 'Pendientes', 'Aprobados', 'Rechazados', 'Manuales', 'Automáticos'].map((label) => (
@@ -153,7 +175,6 @@ const LevantamientosRN = () => {
           </Box>
         </Box>
 
-        {/* Table */}
         <TableContainer component={Paper}>
           <Table aria-label="Tabla de levantamientos">
             <TableHead>
@@ -169,18 +190,18 @@ const LevantamientosRN = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {[...Array(8)].map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell>San José</TableCell>
-                  <TableCell>2022438535</TableCell>
-                  <TableCell>Méndez Abarca María</TableCell>
-                  <TableCell>IC1803 - TALLER DE PROGRAMACIÓN</TableCell>
-                  <TableCell>IC1803 - TALLER DE PROGRAMACIÓN</TableCell>
-                  <TableCell>{getEstadoChip('Aprobado')}</TableCell>
-                  <TableCell>{getTipoChip('Automática')}</TableCell>
+              {levantamientos.map((item, i) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.sede}</TableCell>
+                  <TableCell>{item.carnet}</TableCell>
+                  <TableCell>{item.nombre}</TableCell>
+                  <TableCell>{item.curso}</TableCell>
+                  <TableCell>{item.requisito}</TableCell>
+                  <TableCell>{getEstadoChip(item.estado)}</TableCell>
+                  <TableCell>{getTipoChip(item.tipo)}</TableCell>
                   <TableCell>
-                    <IconButton aria-label="Aprobar"><CheckIcon /></IconButton>
-                    <IconButton aria-label="Rechazar"><CloseIcon /></IconButton>
+                    <IconButton aria-label="Aprobar" onClick={() => handleAccion('aprobar', i)}><CheckIcon /></IconButton>
+                    <IconButton aria-label="Rechazar" onClick={() => handleAccion('rechazar', i)}><CloseIcon /></IconButton>
                     <IconButton aria-label="Ver detalles"><VisibilityIcon /></IconButton>
                     <IconButton aria-label="Más acciones" onClick={handleMenuClick}><MoreVertIcon /></IconButton>
                     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
@@ -195,10 +216,15 @@ const LevantamientosRN = () => {
           </Table>
         </TableContainer>
 
-        {/* Pagination */}
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Pagination count={3} page={1} color="primary" />
         </Box>
+
+        <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+          <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Box>
     </Box>
   );

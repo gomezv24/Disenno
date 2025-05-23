@@ -15,14 +15,12 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import imagenRegistro from '../../assets/logoTec.png';
-import imagenUsuario from '../../assets/imagenUsuario.png';
 import iconPersona from '../../assets/dosUsers.png';
 import iconSuma from '../../assets/Sumatoria.png';
 
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
@@ -34,10 +32,9 @@ const PanelCoordinadora = () => {
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
-    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/inclusiones' },
-    { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientos' },
+    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+    { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
     { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
-    { text: 'Levantamientos automaticos', icon: <AssignmentTurnedInIcon />, path: '/administrativo/seguimiento' },
     { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
   ];
 
