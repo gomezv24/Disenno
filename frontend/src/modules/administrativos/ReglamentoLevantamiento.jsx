@@ -16,18 +16,18 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PersonIcon from '@mui/icons-material/Person';
 import imagenRegistro from '../../assets/logoTec.png';
-
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 const ReglamentosLevantamiento = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const menuItems = [
+const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
     { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
     { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
+    { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
     { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
   ];
 

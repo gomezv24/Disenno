@@ -28,7 +28,6 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -39,14 +38,16 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import imagenRegistro from '../../assets/logoTec.png';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import SchoolIcon from '@mui/icons-material/School';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const menuItems = [
-  { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
-  { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
-  { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
-  { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
-];
+    { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
+    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+    { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
+    { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
+    { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
+  ];
 
 const summaryCards = [
   { title: 'Todas las inclusiones', subtitle: 'Todas las inclusiones realizadas', count: 100, icon: <DescriptionIcon /> },
