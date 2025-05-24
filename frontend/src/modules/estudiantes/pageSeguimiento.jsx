@@ -1,37 +1,46 @@
-//------------------------------------------------------------------------------
-// SEGUIMIENTO
-//
-// Página principal del formulario de inclusiones
-// Contiene una barra lateral accesible con navegación a funcionalidades clave
-// como Inclusiones, Levantamientos, Retiros, Seguimiento y Perfil de Usuario.
-// contiene todo lo relacionado con el seguimiento de una solicitud de estudiantes
-//------------------------------------------------------------------------------
-
-
-import React from 'react';
-import { Container, Typography, Box, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  Container, Typography, Box, TextField, Button,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, IconButton, List, ListItem, ListItemIcon, ListItemText
+} from '@mui/material';
 import { Delete, Visibility, Home, School, TrendingUp, ExitToApp, AssignmentTurnedIn } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+
 import imagenRegistro from '../../assets/logoTec.png';
 import imagenUsuario from '../../assets/imagenUsuario.png';
+import { UserContext } from '../../context/UserContext';
 
 const PageSeguimiento = () => {
   const location = useLocation();
+  const { usuario } = useContext(UserContext);
+  const [solicitudes, setSolicitudes] = useState([]);
+  const [detalleOpen, setDetalleOpen] = useState(false);
+  const [detalleSolicitud, setDetalleSolicitud] = useState(null);
 
-  const solicitudes = [
-    { tipo: 'Inclusión', semestre: 'IS-2025', curso: 'IC1803 TALLER DE PROGRAMACION (grupos 1, 2)', estado: 'Pendiente' },
-    { tipo: 'Inclusión', semestre: 'IS-2025', curso: 'IC1803 TALLER DE PROGRAMACION (grupos 1, 2)', estado: 'Aprobada' },
-    { tipo: 'Inclusión', semestre: 'IS-2025', curso: 'IC1803 TALLER DE PROGRAMACION (grupos 1, 2)', estado: 'Rechazada' },
-    { tipo: 'Inclusión', semestre: 'IS-2025', curso: 'IC1803 TALLER DE PROGRAMACION (grupos 1, 2)', estado: 'Aprobada' },
-    { tipo: 'Inclusión', semestre: 'IS-2025', curso: 'IC1803 TALLER DE PROGRAMACION (grupos 1, 2)', estado: 'Pendiente' },
-    { tipo: 'Inclusión', semestre: 'IS-2025', curso: 'IC1803 TALLER DE PROGRAMACION (grupos 1, 2)', estado: 'Aprobada' },
-    { tipo: 'Inclusión', semestre: 'IS-2025', curso: 'IC1803 TALLER DE PROGRAMACION (grupos 1, 2)', estado: 'Pendiente' }
-  ];
+  useEffect(() => {
+    const obtenerSeguimiento = async () => {
+      if (!usuario?.idusuario) return;
+      try {
+        const res = await fetch(`http://localhost:5000/seguimientoUsuario/${usuario.idusuario}`);
+        const data = await res.json();
+        setSolicitudes(data);
+      } catch (error) {
+        console.error('Error al cargar seguimiento:', error);
+      }
+    };
+    obtenerSeguimiento();
+  }, [usuario]);
 
   const colorEstado = (estado) => {
     if (estado === 'Pendiente') return { backgroundColor: '#FFE0B2', color: '#FB8C00', fontWeight: 'bold', borderRadius: '8px', px: 1, py: 0.5 };
-    if (estado === 'Aprobada') return { backgroundColor: '#C8E6C9', color: '#388E3C', fontWeight: 'bold', borderRadius: '8px', px: 1, py: 0.5 };
-    if (estado === 'Rechazada') return { backgroundColor: '#FFCDD2', color: '#D32F2F', fontWeight: 'bold', borderRadius: '8px', px: 1, py: 0.5 };
+    if (estado === 'Aprobado') return { backgroundColor: '#C8E6C9', color: '#388E3C', fontWeight: 'bold', borderRadius: '8px', px: 1, py: 0.5 };
+    if (estado === 'Rechazado') return { backgroundColor: '#FFCDD2', color: '#D32F2F', fontWeight: 'bold', borderRadius: '8px', px: 1, py: 0.5 };
+    return { backgroundColor: '#e0e0e0', color: '#424242', fontWeight: 'bold', borderRadius: '8px', px: 1, py: 0.5 };
   };
 
   const menuItems = [
@@ -42,13 +51,40 @@ const PageSeguimiento = () => {
     { text: 'Seguimiento', icon: <AssignmentTurnedIn />, path: '/seguimiento' }
   ];
 
+  const handleVerDetalle = (solicitud) => {
+    setDetalleSolicitud(solicitud);
+    setDetalleOpen(true);
+  };
+  const handleCerrarDetalle = () => {
+    setDetalleOpen(false);
+    setDetalleSolicitud(null);
+  };
+
+  // Eliminar solicitud
+  const handleEliminar = async (solicitud) => {
+    if (!window.confirm('¿Seguro que deseas eliminar esta solicitud?')) return;
+    try {
+      const res = await fetch(`http://localhost:5000/seguimientoUsuario/${solicitud.idformulario}`, { method: 'DELETE' });
+      if (res.ok) {
+        // Refresca la lista desde el backend para asegurar que está actualizada
+        const res2 = await fetch(`http://localhost:5000/seguimientoUsuario/${usuario.idusuario}`);
+        const data2 = await res2.json();
+        setSolicitudes(data2);
+        alert('Solicitud eliminada correctamente');
+      } else {
+        alert('Error al eliminar la solicitud');
+      }
+    } catch (error) {
+      alert('Error al eliminar la solicitud');
+    }
+  };
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-
       {/* BARRA LATERAL */}
-      <nav aria-label="Menú principal" style={{ width: '250px', backgroundColor: '#ffffff', color: '#062043', padding: '32px 0', boxShadow: '2px 0 5px rgba(0,0,0,0.1)', borderRight: '1px solid #ddd', height: '100vh' }}>
+      <nav style={{ width: '250px', backgroundColor: '#ffffff', color: '#062043', padding: '32px 0', borderRight: '1px solid #ddd', height: '100vh' }}>
         <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
+          <img src={imagenRegistro} alt="Logo del TEC" style={{ height: '60px' }} />
         </Box>
         <List>
           {menuItems.map((item) => (
@@ -70,8 +106,6 @@ const PageSeguimiento = () => {
       {/* CONTENIDO PRINCIPAL */}
       <main style={{ flex: 1 }}>
         <Container disableGutters sx={{ maxWidth: '1400px', mx: 'auto', px: 2, py: 6 }}>
-
-          {/* ENCABEZADO */}
           <Box sx={{ mb: 5 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#062043' }}>
@@ -81,20 +115,14 @@ const PageSeguimiento = () => {
             </Box>
           </Box>
 
-          {/* BUSCADOR */}
           <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: 5 }}>
             <TextField
               variant="outlined"
               placeholder="Buscar formularios..."
               size="medium"
-              aria-label="Buscar formularios"
               sx={{ flexGrow: 1, minWidth: '700px', maxWidth: '1000px', height: '56px' }}
             />
-            <Button
-              variant="contained"
-              sx={{ width: '200px', height: '56px', backgroundColor: '#3b5998', textTransform: 'none', fontWeight: 'bold' }}
-              aria-label="Buscar"
-            >
+            <Button variant="contained" sx={{ width: '200px', height: '56px', backgroundColor: '#3b5998', textTransform: 'none', fontWeight: 'bold' }}>
               Buscar
             </Button>
           </Box>
@@ -123,10 +151,10 @@ const PageSeguimiento = () => {
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <IconButton aria-label="Eliminar solicitud" color="error">
+                      <IconButton aria-label="Eliminar solicitud" color="error" onClick={() => handleEliminar(sol)}>
                         <Delete />
                       </IconButton>
-                      <IconButton aria-label="Ver detalles de la solicitud" color="primary">
+                      <IconButton aria-label="Ver detalles de la solicitud" color="primary" onClick={() => handleVerDetalle(sol)}>
                         <Visibility />
                       </IconButton>
                     </TableCell>
@@ -135,6 +163,28 @@ const PageSeguimiento = () => {
               </TableBody>
             </Table>
           </TableContainer>
+
+          {/* Dialogo de detalles */}
+          <Dialog open={detalleOpen} onClose={handleCerrarDetalle} maxWidth="sm" fullWidth>
+            <DialogTitle>Detalle de la Solicitud</DialogTitle>
+            <DialogContent>
+              {detalleSolicitud && (
+                <Box>
+                  <Typography variant="subtitle1"><b>Tipo:</b> {detalleSolicitud.tipo}</Typography>
+                  <Typography variant="subtitle1"><b>Semestre:</b> {detalleSolicitud.semestre}</Typography>
+                  <Typography variant="subtitle1"><b>Curso:</b> {detalleSolicitud.curso}</Typography>
+                  <Typography variant="subtitle1"><b>Estado:</b> {detalleSolicitud.estado}</Typography>
+                  {detalleSolicitud.fecha && (
+                    <Typography variant="subtitle1"><b>Fecha:</b> {new Date(detalleSolicitud.fecha).toLocaleDateString()}</Typography>
+                  )}
+                  {/* Puedes agregar más campos aquí si el backend los retorna */}
+                </Box>
+              )}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCerrarDetalle} color="primary">Cerrar</Button>
+            </DialogActions>
+          </Dialog>
         </Container>
       </main>
     </Box>
@@ -142,9 +192,3 @@ const PageSeguimiento = () => {
 };
 
 export default PageSeguimiento;
-
-
-
-
-
-

@@ -22,6 +22,7 @@ import AdministradorHistInclu from './modules/administrador/AdministradorHistInc
 import AdministradorHistLev from './modules/administrador/AdministradorHistLev';
 import AdministradorUsuarios from './modules/administrador/AdministradorUsuarios';
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -43,7 +44,6 @@ function App() {
         <Route path="/seguimiento" element={<PageSeguimiento/>} />
         <Route path="/administrativo/vista" element={<VistaAdministrativos/>} />
         <Route path="/administrativo/vista/levantamiento" element={<AdministrativosVistaLev/>} />
-
 
         <Route path="/administrador" element={<AdministradorUsuarios/>} />
         <Route path="/administrador/inclusiones" element={<AdministradorHistInclu/>} />

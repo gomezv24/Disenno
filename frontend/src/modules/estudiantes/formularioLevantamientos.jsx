@@ -1,10 +1,10 @@
 //------------------------------------------------------------------------------
-// FORMULARIO INCLUSIÓN
+// FORMULARIO LEVANTAMIENTO
 //
 // Página principal del formulario de levantamientos
 // Contiene una barra lateral accesible con navegación a funcionalidades clave
 // como Inclusiones, Levantamientos, Retiros, Seguimiento y Perfil de Usuario.
-// contiene un todos los campos necesarios para llenar la solicitud de levantamientos
+// Contiene todos los campos necesarios para llenar la solicitud de levantamientos
 //------------------------------------------------------------------------------
 import React, { useState, useEffect, useContext } from 'react';
 import {
@@ -17,15 +17,12 @@ import {
   Step,
   StepLabel,
   FormControl,
-  FormControlLabel,
   MenuItem,
   Select,
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
-  FormGroup,
-  Checkbox
+  ListItemText
 } from '@mui/material';
 
 import { Link, useLocation } from 'react-router-dom';
@@ -63,6 +60,7 @@ const FormularioLevantamiento = () => {
     motivo: '',
     detalle: ''
   });
+  const [cursosDisponibles, setCursosDisponibles] = useState([]);
 
   useEffect(() => {
     const fetchUsuarioDetallado = async () => {
@@ -85,8 +83,25 @@ const FormularioLevantamiento = () => {
         console.error('Error de red al consultar datos detallados:', error);
       }
     };
+
+    const fetchCursos = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/cursos');
+        const data = await res.json();
+        if (res.ok) {
+          setCursosDisponibles(data);
+        } else {
+          console.error('Error al cargar cursos:', data.error);
+        }
+      } catch (error) {
+        console.error('Error de red al consultar cursos:', error);
+      }
+    };
+
     fetchUsuarioDetallado();
+    fetchCursos();
   }, [usuario]);
+
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/' },
@@ -256,9 +271,11 @@ const FormularioLevantamiento = () => {
                   <Typography>Seleccione el curso que necesita matricular</Typography>
                   <FormControl fullWidth sx={{ mb: 2 }}>
                     <Select name="curso" value={academicDetails.curso} onChange={handleAcademicChange}>
-                      <MenuItem value={"CI1311"}>CI1311 - Introducción a la Programación</MenuItem>
-                      <MenuItem value={"CI1330"}>CI1330 - Estructuras de Datos</MenuItem>
-                      <MenuItem value={"CB1022"}>CB1022 - Cálculo Diferencial</MenuItem>
+                      {cursosDisponibles.map((curso) => (
+                        <MenuItem key={curso.codigo} value={curso.codigo}>
+                          {`${curso.codigo} - ${curso.nombre}`}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
 
@@ -272,7 +289,15 @@ const FormularioLevantamiento = () => {
                   <TextField fullWidth sx={{ mb: 2 }} name="tipoSolicitud" value={academicDetails.tipoSolicitud} onChange={handleAcademicChange} />
 
                   <Typography>Requisito a levantar</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} name="requisito" value={academicDetails.requisito} onChange={handleAcademicChange} />
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <Select name="requisito" value={academicDetails.requisito} onChange={handleAcademicChange}>
+                      {cursosDisponibles.map((curso) => (
+                        <MenuItem key={curso.codigo} value={curso.codigo}>
+                          {`${curso.codigo} - ${curso.nombre}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </fieldset>
               </form>
             )}
