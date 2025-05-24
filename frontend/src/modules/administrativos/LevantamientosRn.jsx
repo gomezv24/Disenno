@@ -45,6 +45,12 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Tabs, Tab } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+
+
 const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
     { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
@@ -142,6 +148,18 @@ const LevantamientosRN = () => {
     return true;
   });
 
+  const [detalleAbierto, setDetalleAbierto] = useState(false);
+  const [seleccionado, setSeleccionado] = useState(null);
+
+  const manejarVerDetalles = (item) => {
+    setSeleccionado(item);
+    setDetalleAbierto(true);
+  };
+
+  const manejarCerrarDetalles = () => {
+    setDetalleAbierto(false);
+    setSeleccionado(null);
+  };
 
 
   return (
@@ -243,35 +261,33 @@ const LevantamientosRN = () => {
                 />
               ))}
             </Tabs>
-            <Box sx={{ height: 8 }} />
+            <Box sx={{ height: 16 }} />
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Paper component="form" sx={{ display: 'flex', alignItems: 'center', width: 200 }}>
-              <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Buscar..." inputProps={{ 'aria-label': 'Buscar' }} />
-              <IconButton type="submit" sx={{ p: 1 }} aria-label="Buscar">
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 2, mb: 3 }}>
+              <Paper component="form" sx={{ display: 'flex', alignItems: 'center', width: 250, height: 40, pl: 1 }}>
                 <SearchIcon />
-              </IconButton>
-            </Paper>
+                <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Buscar..." inputProps={{ 'aria-label': 'Buscar'}} />
+              </Paper>
 
-            <Select size="small" defaultValue="recientes">
-              <MenuItem value="recientes">Más recientes</MenuItem>
-              <MenuItem value="antiguos">Más antiguos</MenuItem>
-            </Select>
+              <Select size="small" defaultValue="recientes" sx={{ height: 40 }}>
+                <MenuItem value="recientes">Más recientes</MenuItem>
+                <MenuItem value="antiguos">Más antiguos</MenuItem>
+              </Select>
           </Box>
         
         <TableContainer component={Paper}>
           <Table aria-label="Tabla de levantamientos">
             <TableHead>
-              <TableRow>
-                <TableCell>Sede</TableCell>
-                <TableCell>Carnet</TableCell>
-                <TableCell>Nombre del estudiante</TableCell>
-                <TableCell>Cursos a matricular</TableCell>
-                <TableCell>Requisito a Levantar</TableCell>
-                <TableCell>Estado</TableCell>
-                <TableCell>Tipo</TableCell>
-                <TableCell>Acciones</TableCell>
-              </TableRow>
+               <TableRow>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Sede</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Carnet</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Nombre del estudiante</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Cursos a matricular</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Requisito a Levantar</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Tipo</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
+                </TableRow>
             </TableHead>
             <TableBody>
               {filtrados.map((item, i) => (
@@ -286,7 +302,7 @@ const LevantamientosRN = () => {
                   <TableCell>
                     <IconButton aria-label="Aprobar" onClick={() => handleAccion('aprobar', i)}><CheckIcon /></IconButton>
                     <IconButton aria-label="Rechazar" onClick={() => handleAccion('rechazar', i)}><CloseIcon /></IconButton>
-                    <IconButton aria-label="Ver detalles"><VisibilityIcon /></IconButton>
+                    <IconButton aria-label="Ver detalles"  onClick={() => manejarVerDetalles(item)}><VisibilityIcon /></IconButton>
                     <IconButton aria-label="Más acciones" onClick={handleMenuClick}><MoreVertIcon /></IconButton>
                     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                       <MenuItem onClick={handleMenuClose}>Descargar PDF</MenuItem>
@@ -309,6 +325,27 @@ const LevantamientosRN = () => {
             {snackbar.message}
           </Alert>
         </Snackbar>
+
+       <Dialog open={detalleAbierto} onClose={manejarCerrarDetalles} aria-labelledby="detalle-dialog-title">
+        <DialogTitle id="detalle-dialog-title">Detalle del levantamiento</DialogTitle>
+        <DialogContent dividers>
+          {seleccionado && (
+            <Box>
+              <Typography><strong>Sede:</strong> {seleccionado.sede}</Typography>
+              <Typography><strong>Carnet:</strong> {seleccionado.carnet}</Typography>
+              <Typography><strong>Nombre:</strong> {seleccionado.nombre}</Typography>
+              <Typography><strong>Curso:</strong> {seleccionado.curso}</Typography>
+              <Typography><strong>Requisito:</strong> {seleccionado.requisito}</Typography>
+              <Typography><strong>Estado:</strong> {seleccionado.estado}</Typography>
+              <Typography><strong>Tipo:</strong> {seleccionado.tipo}</Typography>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={manejarCerrarDetalles}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+
       </Box>
     </Box>
   );
