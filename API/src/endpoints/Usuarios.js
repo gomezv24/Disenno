@@ -134,5 +134,14 @@ router.post('/login', async (req, res) => {
 });
 
 
+router.get('/tipo/:id', async (req, res) => {
+
+  const { id } = req.params;
+  const { data, error } = await supabase.from('tipousuario').select('nombre').eq('idtipousuario', id).single();
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  return res.json(data);
+});
 
 export default router;
