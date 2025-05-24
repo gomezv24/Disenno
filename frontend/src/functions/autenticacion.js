@@ -11,9 +11,9 @@ export async function Autenticar(valores) {
 
     // Devolvemos un objeto con toda la información importante
     return {
-      status: temp.status, // Incluimos el status HTTP
-      ok: temp.ok, // Incluimos la propiedad "ok" (true para status 200-299)
-      data: data // Incluimos los datos parseados
+      status: temp.status, 
+      ok: temp.ok, 
+      data: data 
     };
     
   } catch (error) {
