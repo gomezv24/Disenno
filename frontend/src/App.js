@@ -20,6 +20,7 @@ import AdministrativosHistLev from './modules/administrativos/AdministrativosHis
 import AdministrativosVistaLev from './modules/administrativos/AdministrativosVistaLev';
 
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -41,6 +42,7 @@ function App() {
         <Route path="/seguimiento" element={<PageSeguimiento/>} />
         <Route path="/administrativo/vista" element={<VistaAdministrativos/>} />
         <Route path="/administrativo/vista/levantamiento" element={<AdministrativosVistaLev/>} />
+
 
 
       </Routes>
