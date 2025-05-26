@@ -64,6 +64,37 @@ router.get('/requerimientosLevAuto', async (req, res) => {
   return res.json(data);
 });
 
+router.post('/insertarLenvAuto', async (req, res) => {
+  const {
+    idcurso_objetivo,
+    idcurso_requerido,
+    tipo_levantamiento,
+    regla,
+    idcurso_regla
+  } = req.body;
+
+  const { data, error } = await supabase
+    .from('levantamiento_requisito')
+    .insert([{
+      idcurso_objetivo,
+      idcurso_requerido,
+      tipo_levantamiento,
+      regla,
+      idcurso_regla,
+      es_automatico: true,
+      es_corequisito: false,
+      levantar_si_generaria_atraso: false,
+      solo_uno_de_los_requisitos: false
+    }]);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  return res.status(201).json({
+  mensaje: '¡Requisito insertado exitosamente!',
+  data});
+});
 
 
 export default router;

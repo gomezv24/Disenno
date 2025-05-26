@@ -46,16 +46,46 @@ import { obtenerRequisitosAutomaticos } from './Funciones/coordinadoraFun';
 const ListaRequisitosAutomaticos = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [requisitos, setRequisitos] = useState([]);
+  const [busqueda, setBusqueda] = useState('');
+  const [filtrados, setFiltrados] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await obtenerRequisitosAutomaticos();
       setRequisitos(data);
+      setFiltrados(data); // inicializa con todos los datos
     };
 
     fetchData();
   }, []);
+
+    const handleBuscar = (e) => {
+    const texto = e.target.value.toLowerCase();
+    setBusqueda(texto);
+
+    const resultados = requisitos.filter((row) => {
+      const objetivoNombre = row.curso_objetivo?.nombre?.toLowerCase() || '';
+      const objetivoCodigo = row.curso_objetivo?.codigo?.toLowerCase() || '';
+
+      const requeridoNombre = row.curso_requerido?.nombre?.toLowerCase() || '';
+      const requeridoCodigo = row.curso_requerido?.codigo?.toLowerCase() || '';
+
+      const regla = row.regla?.toLowerCase() || '';
+
+      return (
+        objetivoNombre.includes(texto) ||
+        objetivoCodigo.includes(texto) ||
+        requeridoNombre.includes(texto) ||
+        requeridoCodigo.includes(texto) ||
+        regla.includes(texto)
+      );
+    });
+
+    setFiltrados(resultados);
+};
+
 
 
   return (
@@ -102,7 +132,13 @@ const ListaRequisitosAutomaticos = () => {
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
           <Paper component="form" sx={{ display: 'flex', alignItems: 'center', width: 300 }}>
-            <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Buscar..." inputProps={{ 'aria-label': 'Buscar' }} />
+            <InputBase 
+              sx={{ ml: 1, flex: 1 }} 
+              placeholder="Buscar..." 
+              value={busqueda}
+              onChange={handleBuscar}
+              inputProps={{ 'aria-label': 'Buscar' }} 
+            />
             <IconButton type="submit" sx={{ p: 1 }} aria-label="Buscar">
               <SearchIcon />
             </IconButton>
@@ -120,7 +156,7 @@ const ListaRequisitosAutomaticos = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {requisitos.map((row, index) => (
+              {filtrados.map((row, index)=> (
                 <TableRow key={index}>
                   <TableCell>
                     {row.curso_objetivo 

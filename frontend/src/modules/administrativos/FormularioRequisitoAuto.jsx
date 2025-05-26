@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import {
   Box,
   Typography,
@@ -19,7 +20,12 @@ import PersonIcon from '@mui/icons-material/Person';
 import imagenRegistro from '../../assets/logoTec.png';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
+
+import { insertarRequisitoAutomatico } from './Funciones/coordinadoraFun';
+
+import { obtenerCursos } from './Funciones/coordinadoraFun';
 
  const menuItems = [
   { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo' },
@@ -34,11 +40,56 @@ const FormularioRequisitoAutomatico = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setOpenSnackbar(true);
+  const [planEstudio, setPlanEstudio] = useState('');
+  const handlePlanChange = (event) => {
+    setPlanEstudio(event.target.value);
   };
+
+  const [cursos, setCursos] = useState([]);
+  const [cursoSeleccionado, setCursoSeleccionado] = useState('');
+  const [requisitoSeleccionado, setRequisitoSeleccionado] = useState('');
+
+  useEffect(() => {
+    const cargarCursos = async () => {
+      const data = await obtenerCursos();
+      setCursos(data);
+    };
+
+    cargarCursos();
+  }, []);
+
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+
+      const nuevoRequisito = {
+        idcurso_objetivo: parseInt(cursoSeleccionado, 10),
+        idcurso_requerido: parseInt(requisitoSeleccionado, 10),
+        tipo_levantamiento: planEstudio,
+        regla: event.target.regla.value,
+        idcurso_regla: 17
+      };
+
+      console.log('Datos que se enviarán a la base:', nuevoRequisito);
+
+      try {
+        await insertarRequisitoAutomatico(nuevoRequisito);
+        setOpenSnackbar(true);
+        setCursoSeleccionado('');
+        setRequisitoSeleccionado('');
+        setPlanEstudio('');
+        event.target.reset();
+      } catch (error) {
+        console.error('Error al guardar:', error);
+        alert('Error al guardar. Revisa consola.');
+      }
+    };
+
+
+
+
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -65,21 +116,90 @@ const FormularioRequisitoAutomatico = () => {
           </Typography>
 
           <form aria-label="Formulario nuevo requisito automático" onSubmit={handleSubmit}>
+          <Box sx={{ mb: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel id="curso-label">1. Curso a matricular</InputLabel>
+              <Select
+                labelId="curso-label"
+                id="curso"
+                name="curso"
+                value={cursoSeleccionado}
+                label="Curso a matricular"
+                  onChange={(e) => {
+                      console.log('Curso seleccionado:', e.target.value);
+                      setCursoSeleccionado(e.target.value);
+                  }}
+
+                aria-label="Curso a matricular"
+                renderValue={(selected) => {
+                  if (!selected) return '-- Seleccione un curso --';
+                  const curso = cursos.find(c => String(c.idcurso) === selected);
+                  return curso ? `${curso.nombre} (${curso.codigo})` : '-- Seleccione un curso --';
+                }}
+              >
+                <MenuItem value="" disabled>-- Seleccione un curso --</MenuItem>
+                {cursos.map((curso) => (
+                  <MenuItem key={curso.idcurso} value={String(curso.idcurso)}>
+                    {curso.nombre} ({curso.codigo})
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+          </Box>
+
             <Box sx={{ mb: 2 }}>
-              <label htmlFor="curso" style={{ fontWeight: 'bold' }}>1. Curso a matricular</label>
-              <TextField fullWidth id="curso" name="curso" variant="outlined" aria-label="Curso a matricular" />
+              <FormControl fullWidth>
+                <InputLabel id="label-plan-estudio">2. Seleccione el plan de estudio</InputLabel>
+                <Select
+                  labelId="label-plan-estudio"
+                  id="select-plan-estudio"
+                  value={planEstudio}
+                  label="Seleccione el plan de estudio"
+                  onChange={handlePlanChange}
+                  aria-label="Selector de plan de estudio"
+                >
+                  <MenuItem value={410}>410</MenuItem>
+                  <MenuItem value={411}>411</MenuItem>
+                  <MenuItem value={412}>412</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+              <Box sx={{ mb: 2 }}>
+              <FormControl fullWidth>
+                <InputLabel id="requisito-label">3. Requisito a levantar</InputLabel>
+                <Select
+                  labelId="requisito-label"
+                  id="requisito"
+                  name="requisito"
+                  value={requisitoSeleccionado}
+                  label="Requisito a levantar"
+                     onChange={(e) => {
+                        console.log('Curso seleccionado:', e.target.value);
+                        setRequisitoSeleccionado(e.target.value);
+                      }}
+
+                  aria-label="Requisito a levantar"
+                  renderValue={(selected) => {
+                    if (!selected) return '-- Seleccione un requisito --';
+                    const curso = cursos.find(c => String(c.idcurso) === selected);
+                    return curso ? `${curso.nombre} (${curso.codigo})` : '-- Seleccione un requisito --';
+                  }}
+                >
+                  <MenuItem value="" disabled>-- Seleccione un requisito --</MenuItem>
+                  {cursos.map((curso) => (
+                    <MenuItem key={curso.idcurso} value={String(curso.idcurso)}>
+                      {curso.nombre} ({curso.codigo})
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Box>
 
             <Box sx={{ mb: 2 }}>
-              <label htmlFor="requisito" style={{ fontWeight: 'bold' }}>2. Requisito a levantar</label>
-              <TextField fullWidth id="requisito" name="requisito" variant="outlined" aria-label="Requisito a levantar" />
-            </Box>
-
-            <Box sx={{ mb: 2 }}>
-              <label htmlFor="regla" style={{ fontWeight: 'bold' }}>3. Regla para levantar</label>
+              <label htmlFor="regla" style={{ fontWeight: 'bold' }}>4. Ingrese la regla a aplicar para levantar el curso</label>
               <TextField fullWidth id="regla" name="regla" variant="outlined" aria-label="Regla para levantar" />
-            </Box>
-
+            </Box>     
             <Box sx={{ mb: 2 }}>
               <label htmlFor="comentarios" style={{ fontWeight: 'bold' }}>4. Comentarios</label>
               <TextField fullWidth multiline minRows={4} id="comentarios" name="comentarios" variant="outlined" aria-label="Comentarios" />
@@ -105,4 +225,5 @@ const FormularioRequisitoAutomatico = () => {
 
 export default FormularioRequisitoAutomatico;
 
-
+//NOTA:
+//idea de hacer las reglas en combox, no sé si va desaparecer comentario o falto agregarse en la tabla

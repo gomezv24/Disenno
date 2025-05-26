@@ -78,4 +78,32 @@ export const obtenerRequisitosAutomaticos = async () => {
   }
 };
 
+export const obtenerCursos = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/cursos/getIdcurso'); 
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al obtener cursos:', error);
+    return [];
+  }
+};
+
+export const insertarRequisitoAutomatico = async (requisito) => {
+  try {
+    const response = await fetch('http://localhost:5000/coordinadora/insertarLenvAuto', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requisito),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al insertar requisito:', error);
+    throw error;
+  }
+};
 
