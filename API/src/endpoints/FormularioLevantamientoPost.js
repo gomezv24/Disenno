@@ -81,6 +81,16 @@ router.post('/', async (req, res) => {
 
     if (errorSeguimiento) return res.status(500).json({ error: errorSeguimiento.message });
 
+    // Paso 4: Validación automática posterior (verifica si cumple con la regla)
+    const { error: errorValidacion } = await supabase.rpc('verificar_aprobacion_levantamiento', {
+      idform: idformulario
+    });
+
+    if (errorValidacion) {
+      console.error('Error al ejecutar validación automática:', errorValidacion.message);
+    }
+
+
     return res.status(201).json({
       mensaje: 'Formulario de levantamiento creado exitosamente',
       formulario,

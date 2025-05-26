@@ -283,10 +283,21 @@ const FormularioLevantamiento = () => {
                   <TextField fullWidth sx={{ mb: 2 }} name="grupo" value={academicDetails.grupo} onChange={handleAcademicChange} />
 
                   <Typography>Plan de estudio</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} name="plan" value={academicDetails.plan} onChange={handleAcademicChange} />
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <Select name="plan" value={academicDetails.plan} onChange={handleAcademicChange}>
+                      <MenuItem value="410">410</MenuItem>
+                      <MenuItem value="411">411</MenuItem>
+                      <MenuItem value="412">412</MenuItem>
+                    </Select>
+                  </FormControl>
 
                   <Typography>Tipo de solicitud</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} name="tipoSolicitud" value={academicDetails.tipoSolicitud} onChange={handleAcademicChange} />
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <Select name="tipoSolicitud" value={academicDetails.tipoSolicitud} onChange={handleAcademicChange}>
+                      <MenuItem value="Levantamiento de requisitos">Levantamiento de requisitos</MenuItem>
+                      <MenuItem value="RN">RN</MenuItem>
+                    </Select>
+                  </FormControl>
 
                   <Typography>Requisito a levantar</Typography>
                   <FormControl fullWidth sx={{ mb: 2 }}>
