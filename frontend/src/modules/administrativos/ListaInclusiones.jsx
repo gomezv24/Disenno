@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box, Typography, Grid, Card, CardContent, List, ListItem, ListItemIcon, ListItemText,
   InputBase, Paper, IconButton, MenuItem, Select, Table, TableBody, TableCell,
@@ -19,28 +19,27 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SettingsIcon from '@mui/icons-material/Settings';
 import imagenRegistro from '../../assets/logoTec.png';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import { actualizarEstado } from './Funciones/coordinadoraFun';
+
 import { useNavigate, useLocation } from 'react-router-dom';
+import { informacion } from './Funciones/historicoInclusiones';
 
 const menuItems = [
-  { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
+  { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo' },
   { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
   { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
   { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
-  { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
-];
-
-const summaryCards = [
-  { title: 'Todas las inclusiones', subtitle: 'Todas las inclusiones realizadas', count: 100, icon: <DescriptionIcon /> },
-  { title: 'Pendientes', subtitle: 'Inclusiones que requieren revisión', count: 40, icon: <AccessTimeIcon /> },
-  { title: 'Revisados', subtitle: 'Inclusiones aprobadas o rechazadas', count: 80, icon: <SettingsIcon /> }
+  { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
+  { text: 'Usuario', icon: <PersonIcon />, path: '/infoUsuario' },
 ];
 
 const getEstadoChip = (estado) => {
   switch (estado) {
     case 'Aprobado':
       return <Chip label="Aprobado" sx={{ backgroundColor: '#d9f3e5', color: '#2e7d32', fontWeight: 'bold' }} />;
-    case 'Rechazada':
-      return <Chip label="Rechazada" sx={{ backgroundColor: '#fdecea', color: '#c62828', fontWeight: 'bold' }} />;
+    case 'Rechazado':
+      return <Chip label="Rechazado" sx={{ backgroundColor: '#fdecea', color: '#c62828', fontWeight: 'bold' }} />; 
     case 'Pendiente':
       return <Chip label="Pendiente" sx={{ backgroundColor: '#fff3e0', color: '#ef6c00', fontWeight: 'bold' }} />;
     default:
@@ -56,25 +55,38 @@ const ListadoInclusiones = () => {
   const [detalleAbierto, setDetalleAbierto] = useState(false);
   const [seleccionado, setSeleccionado] = useState(null);
 
-  const [inclusiones, setInclusiones] = useState(
-    [...Array(6)].map((_, i) => ({
-      id: i,
-      sede: 'San José',
-      carnet: '2022438535',
-      nombre: 'Méndez Abarca María',
-      grupo: '01',
-      curso: 'IC1803 - TALLER DE PROGRAMACIÓN',
-      profesor: 'Mario Chacon',
-      estado: i % 2 === 0 ? 'Aprobado' : 'Rechazada'
-    }))
-  );
-
+  const [inclusiones, setInclusiones] = useState([]);
   const [filtroActual, setFiltroActual] = useState('Todos');
+  const [resumen, setResumen] = useState({ total: 0, pendientes: 0, revisados: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const cargarDatos = async () => {
+      try {
+        setLoading(true);
+        const datos = await informacion('1');
+        setInclusiones(datos);
+
+        const total = datos.length;
+        const pendientes = datos.filter(i => i.estado === 'Pendiente').length;
+        const revisados = datos.filter(i => i.estado === 'Aprobado' || i.estado === 'Rechazada').length;
+
+        setResumen({ total, pendientes, revisados });
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    cargarDatos();
+  }, []);
+
   const filtrados = inclusiones.filter((item) => {
     if (filtroActual === 'Todos') return true;
     if (filtroActual === 'Pendientes') return item.estado === 'Pendiente';
     if (filtroActual === 'Aprobados') return item.estado === 'Aprobado';
-    if (filtroActual === 'Rechazados') return item.estado === 'Rechazada';
+    if (filtroActual === 'Rechazados') return item.estado === 'Rechazado';
     return true;
   });
 
@@ -87,17 +99,38 @@ const ListadoInclusiones = () => {
     setSeleccionado(null);
   };
 
-  const handleAccion = (tipo, index) => {
-    const actualizadas = [...inclusiones];
-    actualizadas[index].estado = tipo === 'aprobar' ? 'Aprobado' : 'Rechazada';
-    setInclusiones(actualizadas);
-    setSnackbar({
-      open: true,
-      message: tipo === 'aprobar' ? 'Inclusión aprobada correctamente.' : 'Inclusión rechazada correctamente.',
-      severity: tipo === 'aprobar' ? 'success' : 'error'
-    });
-  };
+    const handleAccion = async (tipo, index) => {
+      const idformulario = inclusiones[index].idformulario;
+      const idestado = tipo === 'aprobar' ? 3 : 4;
 
+      try {
+        await actualizarEstado(idformulario, idestado);
+
+        const actualizadas = [...inclusiones];
+        actualizadas[index].estado = idestado === 3 ? 'Aprobado' : 'Rechazado';
+        setInclusiones(actualizadas);
+
+        setSnackbar({
+          open: true,
+          message: tipo === 'aprobar' ? 'Inclusión aprobada correctamente.' : 'Inclusión rechazada correctamente.',
+          severity: tipo === 'aprobar' ? 'success' : 'error'
+        });
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          message: 'Error al actualizar el estado en la base de datos.',
+          severity: 'error'
+        });
+        console.error('Error al actualizar estado:', error);
+      }
+    };
+
+
+  const summaryCards = [
+    { title: 'Todas las inclusiones', subtitle: 'Todas las inclusiones realizadas', count: resumen.total, icon: <DescriptionIcon /> },
+    { title: 'Pendientes', subtitle: 'Inclusiones que requieren revisión', count: resumen.pendientes, icon: <AccessTimeIcon /> },
+    { title: 'Revisados', subtitle: 'Inclusiones aprobadas o rechazadas', count: resumen.revisados, icon: <SettingsIcon /> }
+  ];
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -130,10 +163,7 @@ const ListadoInclusiones = () => {
                     <Typography variant="h5" fontWeight="bold">{card.count}</Typography>
                     <Typography variant="caption">I Semestre 2025</Typography>
                   </Box>
-                  <Box sx={{ backgroundColor: '#002B5C', color: '#fff', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', color: '#fff',
-                      fontSize: 22,
-                      mt: 0,
-                      ml: 3 }}>
+                  <Box sx={{ backgroundColor: '#002B5C', color: '#fff', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', fontSize: 22, mt: 0, ml: 3 }}>
                     {card.icon}
                   </Box>
                 </CardContent>
@@ -159,47 +189,52 @@ const ListadoInclusiones = () => {
           </Select>
         </Box>
 
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>Sede</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Carnet</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Nombre del estudiante</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Grupo</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Curso</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Profesor</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filtrados.map((item, i) => (
-                <TableRow key={i}>
-                  <TableCell>{item.sede}</TableCell>
-                  <TableCell>{item.carnet}</TableCell>
-                  <TableCell>{item.nombre}</TableCell>
-                  <TableCell>{item.grupo}</TableCell>
-                  <TableCell>{item.curso}</TableCell>
-                  <TableCell>{item.profesor}</TableCell>
-                  <TableCell>{getEstadoChip(item.estado)}</TableCell>
-                  <TableCell>
-                    <IconButton aria-label="Aprobar" onClick={() => handleAccion('aprobar', i)}>
-                      <CheckIcon />
-                    </IconButton>
-                    <IconButton aria-label="Rechazar" onClick={() => handleAccion('rechazar', i)}>
-                      <CloseIcon />
-                    </IconButton>
-                    <IconButton aria-label="Ver detalles" onClick={() => manejarVerDetalles(item)}>
-                      <VisibilityIcon />
-                    </IconButton>
-                  </TableCell>
-
+        {loading ? (
+          <Typography align="center">Cargando inclusiones...</Typography>
+        ) : error ? (
+          <Alert severity="error">Error al cargar los datos: {error}</Alert>
+        ) : (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Sede</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Carnet</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Nombre del estudiante</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Grupo</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Curso</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Profesor</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {filtrados.map((item, i) => (
+                  <TableRow key={i}>
+                    <TableCell>{item.sede}</TableCell>
+                    <TableCell>{item.carnet}</TableCell>
+                    <TableCell>{item.nombre}</TableCell>
+                    <TableCell>{item.grupo}</TableCell>
+                    <TableCell>{item.curso}</TableCell>
+                    <TableCell>{item.profesor}</TableCell>
+                    <TableCell>{getEstadoChip(item.estado)}</TableCell>
+                    <TableCell>
+                      <IconButton aria-label="Aprobar" onClick={() => handleAccion('aprobar', i)}>
+                        <CheckIcon />
+                      </IconButton>
+                      <IconButton aria-label="Rechazar" onClick={() => handleAccion('rechazar', i)}>
+                        <CloseIcon />
+                      </IconButton>
+                      <IconButton aria-label="Ver detalles" onClick={() => manejarVerDetalles(item)}>
+                        <VisibilityIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
 
         <Dialog open={detalleAbierto} onClose={manejarCerrarDetalles}>
           <DialogTitle>Detalles de inclusión</DialogTitle>
