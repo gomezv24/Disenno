@@ -48,6 +48,8 @@ const FormularioRequisitoAutomatico = () => {
   const [cursos, setCursos] = useState([]);
   const [cursoSeleccionado, setCursoSeleccionado] = useState('');
   const [requisitoSeleccionado, setRequisitoSeleccionado] = useState('');
+  const [cursoRequeSeleccionado, setcursoRequeSeleccionado] = useState('');
+  const [comentario, setComentario] = useState('');
 
   useEffect(() => {
     const cargarCursos = async () => {
@@ -68,8 +70,8 @@ const FormularioRequisitoAutomatico = () => {
         idcurso_objetivo: parseInt(cursoSeleccionado, 10),
         idcurso_requerido: parseInt(requisitoSeleccionado, 10),
         tipo_levantamiento: planEstudio,
-        regla: event.target.regla.value,
-        idcurso_regla: 17
+        regla: comentario,
+        idcurso_regla: parseInt(cursoRequeSeleccionado, 10)
       };
 
       console.log('Datos que se enviarán a la base:', nuevoRequisito);
@@ -80,7 +82,9 @@ const FormularioRequisitoAutomatico = () => {
         setCursoSeleccionado('');
         setRequisitoSeleccionado('');
         setPlanEstudio('');
-        event.target.reset();
+        setcursoRequeSeleccionado('');
+        setComentario('');
+
       } catch (error) {
         console.error('Error al guardar:', error);
         alert('Error al guardar. Revisa consola.');
@@ -195,14 +199,50 @@ const FormularioRequisitoAutomatico = () => {
                 </Select>
               </FormControl>
             </Box>
+              <Box sx={{ mb: 2 }}>
+              <FormControl fullWidth>
+                <InputLabel id="cursoregla-label">4. Curso que cumpla con la regla</InputLabel>
+                <Select
+                  labelId="cursoRegla-label"
+                  id="regla"
+                  name="regla"
+                  value={cursoRequeSeleccionado}
+                  label="Curso que cumple la regla"
+                     onChange={(e) => {
+                        console.log('Curso seleccionado:', e.target.value);
+                        setcursoRequeSeleccionado(e.target.value);
+                      }}
 
+                  aria-label="Materia que debe tener aprobada"
+                  renderValue={(selected) => {
+                    if (!selected) return '-- Seleccione un requisito --';
+                    const curso = cursos.find(c => String(c.idcurso) === selected);
+                    return curso ? `${curso.nombre} (${curso.codigo})` : '-- Seleccione un requisito --';
+                  }}
+                >
+                  <MenuItem value="" disabled>-- Seleccione un requisito --</MenuItem>
+                  {cursos.map((curso) => (
+                    <MenuItem key={curso.idcurso} value={String(curso.idcurso)}>
+                      {curso.nombre} ({curso.codigo})
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>  
             <Box sx={{ mb: 2 }}>
-              <label htmlFor="regla" style={{ fontWeight: 'bold' }}>4. Ingrese la regla a aplicar para levantar el curso</label>
-              <TextField fullWidth id="regla" name="regla" variant="outlined" aria-label="Regla para levantar" />
-            </Box>     
-            <Box sx={{ mb: 2 }}>
-              <label htmlFor="comentarios" style={{ fontWeight: 'bold' }}>4. Comentarios</label>
-              <TextField fullWidth multiline minRows={4} id="comentarios" name="comentarios" variant="outlined" aria-label="Comentarios" />
+              <label htmlFor="comentarios" style={{ fontWeight: 'bold' }}>5. Comentarios</label>
+              <TextField
+                fullWidth
+                multiline
+                minRows={4}
+                id="comentarios"
+                name="comentarios"
+                value={comentario}
+                onChange={(e) => setComentario(e.target.value)}
+                variant="outlined"
+                aria-label="Comentarios"
+              />
+
             </Box>
 
             <Box textAlign="center">
