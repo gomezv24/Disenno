@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
   Container, Typography, Box, TextField, Button,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, IconButton, List, ListItem, ListItemIcon, ListItemText
+  Paper, IconButton, List, ListItem, ListItemIcon, ListItemText, MenuItem
 } from '@mui/material';
 import { Delete, Visibility, Home, School, TrendingUp, ExitToApp, AssignmentTurnedIn } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
@@ -21,6 +21,11 @@ const PageSeguimiento = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [detalleOpen, setDetalleOpen] = useState(false);
   const [detalleSolicitud, setDetalleSolicitud] = useState(null);
+  const [filtroTexto, setFiltroTexto] = useState("");
+  const [filtroTipo, setFiltroTipo] = useState("");
+  const [filtroSemestre, setFiltroSemestre] = useState("");
+  const [filtroCurso, setFiltroCurso] = useState("");
+  const [filtroEstado, setFiltroEstado] = useState("");
 
   useEffect(() => {
     const obtenerSeguimiento = async () => {
@@ -79,6 +84,23 @@ const PageSeguimiento = () => {
     }
   };
 
+  // Obtén valores únicos para los selects
+  const tiposUnicos = Array.from(new Set(solicitudes.map(s => s.tipo))).filter(Boolean);
+  const semestresUnicos = Array.from(new Set(solicitudes.map(s => s.semestre))).filter(Boolean);
+  const cursosUnicos = Array.from(new Set(solicitudes.map(s => s.curso))).filter(Boolean);
+  const estadosUnicos = Array.from(new Set(solicitudes.map(s => s.estado))).filter(Boolean);
+
+  const solicitudesFiltradas = solicitudes.filter(sol => {
+    const texto = `${sol.tipo} ${sol.semestre} ${sol.curso} ${sol.estado}`.toLowerCase();
+    return (
+      (!filtroTexto || texto.includes(filtroTexto.toLowerCase())) &&
+      (!filtroTipo || sol.tipo === filtroTipo) &&
+      (!filtroSemestre || sol.semestre === filtroSemestre) &&
+      (!filtroCurso || sol.curso === filtroCurso) &&
+      (!filtroEstado || sol.estado === filtroEstado)
+    );
+  });
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       {/* BARRA LATERAL */}
@@ -120,11 +142,53 @@ const PageSeguimiento = () => {
               variant="outlined"
               placeholder="Buscar formularios..."
               size="medium"
-              sx={{ flexGrow: 1, minWidth: '700px', maxWidth: '1000px', height: '56px' }}
+              value={filtroTexto}
+              onChange={e => setFiltroTexto(e.target.value)}
+              sx={{ flexGrow: 1, minWidth: '300px', maxWidth: '400px', height: '56px' }}
             />
-            <Button variant="contained" sx={{ width: '200px', height: '56px', backgroundColor: '#3b5998', textTransform: 'none', fontWeight: 'bold' }}>
-              Buscar
-            </Button>
+            <TextField
+              select
+              label="Tipo"
+              value={filtroTipo}
+              onChange={e => setFiltroTipo(e.target.value)}
+              sx={{ width: 150 }}
+            >
+              <MenuItem value="">Todos</MenuItem>
+              {tiposUnicos.map(tipo => <MenuItem key={tipo} value={tipo}>{tipo}</MenuItem>)}
+            </TextField>
+            <TextField
+              select
+              label="Semestre"
+              value={filtroSemestre}
+              onChange={e => setFiltroSemestre(e.target.value)}
+              sx={{ width: 150 }}
+            >
+              <MenuItem value="">Todos</MenuItem>
+              {semestresUnicos.map(sem => <MenuItem key={sem} value={sem}>{sem}</MenuItem>)}
+            </TextField>
+            <TextField
+              select
+              label="Curso"
+              value={filtroCurso}
+              onChange={e => setFiltroCurso(e.target.value)}
+              sx={{ width: 150 }}
+            >
+              <MenuItem value="">Todos</MenuItem>
+              {cursosUnicos.map(curso => <MenuItem key={curso} value={curso}>{curso}</MenuItem>)}
+            </TextField>
+            <TextField
+              select
+              label="Estado"
+              value={filtroEstado}
+              onChange={e => setFiltroEstado(e.target.value)}
+              sx={{ width: 150 }}
+            >
+              <MenuItem value="">Todos</MenuItem>
+              {estadosUnicos.map(estado => <MenuItem key={estado} value={estado}>{estado}</MenuItem>)}
+            </TextField>
+            <Button variant="contained" onClick={() => {
+              setFiltroTexto(""); setFiltroTipo(""); setFiltroSemestre(""); setFiltroCurso(""); setFiltroEstado("");
+            }} sx={{ height: '56px', backgroundColor: '#aaa', textTransform: 'none' }}>Limpiar</Button>
           </Box>
 
           {/* TABLA */}
@@ -140,7 +204,7 @@ const PageSeguimiento = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {solicitudes.map((sol, index) => (
+                {solicitudesFiltradas.map((sol, index) => (
                   <TableRow key={index}>
                     <TableCell>{sol.tipo}</TableCell>
                     <TableCell>{sol.semestre}</TableCell>
