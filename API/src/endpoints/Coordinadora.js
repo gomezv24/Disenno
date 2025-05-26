@@ -46,4 +46,24 @@ router.put('/actualizarEstado', async (req, res) => {
   }
 });
 
+router.get('/requerimientosLevAuto', async (req, res) => {
+  const { data, error } = await supabase
+    .from('levantamiento_requisito')
+    .select(`
+      idlevantamiento,
+      regla,
+      curso_objetivo: idcurso_objetivo (idcurso, codigo, nombre),
+      curso_requerido: idcurso_requerido (idcurso, codigo, nombre)
+    `);
+
+  if (error) {
+    console.error('Error al obtener datos:', error.message);
+    return res.status(500).json({ error: error.message });
+  }
+
+  return res.json(data);
+});
+
+
+
 export default router;

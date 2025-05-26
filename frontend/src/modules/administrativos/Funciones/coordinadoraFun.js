@@ -66,3 +66,16 @@ export async function actualizarEstado(idformulario, idestado) {
     throw err;
   }
 }
+
+export const obtenerRequisitosAutomaticos = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/coordinadora/requerimientosLevAuto'); 
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al obtener datos del backend:', error);
+    return [];
+  }
+};
+
+

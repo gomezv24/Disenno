@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -27,34 +27,36 @@ import imagenRegistro from '../../assets/logoTec.png';
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { obtenerRequisitosAutomaticos } from './Funciones/coordinadoraFun';
 
-
-const menuItems = [
-    { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
-    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
-    { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
-    { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
-    { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
-  ];
-
-const requisitosData = [
-  { curso: 'Investigación de Operaciones (IC6400)', requisito: 'Estadística (MA3405)', regla: 'Haber aprobado Probabilidades (MA2404)' },
-  { curso: 'Inteligencia Artificial (IC6200)', requisito: 'Investigación de Operaciones (IC6400)', regla: 'Haber aprobado Estadística (MA3405)' },
-  { curso: 'Computación y Sociedad (IC7900)', requisito: 'Administración de Proyectos (IC4810)', regla: 'Haber aprobado todo el IV semestre.' },
-  { curso: 'Computación y Sociedad (IC7900)', requisito: 'Seminario Estudios Costarricenses (CS4402)', regla: 'Haber aprobado todo el IV semestre.' },
-  { curso: 'Proyecto de Software (IC7841)', requisito: 'Aseguramiento de Calidad / Seguridad de Software / BD II', regla: 'Solo se levanta uno. Se analiza si retrasa la práctica.' },
-  { curso: 'Desarrollo de Emprendedores (AE4208)', requisito: 'Proyecto de Ingeniería de Software (IC7841)', regla: 'Se analiza si retrasa la práctica.' },
-  { curso: 'Análisis de Algoritmos (IC6302)', requisito: 'Cálculo Diferencial e Integral', regla: 'Debe tener Matemática General y todos los cursos IC de I y II semestre.' },
-  { curso: 'Administración de Proyectos (IC4810)', requisito: 'Diseño de Software (IC6821)', regla: 'Debe haber aprobado Requerimientos de Software.' },
+ const menuItems = [
+  { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo' },
+  { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+  { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
+  { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
+  { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
+  { text: 'Usuario', icon: <PersonIcon />, path: '/infoUsuario' },
 ];
+
 
 const ListaRequisitosAutomaticos = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  
+  const [requisitos, setRequisitos] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await obtenerRequisitosAutomaticos();
+      setRequisitos(data);
+    };
+
+    fetchData();
+  }, []);
+
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -111,17 +113,25 @@ const ListaRequisitosAutomaticos = () => {
           <Table aria-label="Tabla de Requisitos Automáticos">
             <TableHead>
               <TableRow>
-                <TableCell>Curso a matricular</TableCell>
-                <TableCell>Requisito a levantar</TableCell>
-                <TableCell>Regla para levantar</TableCell>
-                <TableCell>Acciones</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Curso a matricular</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Requisito a levantar</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Regla para levantar</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {requisitosData.map((row, index) => (
+              {requisitos.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.curso}</TableCell>
-                  <TableCell>{row.requisito}</TableCell>
+                  <TableCell>
+                    {row.curso_objetivo 
+                      ? `${row.curso_objetivo.nombre} (${row.curso_objetivo.codigo})`
+                      : 'Curso no disponible'}
+                  </TableCell>
+                  <TableCell>
+                    {row.curso_requerido 
+                      ? `${row.curso_requerido.nombre} (${row.curso_requerido.codigo})`
+                      : 'Curso no disponible'}
+                  </TableCell>
                   <TableCell>{row.regla}</TableCell>
                   <TableCell>
                     <IconButton aria-label="Eliminar"><DeleteIcon /></IconButton>
@@ -131,6 +141,7 @@ const ListaRequisitosAutomaticos = () => {
                 </TableRow>
               ))}
             </TableBody>
+
           </Table>
         </TableContainer>
 

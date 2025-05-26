@@ -309,14 +309,14 @@ const LevantamientosRN = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Sede</TableCell>
-                <TableCell>Carnet</TableCell>
-                <TableCell>Nombre</TableCell>
-                <TableCell>Curso</TableCell>
-                <TableCell>Requisito</TableCell>
-                <TableCell>Estado</TableCell>
-                <TableCell>Tipo</TableCell>
-                <TableCell>Acciones</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Sede</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Carnet</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Curso</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Requisito</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Tipo</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

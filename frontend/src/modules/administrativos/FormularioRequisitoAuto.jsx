@@ -18,14 +18,16 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import PersonIcon from '@mui/icons-material/Person';
 import imagenRegistro from '../../assets/logoTec.png';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const menuItems = [
-  { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo/panel-control' },
+ const menuItems = [
+  { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo' },
   { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
   { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
   { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
-  { text: 'Usuario', icon: <PersonIcon />, path: '/perfil' },
+  { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
+  { text: 'Usuario', icon: <PersonIcon />, path: '/infoUsuario' },
 ];
 
 const FormularioRequisitoAutomatico = () => {
