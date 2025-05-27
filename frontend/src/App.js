@@ -1,5 +1,3 @@
-// src/App.js
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginScreen from './modules/registro/LoginScreen';
 import HomePageAdministrativos from './modules/administrativos/homePageAdminitrativos';
@@ -22,6 +20,13 @@ import AdministradorHistInclu from './modules/administrador/AdministradorHistInc
 import AdministradorHistLev from './modules/administrador/AdministradorHistLev';
 import AdministradorUsuarios from './modules/administrador/AdministradorUsuarios';
 
+import ReglamentoLevantamiento from './modules/administrativos/ReglamentoLevantamiento';
+import PanelControl from './modules/administrativos/PanelCoordinadora';
+import LevantamientosRn from './modules/administrativos/LevantamientosRn';
+import ListadoInclusiones from './modules/administrativos/ListaInclusiones';
+import RequisitosAuto from './modules/administrativos/RequisitosAutomaticos';
+import FormularioAuto from './modules/administrativos/FormularioRequisitoAuto';
+import UpdateRequisitoAuto from './modules/administrativos/updateRequisitoAuto';
 
 function App() {
   return (
@@ -49,9 +54,19 @@ function App() {
         <Route path="/administrador/inclusiones" element={<AdministradorHistInclu/>} />
         <Route path="/administrador/levantamientos" element={<AdministradorHistLev/>} />
 
+        <Route path="/administrativo/reglamento" element={<ReglamentoLevantamiento />} />
+        <Route path="/administrativo/panelControl" element={<PanelControl />} />
+        <Route path="/administrativo/levantamientorn" element={<LevantamientosRn/>} />
+        <Route path="/administrativo/listadoInclusiones" element={<ListadoInclusiones/>} />
+        <Route path="/administrativo/requisitosAuto" element={<RequisitosAuto/>} />
+        <Route path="/administrativo/formularioAuto" element={<FormularioAuto/>} />
+        <Route path="/administrativo/updateRequisitoAuto/:id" element={<UpdateRequisitoAuto />} />
+
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
+
+

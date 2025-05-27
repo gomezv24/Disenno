@@ -12,6 +12,7 @@ import procesosRouter from './src/endpoints/Procesos.js';
 import inclusionPostRoutes from './src/endpoints/FormularioInclusionPost.js';
 import levantamientoPostRoutes from './src/endpoints/FormularioLevantamientoPost.js';
 import cursosRoutes from './src/endpoints/Cursos.js';
+import coordinadoraRoutes from './src/endpoints/Coordinadora.js';
 
 const app = express(); // ✅ debe ir ANTES de cualquier `app.use(...)`
 const PORT = process.env.PORT || 5000;
@@ -34,6 +35,7 @@ app.use('/formularios/levantamientos', levantamientoPostRoutes);
 app.use('/procesos', procesosRouter);
 app.use('/seguimientoUsuario', seguimientoUsuarioRouter);
 app.use('/cursos', cursosRoutes); // ✅ ahora está en la posición correcta
+app.use('/coordinadora', coordinadoraRoutes);
 
 app.get('/', (req, res) => {
   res.send('Welcome to the API!');
