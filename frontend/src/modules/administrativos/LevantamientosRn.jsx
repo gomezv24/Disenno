@@ -286,7 +286,7 @@ const LevantamientosRN = () => {
     </Grid>
 
         <Tabs value={filtroActual} onChange={(e, v) => setFiltroActual(v)} variant="scrollable" scrollButtons="auto" sx={{ mb: 2, bgcolor: '#405F90', color: '#fff' }}>
-          {['Todos', 'Pendientes', 'Aprobados', 'Rechazados', 'Manuales', 'Automáticos'].map((filtro) => (
+          {['Todos', 'Pendientes', 'Aprobados', 'Rechazados'].map((filtro) => (
             <Tab key={filtro} label={filtro} value={filtro} sx={{ fontSize: '0.85rem', fontWeight: 500 }} />
           ))}
         </Tabs>
@@ -315,7 +315,6 @@ const LevantamientosRN = () => {
                 <TableCell sx={{ fontWeight: 'bold' }}>Curso</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Requisito</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Tipo</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -328,7 +327,6 @@ const LevantamientosRN = () => {
                   <TableCell>{item.curso}</TableCell>
                   <TableCell>{item.requisito}</TableCell>
                   <TableCell>{getEstadoChip(item.estado)}</TableCell>
-                  <TableCell>{getTipoChip(item.tipo)}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleAccion('aprobar', i)}><CheckIcon /></IconButton>
                     <IconButton onClick={() => handleAccion('rechazar', i)}><CloseIcon /></IconButton>
@@ -363,7 +361,6 @@ const LevantamientosRN = () => {
                 <Typography><strong>Curso:</strong> {seleccionado.curso}</Typography>
                 <Typography><strong>Requisito:</strong> {seleccionado.requisito}</Typography>
                 <Typography><strong>Estado:</strong> {seleccionado.estado}</Typography>
-                <Typography><strong>Tipo:</strong> {seleccionado.tipo}</Typography>
               </Box>
             )}
           </DialogContent>
