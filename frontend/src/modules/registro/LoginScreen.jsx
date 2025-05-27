@@ -45,7 +45,7 @@ const LoginScreen = () => {
         if (rol === 1) {
           navigate('/administrador');
         } else if (rol === 2) {
-          navigate('/coordinadora');
+          navigate('/administrativo/panelControl');//aquí cambiar 
         } else if (rol === 3) {
           navigate('/estudiantes');
         } else if (rol === 4) {
