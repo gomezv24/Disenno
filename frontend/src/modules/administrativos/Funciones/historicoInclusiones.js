@@ -63,7 +63,7 @@ export async function informacion(tipo) {
 
            //console.log("sede",sede);
            solicitudes[i].sede = sedeString[0].nombre;
-console.log('for',solicitudes);
+
 
             if (solicitudes[i].requisitos === true) {
                 solicitudes[i].requisitos = "Si";
@@ -88,8 +88,7 @@ console.log('for',solicitudes);
             }
         }
         
-        console.log(solicitudes);
-         console.log("tipo", tipo);
+        console.log("solicitudes",solicitudes);
         if (tipo === '1'){
           return solicitudes;
         }
