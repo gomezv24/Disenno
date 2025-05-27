@@ -56,12 +56,11 @@ import { actualizarEstado } from './Funciones/coordinadoraFun';
 
 
 const menuItems = [
-  { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo' },
-  { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
-  { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
-  { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
   { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
-  { text: 'Usuario', icon: <PersonIcon />, path: '/infoUsuario' },
+    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+    { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
+    { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
+  
 ];
 
 const LevantamientosRN = () => {
@@ -185,6 +184,7 @@ const LevantamientosRN = () => {
     setSeleccionado(null);
   };
 
+  
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Navegación lateral */}

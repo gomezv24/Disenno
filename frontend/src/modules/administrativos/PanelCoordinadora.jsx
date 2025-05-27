@@ -39,6 +39,9 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 import { informacion } from '../administrador/Funciones/historicoInclusiones';
 import { obtenerLevantamientos } from './Funciones/coordinadoraFun';
+import { inclusiones } from './Funciones/estadisticas';
+import { Sedes, totalincluAprob, inclusionesAprobadas, levantamientosAprobadosTotal, levantamientos } from './Funciones/estadisticas';
+
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Legend, Tooltip);
 
@@ -47,19 +50,22 @@ const PanelCoordinadora = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
- const menuItems = [
-  { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo' },
-  { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
-  { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
-  { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
-  { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
-  { text: 'Usuario', icon: <PersonIcon />, path: '/infoUsuario' },
-];
-  const [cursoMasSolicitado, setCursoMasSolicitado] = useState('');
-  const [sedeMasSolicitada, setSedeMasSolicitada] = useState('');
+  const menuItems = [
+    { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
+    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+    { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
+    { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
+  ];
+
   const [dataPorSede, setDataPorSede] = useState({ labels: [], datasets: [] });
   const [totalSolicitudes, setTotalSolicitudes] = useState(0);
   const [totalLevantamientos, setTotalLevantamientos] = useState(0);
+  const [sedes, setSedes] = useState([]);
+  const [datosInclusionesData, setDatosInclusionesData] = useState([]);
+  const [datosInlcuAprob, setDatosIncluAprob] = useState([]);
+  const [datosLevantamientos, setDatosLevantamientos] = useState([]);
+  const [datosLevantamientosAprob, setDatosLevantamientosAprob] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -68,6 +74,7 @@ const PanelCoordinadora = () => {
         const data = await obtenerLevantamientos('1');
         setTotalSolicitudes(datos.length);
         setTotalLevantamientos(data.length);
+
 
         const conteoTotal = {};
         const conteoAprobadas = {};
@@ -82,7 +89,24 @@ const PanelCoordinadora = () => {
           }
         });
 
-        const sedes = Object.keys(conteoTotal);
+        const [sedesData, datosInclusionesData, datosIncluAprob, levantamientosData, datosLevantamientosAprob] = await Promise.all([
+          Sedes(),
+          inclusiones('2'),
+          inclusionesAprobadas('2'),
+          levantamientos('2'),
+          levantamientosAprobadosTotal('2')
+        ]);
+
+
+        setSedes(sedesData);
+        setDatosInclusionesData(datosInclusionesData);
+        setDatosIncluAprob(datosIncluAprob);
+        setDatosLevantamientos(levantamientosData);
+        setDatosLevantamientosAprob(datosLevantamientosAprob);
+
+
+
+        /*const sedes = Object.keys(conteoTotal);
 
         setDataPorSede({
           labels: sedes,
@@ -98,15 +122,72 @@ const PanelCoordinadora = () => {
               backgroundColor: '#90CAF9',
             }
           ]
-        });
+        });*/
       } catch (error) {
         console.error('Error cargando datos del gráfico', error);
       }
+      
     };
 
     cargarDatos();
   }, []);
 
+  const data = {
+    labels: sedes,
+    datasets: [
+      {
+        label: 'Solicitudes de Inclusiones',
+        data: datosInclusionesData,
+        backgroundColor: '#062043',
+        borderColor: 'rgb(10, 49, 99)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Solicitudes Aprobadas',
+        data: datosInlcuAprob,
+        backgroundColor: 'rgba(59, 117, 197, 0.86)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Solicitudes por Sede',
+      },
+    },
+  };
+
+
+  const dataLev = {
+    labels: sedes,
+    datasets: [
+      {
+        label: 'Solicitudes de Levantamiento',
+        data: datosLevantamientos,
+        backgroundColor: '#062043',
+        borderColor: 'rgb(10, 49, 99)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Solicitudes Aprobadas',
+        data: datosLevantamientosAprob, // Ajusta al tamaño de los datos
+        backgroundColor: 'rgba(59, 117, 197, 0.86)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Sidebar con navegación */}
@@ -226,33 +307,41 @@ const PanelCoordinadora = () => {
             </Grid>
           </Grid>
 
-          {/* Gráficos simulados */}
-          <Grid container spacing={8}>
-            <Grid item xs={29}>
-              <Card sx={{ mt: 4 }}>
-                <CardContent>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    Estadísticas de Inclusiones
-                  </Typography>
-                  <Box sx={{ height: 250, width: '110%' }}> {/* Aquí el cambio clave */}
-                      <Bar
-                        data={dataPorSede}
-                        options={{
-                          responsive: true,
-                          maintainAspectRatio: false,
-                          plugins: {
-                            legend: { position: 'top' },
-                          },
-                        }}
-                      />
-                    </Box>
-                  <Typography variant="caption" display="block" mt={2}>
-                    Datos actualizados al 26/5/2025
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
+          <Card sx={{ boxShadow: 3 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Estadísticas de Inclusiones
+              </Typography>
+              <Box sx={{ height: '400px', position: 'relative' }}>
+                <Bar
+                  data={data}
+                  options={options}
+                  key={JSON.stringify(sedes)}
+                />
+              </Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                Datos actualizados al {new Date().toLocaleDateString()}
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ boxShadow: 3 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                Estadísticas de Levantamientos
+              </Typography>
+              <Box sx={{ height: '400px', position: 'relative' }}>
+                <Bar
+                  data={dataLev}
+                  options={options}
+                  key={JSON.stringify(sedes)} // Esto fuerza recreación del gráfico cuando cambian las sedes
+                />
+              </Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                Datos actualizados al {new Date().toLocaleDateString()}
+              </Typography>
+            </CardContent>
+          </Card>
         </Box>
       </Box>
     </Box>
