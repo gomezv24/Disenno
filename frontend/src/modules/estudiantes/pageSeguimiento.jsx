@@ -6,14 +6,14 @@ import {
 } from '@mui/material';
 import { Delete, Visibility, Home, School, TrendingUp, ExitToApp, AssignmentTurnedIn } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
+import PersonIcon from '@mui/icons-material/Person';
+
+import imagenRegistro from '../../assets/logoTec.png';
+import { UserContext } from '../../context/UserContext';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-
-import imagenRegistro from '../../assets/logoTec.png';
-import imagenUsuario from '../../assets/imagenUsuario.png';
-import { UserContext } from '../../context/UserContext';
 
 const PageSeguimiento = () => {
   const location = useLocation();
@@ -53,7 +53,8 @@ const PageSeguimiento = () => {
     { text: 'Inclusiones', icon: <School />, path: '/inclusiones' },
     { text: 'Levantamientos', icon: <TrendingUp />, path: '/levantamientos' },
     { text: 'Retiros', icon: <ExitToApp />, path: '/retiros' },
-    { text: 'Seguimiento', icon: <AssignmentTurnedIn />, path: '/seguimiento' }
+    { text: 'Seguimiento', icon: <AssignmentTurnedIn />, path: '/seguimiento' },
+    { text: 'Usuario', icon: <PersonIcon />, path: '/infoUsuario' }
   ];
 
   const handleVerDetalle = (solicitud) => {
@@ -103,8 +104,7 @@ const PageSeguimiento = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      {/* BARRA LATERAL */}
-      <nav style={{ width: '250px', backgroundColor: '#ffffff', color: '#062043', padding: '32px 0', borderRight: '1px solid #ddd', height: '100vh' }}>
+      <nav aria-label="Menú principal" style={{ width: '250px', backgroundColor: '#ffffff', color: '#062043', padding: '32px 0', borderRight: '1px solid #ddd', height: '100vh' }}>
         <Box sx={{ mb: 4, textAlign: 'center' }}>
           <img src={imagenRegistro} alt="Logo del TEC" style={{ height: '60px' }} />
         </Box>
@@ -125,132 +125,143 @@ const PageSeguimiento = () => {
         </List>
       </nav>
 
-      {/* CONTENIDO PRINCIPAL */}
       <main style={{ flex: 1 }}>
-        <Container disableGutters sx={{ maxWidth: '1400px', mx: 'auto', px: 2, py: 6 }}>
-          <Box sx={{ mb: 5 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#062043' }}>
+        <header>
+          <Container disableGutters sx={{ maxWidth: '1400px', mx: 'auto', px: 2, py: 6 }}>
+            <Box sx={{ mb: 5 }}>
+              <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043' }}>
                 Seguimiento de Formularios Académicos
               </Typography>
-              <img src={imagenUsuario} alt="Usuario" style={{ height: '60px', borderRadius: '50%' }} />
             </Box>
-          </Box>
+          </Container>
+        </header>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: 5 }}>
-            <TextField
-              variant="outlined"
-              placeholder="Buscar formularios..."
-              size="medium"
-              value={filtroTexto}
-              onChange={e => setFiltroTexto(e.target.value)}
-              sx={{ flexGrow: 1, minWidth: '300px', maxWidth: '400px', height: '56px' }}
-            />
-            <TextField
-              select
-              label="Tipo"
-              value={filtroTipo}
-              onChange={e => setFiltroTipo(e.target.value)}
-              sx={{ width: 150 }}
-            >
-              <MenuItem value="">Todos</MenuItem>
-              {tiposUnicos.map(tipo => <MenuItem key={tipo} value={tipo}>{tipo}</MenuItem>)}
-            </TextField>
-            <TextField
-              select
-              label="Semestre"
-              value={filtroSemestre}
-              onChange={e => setFiltroSemestre(e.target.value)}
-              sx={{ width: 150 }}
-            >
-              <MenuItem value="">Todos</MenuItem>
-              {semestresUnicos.map(sem => <MenuItem key={sem} value={sem}>{sem}</MenuItem>)}
-            </TextField>
-            <TextField
-              select
-              label="Curso"
-              value={filtroCurso}
-              onChange={e => setFiltroCurso(e.target.value)}
-              sx={{ width: 150 }}
-            >
-              <MenuItem value="">Todos</MenuItem>
-              {cursosUnicos.map(curso => <MenuItem key={curso} value={curso}>{curso}</MenuItem>)}
-            </TextField>
-            <TextField
-              select
-              label="Estado"
-              value={filtroEstado}
-              onChange={e => setFiltroEstado(e.target.value)}
-              sx={{ width: 150 }}
-            >
-              <MenuItem value="">Todos</MenuItem>
-              {estadosUnicos.map(estado => <MenuItem key={estado} value={estado}>{estado}</MenuItem>)}
-            </TextField>
-            <Button variant="contained" onClick={() => {
-              setFiltroTexto(""); setFiltroTipo(""); setFiltroSemestre(""); setFiltroCurso(""); setFiltroEstado("");
-            }} sx={{ height: '56px', backgroundColor: '#aaa', textTransform: 'none' }}>Limpiar</Button>
-          </Box>
-
-          {/* TABLA */}
-          <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-            <Table aria-label="Tabla de solicitudes académicas">
-              <TableHead sx={{ backgroundColor: '#E3EAFD' }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Tipo de solicitud</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Semestre</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Curso</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {solicitudesFiltradas.map((sol, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{sol.tipo}</TableCell>
-                    <TableCell>{sol.semestre}</TableCell>
-                    <TableCell>{sol.curso}</TableCell>
-                    <TableCell>
-                      <Box sx={colorEstado(sol.estado)}>
-                        {sol.estado}
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton aria-label="Eliminar solicitud" color="error" onClick={() => handleEliminar(sol)}>
-                        <Delete />
-                      </IconButton>
-                      <IconButton aria-label="Ver detalles de la solicitud" color="primary" onClick={() => handleVerDetalle(sol)}>
-                        <Visibility />
-                      </IconButton>
-                    </TableCell>
+        <main aria-label="Contenido principal" style={{ width: '100%' }}>
+          <Container disableGutters sx={{ maxWidth: '1400px', mx: 'auto', px: 2, py: 0 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: 5 }}>
+              <TextField
+                variant="outlined"
+                placeholder="Buscar formularios..."
+                size="medium"
+                value={filtroTexto}
+                onChange={e => setFiltroTexto(e.target.value)}
+                sx={{ flexGrow: 1, minWidth: '300px', maxWidth: '400px', height: '56px' }}
+                inputProps={{ 'aria-label': 'Buscar formularios' }}
+              />
+              <TextField
+                select
+                label="Tipo"
+                value={filtroTipo}
+                onChange={e => setFiltroTipo(e.target.value)}
+                sx={{ width: 150 }}
+              >
+                <MenuItem value="">Todos</MenuItem>
+                {tiposUnicos.map(tipo => <MenuItem key={tipo} value={tipo}>{tipo}</MenuItem>)}
+              </TextField>
+              <TextField
+                select
+                label="Semestre"
+                value={filtroSemestre}
+                onChange={e => setFiltroSemestre(e.target.value)}
+                sx={{ width: 150 }}
+              >
+                <MenuItem value="">Todos</MenuItem>
+                {semestresUnicos.map(sem => <MenuItem key={sem} value={sem}>{sem}</MenuItem>)}
+              </TextField>
+              <TextField
+                select
+                label="Curso"
+                value={filtroCurso}
+                onChange={e => setFiltroCurso(e.target.value)}
+                sx={{ width: 150 }}
+              >
+                <MenuItem value="">Todos</MenuItem>
+                {cursosUnicos.map(curso => <MenuItem key={curso} value={curso}>{curso}</MenuItem>)}
+              </TextField>
+              <TextField
+                select
+                label="Estado"
+                value={filtroEstado}
+                onChange={e => setFiltroEstado(e.target.value)}
+                sx={{ width: 150 }}
+              >
+                <MenuItem value="">Todos</MenuItem>
+                {estadosUnicos.map(estado => <MenuItem key={estado} value={estado}>{estado}</MenuItem>)}
+              </TextField>
+              <Button variant="contained" onClick={() => {
+                setFiltroTexto(""); setFiltroTipo(""); setFiltroSemestre(""); setFiltroCurso(""); setFiltroEstado("");
+              }} sx={{ height: '56px', backgroundColor: '#aaa', textTransform: 'none' }}>Limpiar</Button>
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <Typography component="div" variant="body1" sx={{ fontWeight: 'bold', color: '#062043' }}>
+                Lista de solicitudes académicas enviadas por el usuario. Cada fila muestra el tipo, semestre, curso, estado y acciones disponibles.
+              </Typography>
+            </Box>
+            {/* TABLA */}
+            <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
+              <Table aria-label="Tabla de solicitudes académicas">
+                <caption style={{ display: 'none' }}>
+                  Lista de solicitudes académicas enviadas por el usuario. Cada fila muestra el tipo, semestre, curso, estado y acciones disponibles.
+                </caption>
+                <TableHead sx={{ backgroundColor: '#E3EAFD' }}>
+                  <TableRow>
+                    <TableCell component="th" scope="col" sx={{ fontWeight: 'bold' }}>Tipo de solicitud</TableCell>
+                    <TableCell component="th" scope="col" sx={{ fontWeight: 'bold' }}>Semestre</TableCell>
+                    <TableCell component="th" scope="col" sx={{ fontWeight: 'bold' }}>Curso</TableCell>
+                    <TableCell component="th" scope="col" sx={{ fontWeight: 'bold' }}>Estado</TableCell>
+                    <TableCell component="th" scope="col" sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-
-          {/* Dialogo de detalles */}
-          <Dialog open={detalleOpen} onClose={handleCerrarDetalle} maxWidth="sm" fullWidth>
-            <DialogTitle>Detalle de la Solicitud</DialogTitle>
-            <DialogContent>
-              {detalleSolicitud && (
-                <Box>
-                  <Typography variant="subtitle1"><b>Tipo:</b> {detalleSolicitud.tipo}</Typography>
-                  <Typography variant="subtitle1"><b>Semestre:</b> {detalleSolicitud.semestre}</Typography>
-                  <Typography variant="subtitle1"><b>Curso:</b> {detalleSolicitud.curso}</Typography>
-                  <Typography variant="subtitle1"><b>Estado:</b> {detalleSolicitud.estado}</Typography>
-                  {detalleSolicitud.fecha && (
-                    <Typography variant="subtitle1"><b>Fecha:</b> {new Date(detalleSolicitud.fecha).toLocaleDateString()}</Typography>
-                  )}
-                  {/* Puedes agregar más campos aquí si el backend los retorna */}
-                </Box>
-              )}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCerrarDetalle} color="primary">Cerrar</Button>
-            </DialogActions>
-          </Dialog>
-        </Container>
+                </TableHead>
+                <TableBody>
+                  {solicitudesFiltradas.map((sol, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{sol.tipo}</TableCell>
+                      <TableCell>{sol.semestre}</TableCell>
+                      <TableCell>{sol.curso}</TableCell>
+                      <TableCell>
+                        <Box sx={colorEstado(sol.estado)}>
+                          {sol.estado}
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <IconButton aria-label="Eliminar solicitud" color="error" onClick={() => handleEliminar(sol)}>
+                          <Delete />
+                        </IconButton>
+                        <IconButton aria-label="Ver detalles de la solicitud" color="primary" onClick={() => handleVerDetalle(sol)}>
+                          <Visibility />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Container>
+          <footer style={{ textAlign: 'center', padding: '1rem', fontSize: '0.9rem' }}>
+          <p>© Curso Diseño de software. Todos los derechos reservados.</p>
+        </footer>
+        </main>
       </main>
+
+      <Dialog open={detalleOpen} onClose={handleCerrarDetalle} maxWidth="sm" fullWidth>
+        <DialogTitle>Detalle de la Solicitud</DialogTitle>
+        <DialogContent>
+          {detalleSolicitud && (
+            <Box>
+              <Typography variant="subtitle1"><b>Tipo:</b> {detalleSolicitud.tipo}</Typography>
+              <Typography variant="subtitle1"><b>Semestre:</b> {detalleSolicitud.semestre}</Typography>
+              <Typography variant="subtitle1"><b>Curso:</b> {detalleSolicitud.curso}</Typography>
+              <Typography variant="subtitle1"><b>Estado:</b> {detalleSolicitud.estado}</Typography>
+              {detalleSolicitud.fecha && (
+                <Typography variant="subtitle1"><b>Fecha:</b> {new Date(detalleSolicitud.fecha).toLocaleDateString()}</Typography>
+              )}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCerrarDetalle} color="primary">Cerrar</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
