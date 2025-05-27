@@ -122,8 +122,10 @@ router.get('/getrequisitosAutomaticos/:id', async (req, res) => {
       idcurso_objetivo,
       idcurso_requerido,
       tipo_levantamiento,
-      regla
+      regla,
+      idcurso_regla
     `)
+
     .eq('idlevantamiento', id)
     .single();
 

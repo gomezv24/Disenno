@@ -152,11 +152,9 @@ const EditarRequisitoAutomatico = () => {
                     };
 
                     await actualizarRequisito(id, datos);
-                    alert('Requisito actualizado con éxito');
-                    navigate('/administrativo/requisitosAuto'); // <- Redirige donde quieras
+                    navigate('/administrativo/requisitosAuto'); // <- Redirige al inicio
                 } catch (error) {
                     console.error(error);
-                    alert('Ocurrió un error al actualizar');
                 }
                 }}
 
