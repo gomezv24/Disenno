@@ -177,7 +177,7 @@ const ListadoInclusiones = () => {
             <Tab key={f} value={f} label={f} sx={{ color: '#fff' }} />
           ))}
         </Tabs>
-
+{/* 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 2, mb: 3 }}>
           <Paper sx={{ display: 'flex', alignItems: 'center', width: 250, height: 40, pl: 1 }}>
             <SearchIcon />
@@ -188,7 +188,7 @@ const ListadoInclusiones = () => {
             <MenuItem value="antiguos">Más antiguos</MenuItem>
           </Select>
         </Box>
-
+*/}
         {loading ? (
           <Typography align="center">Cargando inclusiones...</Typography>
         ) : error ? (

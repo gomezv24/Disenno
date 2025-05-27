@@ -290,7 +290,8 @@ const LevantamientosRN = () => {
             <Tab key={filtro} label={filtro} value={filtro} sx={{ fontSize: '0.85rem', fontWeight: 500 }} />
           ))}
         </Tabs>
-
+{/* 
+  Sin conectar 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
           <Paper component="form" sx={{ display: 'flex', alignItems: 'center', width: 250, height: 40, pl: 1 }}>
             <SearchIcon />
@@ -301,7 +302,7 @@ const LevantamientosRN = () => {
             <MenuItem value="antiguos">Más antiguos</MenuItem>
           </Select>
         </Box>
-
+*/}
         {loading && <Typography align="center" sx={{ mt: 4 }}>Cargando levantamientos...</Typography>}
         {error && <Alert severity="error">Error al cargar los datos: {error}</Alert>}
 
