@@ -26,12 +26,11 @@ const ReglamentosLevantamiento = () => {
   const location = useLocation();
 
   const menuItems = [
-    { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo' },
+    { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
     { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
     { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
     { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
-    { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
-    { text: 'Usuario', icon: <PersonIcon />, path: '/infoUsuario' },
+  
   ];
 
 
