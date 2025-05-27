@@ -64,6 +64,7 @@ router.get('/requerimientosLevAuto', async (req, res) => {
   return res.json(data);
 });
 
+//insertar requisito
 router.post('/insertarLenvAuto', async (req, res) => {
   const {
     idcurso_objetivo,
@@ -96,5 +97,67 @@ router.post('/insertarLenvAuto', async (req, res) => {
   data});
 });
 
+// Eliminar requisito 
+router.delete('/deleRequiAuto/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const { error } = await supabase
+    .from('levantamiento_requisito')
+    .delete()
+    .eq('idlevantamiento', id);
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  res.status(200).json({ message: 'Requisito eliminado correctamente' });
+});
+
+
+router.get('/getrequisitosAutomaticos/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const { data, error } = await supabase
+    .from('levantamiento_requisito')
+    .select(`
+      idlevantamiento,
+      idcurso_objetivo,
+      idcurso_requerido,
+      tipo_levantamiento,
+      regla
+    `)
+    .eq('idlevantamiento', id)
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  res.json(data);
+});
+
+router.put('/updateRequisitoAuto/:id', async (req, res) => {
+  const { id } = req.params;
+  const {
+    idcurso_objetivo,
+    idcurso_requerido,
+    tipo_levantamiento,
+    regla, 
+    idcurso_regla
+  } = req.body;
+
+  const { error } = await supabase
+    .from('levantamiento_requisito')
+    .update({
+      idcurso_objetivo,
+      idcurso_requerido,
+      tipo_levantamiento,
+      regla,
+      idcurso_regla
+    })
+    .eq('idlevantamiento', id);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.status(200).json({ message: 'Requisito actualizado correctamente.' });
+});
 
 export default router;

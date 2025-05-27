@@ -264,6 +264,3 @@ const FormularioRequisitoAutomatico = () => {
 };
 
 export default FormularioRequisitoAutomatico;
-
-//NOTA:
-//idea de hacer las reglas en combox, no sé si va desaparecer comentario o falto agregarse en la tabla

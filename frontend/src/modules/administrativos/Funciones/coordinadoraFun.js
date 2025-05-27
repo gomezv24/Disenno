@@ -107,3 +107,38 @@ export const insertarRequisitoAutomatico = async (requisito) => {
   }
 };
 
+export const eliminarRequisitoAutomatico = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:5000/coordinadora/deleRequiAuto/${id}`, {
+      method: 'DELETE'
+    });
+
+    if (!response.ok) throw new Error('Error al eliminar el requisito');
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error eliminando requisito automático:', error);
+    throw error;
+  }
+};
+
+export const obtenerRequisitoPorId = async (id) => {
+  const response = await fetch(`http://localhost:5000/coordinadora/getrequisitosAutomaticos/${id}`);
+  if (!response.ok) throw new Error('No se pudo obtener el requisito');
+  return await response.json();
+};
+
+export const actualizarRequisito = async (id, datos) => {
+  const response = await fetch(`http://localhost:5000/coordinadora/updateRequisitoAuto/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(datos)
+  });
+
+  if (!response.ok) {
+    throw new Error('Error al actualizar el requisito');
+  }
+
+  return await response.json();
+};
+

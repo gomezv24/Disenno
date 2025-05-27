@@ -16,7 +16,12 @@ import {
   TableHead,
   TableRow,
   Pagination,
-  Button
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -32,6 +37,8 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { obtenerRequisitosAutomaticos } from './Funciones/coordinadoraFun';
+import { eliminarRequisitoAutomatico } from './Funciones/coordinadoraFun';
+
 
  const menuItems = [
   { text: 'Inicio', icon: <HomeIcon />, path: '/administrativo' },
@@ -85,6 +92,32 @@ const ListaRequisitosAutomaticos = () => {
 
     setFiltrados(resultados);
 };
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [idAEliminar, setIdAEliminar] = useState(null);
+
+  const handleConfirmarEliminar = (id) => {
+    console.log('ID a eliminar:', id);
+    setIdAEliminar(id);
+    setOpenDialog(true); 
+  };
+
+  
+  const handleEliminarConfirmado = async () => {
+    try {
+      await eliminarRequisitoAutomatico(idAEliminar);
+      const nuevos = requisitos.filter((req) => req.idlevantamiento !== idAEliminar);
+      setRequisitos(nuevos);
+      setFiltrados(nuevos);
+    } catch (err) {
+      console.error('Error al eliminar:', err);
+    } finally {
+      setOpenDialog(false);
+      setIdAEliminar(null);
+    }
+  };
+
+
 
 
 
@@ -170,9 +203,20 @@ const ListaRequisitosAutomaticos = () => {
                   </TableCell>
                   <TableCell>{row.regla}</TableCell>
                   <TableCell>
-                    <IconButton aria-label="Eliminar"><DeleteIcon /></IconButton>
+                    <IconButton
+                        aria-label="Eliminar"
+                        onClick={() => handleConfirmarEliminar(row.idlevantamiento)}>
+                        <DeleteIcon />
+                      </IconButton>
+
                     <IconButton aria-label="Ver"><VisibilityIcon /></IconButton>
-                    <IconButton aria-label="Editar"><EditIcon /></IconButton>
+                    <IconButton
+                      aria-label="Editar"
+                      onClick={() => navigate(`/administrativo/updateRequisitoAuto/${row.idlevantamiento}`)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+
                   </TableCell>
                 </TableRow>
               ))}
@@ -185,6 +229,30 @@ const ListaRequisitosAutomaticos = () => {
           <Pagination count={3} page={1} color="primary" />
         </Box>
       </Box>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          ¿Está seguro que desea eliminar este requisito?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Esta acción no se puede deshacer.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleEliminarConfirmado} color="error" autoFocus>
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 };
