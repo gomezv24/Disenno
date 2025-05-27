@@ -52,15 +52,17 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import imagenRegistro from '../../assets/logoTec.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { obtenerLevantamientos } from './Funciones/coordinadoraFun';
+import { informacion } from './Funciones/historicoLev';
 import { actualizarEstado } from './Funciones/coordinadoraFun';
+
 
 
 const menuItems = [
   { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
-    { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
-    { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
-    { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
-  
+  { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
+  { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
+  { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
+
 ];
 
 const LevantamientosRN = () => {
@@ -80,7 +82,7 @@ const LevantamientosRN = () => {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        const data = await obtenerLevantamientos('1');
+        const data = await informacion('1');
         setLevantamientos(data);
         const total = data.length;
         const pendientes = data.filter(item => item.estado === 'Pendiente').length;
@@ -96,7 +98,7 @@ const LevantamientosRN = () => {
     cargarDatos();
   }, []);
 
-  
+
   const getEstadoChip = (estado) => {
     switch (estado) {
       case 'Aprobado':
@@ -184,7 +186,7 @@ const LevantamientosRN = () => {
     setSeleccionado(null);
   };
 
-  
+
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Navegación lateral */}
@@ -212,85 +214,85 @@ const LevantamientosRN = () => {
         </Typography>
 
         <Grid container spacing={6} mb={4}>
-      <Grid item xs={12} sm={6}>
-        <Card sx={{ height: '100%' }}>
-          <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: 150 }}>
-            <Box>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                Total de levantamientos
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Todos los levantamientos registrados
-              </Typography>
-              <Typography variant="h5" fontWeight="bold">
-                {resumen.total}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                I Semestre 2025
-              </Typography>
-            </Box>
-            <Box sx={{ width: 40, height: 40, backgroundColor: '#002B5C', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22 }}>
-              <DescriptionIcon />
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
+          <Grid item xs={12} sm={6}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: 150 }}>
+                <Box>
+                  <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                    Total de levantamientos
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Todos los levantamientos registrados
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold">
+                    {resumen.total}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    I Semestre 2025
+                  </Typography>
+                </Box>
+                <Box sx={{ width: 40, height: 40, backgroundColor: '#002B5C', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22 }}>
+                  <DescriptionIcon />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
 
-      <Grid item xs={12} sm={6}>
-        <Card sx={{ height: '100%' }}>
-          <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: 150 }}>
-            <Box>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                Pendientes
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Levantamientos que requieren revisión
-              </Typography>
-              <Typography variant="h5" fontWeight="bold">
-                {resumen.pendientes}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                I Semestre 2025
-              </Typography>
-            </Box>
-            <Box sx={{ width: 40, height: 40, backgroundColor: '#002B5C', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22 }}>
-              <AccessTimeIcon />
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
+          <Grid item xs={12} sm={6}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: 150 }}>
+                <Box>
+                  <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                    Pendientes
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Levantamientos que requieren revisión
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold">
+                    {resumen.pendientes}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    I Semestre 2025
+                  </Typography>
+                </Box>
+                <Box sx={{ width: 40, height: 40, backgroundColor: '#002B5C', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22 }}>
+                  <AccessTimeIcon />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
 
-      <Grid item xs={12} sm={6}>
-        <Card sx={{ height: '100%' }}>
-          <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: 150 }}>
-            <Box>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                Automáticos
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Levantamientos aprobados automáticamente
-              </Typography>
-              <Typography variant="h5" fontWeight="bold">
-                {resumen.automaticos}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                I Semestre 2025
-              </Typography>
-            </Box>
-            <Box sx={{ width: 40, height: 40, backgroundColor: '#002B5C', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22 }}>
-              <SettingsIcon />
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
+          <Grid item xs={12} sm={6}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: 150 }}>
+                <Box>
+                  <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                    Automáticos
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Levantamientos aprobados automáticamente
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold">
+                    {resumen.automaticos}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    I Semestre 2025
+                  </Typography>
+                </Box>
+                <Box sx={{ width: 40, height: 40, backgroundColor: '#002B5C', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22 }}>
+                  <SettingsIcon />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
 
         <Tabs value={filtroActual} onChange={(e, v) => setFiltroActual(v)} variant="scrollable" scrollButtons="auto" sx={{ mb: 2, bgcolor: '#405F90', color: '#fff' }}>
           {['Todos', 'Pendientes', 'Aprobados', 'Rechazados'].map((filtro) => (
-            <Tab key={filtro} label={filtro} value={filtro} sx={{ fontSize: '0.85rem', fontWeight: 500 }} />
+            <Tab key={filtro} label={filtro} value={filtro} sx={{ fontSize: '0.85rem', fontWeight: 500, color: '#fff' }} />
           ))}
         </Tabs>
-{/* 
+        {/* 
   Sin conectar 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
           <Paper component="form" sx={{ display: 'flex', alignItems: 'center', width: 250, height: 40, pl: 1 }}>
@@ -331,7 +333,14 @@ const LevantamientosRN = () => {
                   <TableCell>
                     <IconButton onClick={() => handleAccion('aprobar', i)}><CheckIcon /></IconButton>
                     <IconButton onClick={() => handleAccion('rechazar', i)}><CloseIcon /></IconButton>
-                    <IconButton onClick={() => manejarVerDetalles(item)}><VisibilityIcon /></IconButton>
+                    <IconButton aria-label="Ver detalles de la solicitud"
+                      color="primary"
+                      size="small"
+                      onClick={() => navigate('/administrativo/vista/levantamiento', { state: { sol:item } })}>
+
+                      <VisibilityIcon />
+
+                    </IconButton>
                     <IconButton onClick={handleMenuClick}><MoreVertIcon /></IconButton>
                     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                       <MenuItem onClick={handleMenuClose}>Descargar PDF</MenuItem>

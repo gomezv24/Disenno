@@ -224,7 +224,7 @@ const ListadoInclusiones = () => {
                       <IconButton aria-label="Rechazar" onClick={() => handleAccion('rechazar', i)}>
                         <CloseIcon />
                       </IconButton>
-                      <IconButton aria-label="Ver detalles" onClick={() => manejarVerDetalles(item)}>
+                      <IconButton aria-label="Ver detalles de la solicitud" color="primary" onClick={() => navigate('/administrativo/vista', { state: { sol: item } })}>
                         <VisibilityIcon />
                       </IconButton>
                     </TableCell>
@@ -235,27 +235,7 @@ const ListadoInclusiones = () => {
           </TableContainer>
         )}
 
-        <Dialog open={detalleAbierto} onClose={manejarCerrarDetalles}>
-          <DialogTitle>Detalles de inclusión</DialogTitle>
-          <DialogContent>
-            {seleccionado && (
-              <Box>
-                <Typography><strong>Nombre:</strong> {seleccionado.nombre}</Typography>
-                <Typography><strong>Carnet:</strong> {seleccionado.carnet}</Typography>
-                <Typography><strong>Curso:</strong> {seleccionado.curso}</Typography>
-                <Typography><strong>Profesor:</strong> {seleccionado.profesor}</Typography>
-                <Typography><strong>Estado:</strong> {seleccionado.estado}</Typography>
-              </Box>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={manejarCerrarDetalles}>Cerrar</Button>
-          </DialogActions>
-        </Dialog>
-
-        <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
-          <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>{snackbar.message}</Alert>
-        </Snackbar>
+        
       </Box>
     </Box>
   );
