@@ -54,7 +54,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { obtenerLevantamientos } from './Funciones/coordinadoraFun';
 import { informacion } from './Funciones/historicoLev';
 import { actualizarEstado } from './Funciones/coordinadoraFun';
-
+import DownloadIcon from '@mui/icons-material/Download';
+import * as XLSX from 'xlsx';
 
 
 const menuItems = [
@@ -186,6 +187,43 @@ const LevantamientosRN = () => {
     setSeleccionado(null);
   };
 
+
+    const exportSingleToExcel = (sol) => {
+      // Preparar los datos para exportar (como array con un solo elemento)
+      const datosExportar = [{
+  
+        "Nombre Estudiante": sol.nombre || '',
+        Carnet: sol.carnet || '',
+        "Fecha de Solicitud": sol.fecha || '',
+        "Curso a matricular": sol.curso || '',
+        "Requisito a levantar": sol.requisito || '',
+        Estado: sol.estado || '',
+        Correo: sol.correo || '',
+        "Estado Solicitud": sol.estado || '',
+        Carrera: sol.carrera || '',
+        Consideraciones: sol.consideraciones || '',
+        "Tipo de solicitud": sol.tiposolicitud || '',
+        "Plan de estudio": sol.planestudio || '',
+        Sede: sol.sede || '',
+        Comentarios: sol.comentario || '',
+  
+      }];
+  
+      try {
+        // Crear hoja de trabajo
+        const ws = XLSX.utils.json_to_sheet(datosExportar);
+  
+        // Crear libro de trabajo
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "DatosLevantamiento");
+  
+        // Exportar el archivo con nombre personalizado
+        XLSX.writeFile(wb, `levantamiento_${sol.carnet || 'estudiante'}.xlsx`);
+      } catch (error) {
+        console.error("Error al exportar a Excel:", error);
+        alert("Ocurrió un error al exportar los datos");
+      }
+    };
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -336,17 +374,24 @@ const LevantamientosRN = () => {
                     <IconButton aria-label="Ver detalles de la solicitud"
                       color="primary"
                       size="small"
-                      onClick={() => navigate('/administrativo/vista/levantamiento', { state: { sol:item } })}>
+                      onClick={() => navigate('/administrativo/vista/levantamiento', { state: { sol: item } })}>
 
                       <VisibilityIcon />
 
                     </IconButton>
-                    <IconButton onClick={handleMenuClick}><MoreVertIcon /></IconButton>
-                    <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                      <MenuItem onClick={handleMenuClose}>Descargar PDF</MenuItem>
-                      <MenuItem onClick={handleMenuClose}>Comentarios</MenuItem>
-                      <MenuItem onClick={handleMenuClose}>Gestión</MenuItem>
-                    </Menu>
+                    <IconButton
+                      aria-label="Descargar"
+                      color="secondary"
+
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        exportSingleToExcel(item);
+                      }}
+                      size="small"
+                    >
+                      <DownloadIcon fontSize="small" />
+                    </IconButton>
+                    
                   </TableCell>
                 </TableRow>
               ))}
