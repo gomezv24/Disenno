@@ -352,7 +352,9 @@ const AdministrativosHistInclu = () => {
 
         </Container>
         <Container maxWidth="xl" sx={{ py: 5 }}>
-
+        <footer style={{ textAlign: 'center', padding: '1rem', fontSize: '0.9rem' }}>
+          <p>© 2025 Curso Diseño de software. Todos los derechos reservados.</p>
+        </footer>
         </Container>
       </Box>
     </Box>
