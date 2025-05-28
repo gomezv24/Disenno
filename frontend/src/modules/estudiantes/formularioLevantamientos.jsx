@@ -300,13 +300,36 @@ const FormularioLevantamiento = () => {
               )}
 
               {activeStep === 2 && (
-                <form>
-                  <fieldset>
-                    <legend className="visuallyhidden">Motivo de la solicitud</legend>
-                    <TextField id="motivo" name="motivo" fullWidth multiline rows={3} sx={{ mb: 2 }} value={academicDetails.motivo} onChange={handleMotivoChange} InputLabelProps={{ shrink: false }} label="Motivo" />
-                    <TextField id="detalle" name="detalle" fullWidth multiline rows={2} sx={{ mb: 2 }} value={academicDetails.detalle} onChange={handleMotivoChange} InputLabelProps={{ shrink: false }} label="Detalle adicional" />
-                  </fieldset>
-                </form>
+                <>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, mt: 2 }}>Motivo de la solicitud</Typography>
+                  <TextField
+                    id="motivo"
+                    name="motivo"
+                    fullWidth
+                    multiline
+                    rows={3}
+                    sx={{ mb: 2 }}
+                    value={academicDetails.motivo}
+                    onChange={handleMotivoChange}
+                    InputLabelProps={{ shrink: false }}
+                    label=""
+                    placeholder="Motivo de la solicitud"
+                  />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, mt: 2 }}>Detalle adicional</Typography>
+                  <TextField
+                    id="detalle"
+                    name="detalle"
+                    fullWidth
+                    multiline
+                    rows={2}
+                    sx={{ mb: 2 }}
+                    value={academicDetails.detalle}
+                    onChange={handleMotivoChange}
+                    InputLabelProps={{ shrink: false }}
+                    label=""
+                    placeholder="Detalle adicional"
+                  />
+                </>
               )}
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>

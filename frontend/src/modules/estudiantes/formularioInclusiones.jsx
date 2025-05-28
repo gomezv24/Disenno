@@ -273,7 +273,8 @@ const FormularioInclusion = () => {
                       <FormControlLabel value="no" control={<Radio id="tienecurson-no" />} label={<label htmlFor="tienecurson-no">No</label>} />
                     </RadioGroup>
                   </fieldset>
-                  <TextField id="consideraciones" fullWidth label="Consideraciones" value={formValues.consideraciones} onChange={handleInput('consideraciones')} sx={{ mb: 2 }} multiline rows={3} InputLabelProps={{ shrink: false }} />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, mt: 2 }}>Consideraciones</Typography>
+                  <TextField id="consideraciones" fullWidth label="" value={formValues.consideraciones} onChange={handleInput('consideraciones')} sx={{ mb: 2 }} multiline rows={3} InputLabelProps={{ shrink: false }} placeholder="Consideraciones" />
                 </>
               )}
 
