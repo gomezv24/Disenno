@@ -57,13 +57,11 @@ import { actualizarEstado } from './Funciones/coordinadoraFun';
 import DownloadIcon from '@mui/icons-material/Download';
 import * as XLSX from 'xlsx';
 
-
 const menuItems = [
   { text: 'Panel de Control', icon: <ManageAccountsIcon />, path: '/administrativo/panelControl' },
   { text: 'Inclusiones', icon: <SchoolIcon />, path: '/administrativo/listadoInclusiones' },
   { text: 'Levantamientos y RN ', icon: <TrendingUpIcon />, path: '/administrativo/levantamientorn' },
   { text: 'Reglamento de Levantamientos', icon: <MenuBookIcon />, path: '/administrativo/reglamento' },
-
 ];
 
 const LevantamientosRN = () => {
@@ -99,46 +97,39 @@ const LevantamientosRN = () => {
     cargarDatos();
   }, []);
 
-
   const getEstadoChip = (estado) => {
     switch (estado) {
       case 'Aprobado':
-        return <Chip label="Aprobado" sx={{ backgroundColor: '#d9f3e5', color: '#2e7d32', fontWeight: 'bold' }} />;
+        return <Chip label="Aprobado" sx={{ backgroundColor: '#d9f3e5', color: '#2e7d32', fontWeight: 'bold' }} aria-label={`Estado: Aprobado`} />;
       case 'Rechazado':
-        return <Chip label="Rechazado" sx={{ backgroundColor: '#fdecea', color: '#c62828', fontWeight: 'bold' }} />;
+        return <Chip label="Rechazado" sx={{ backgroundColor: '#fdecea', color: '#c62828', fontWeight: 'bold' }} aria-label={`Estado: Rechazado`} />;
       case 'Pendiente':
-        return <Chip label="Pendiente" sx={{ backgroundColor: '#fff3e0', color: '#ef6c00', fontWeight: 'bold' }} />;
+        return <Chip label="Pendiente" sx={{ backgroundColor: '#fff3e0', color: '#ef6c00', fontWeight: 'bold' }} aria-label={`Estado: Pendiente`} />;
       default:
-        return <Chip label={estado} />;
+        return <Chip label={estado} aria-label={`Estado: ${estado}`} />;
     }
   };
 
   const getTipoChip = (tipo) => {
     switch (tipo) {
       case 'Automática':
-        return <Chip label="Automática" sx={{ backgroundColor: '#e3f2fd', color: '#1976d2', fontWeight: 'bold' }} />;
+        return <Chip label="Automática" sx={{ backgroundColor: '#e3f2fd', color: '#1976d2', fontWeight: 'bold' }} aria-label={`Tipo: Automática`} />;
       case 'Manual':
-        return <Chip label="Manual" sx={{ backgroundColor: '#f3e5f5', color: '#8e24aa', fontWeight: 'bold' }} />;
+        return <Chip label="Manual" sx={{ backgroundColor: '#f3e5f5', color: '#8e24aa', fontWeight: 'bold' }} aria-label={`Tipo: Manual`} />;
       default:
-        return <Chip label={tipo} />;
+        return <Chip label={tipo} aria-label={`Tipo: ${tipo}`} />;
     }
   };
 
   const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
 
-  //Estados de los formularios
   const handleAccion = async (tipo, index) => {
-    const idformulario = levantamientos[index].idformulario; // Asegúrate de que venga del backend
-
+    const idformulario = levantamientos[index].idformulario;
     const idestado = tipo === 'aprobar' ? 3 : 4;
-    console.log("idformulario:", idformulario, "idestado:", idestado);
-
 
     try {
       await actualizarEstado(idformulario, idestado);
-
-      // Actualiza en frontend solo para reflejar visualmente
       const updated = [...levantamientos];
       updated[index].estado = idestado === 3 ? 'Aprobado' : 'Rechazado';
       setLevantamientos(updated);
@@ -156,7 +147,6 @@ const LevantamientosRN = () => {
       });
     }
   };
-
 
   const filtrados = levantamientos.filter((item) => {
     if (filtroActual === 'Todos') return true;
@@ -187,55 +177,68 @@ const LevantamientosRN = () => {
     setSeleccionado(null);
   };
 
+  const exportSingleToExcel = (sol) => {
+    const datosExportar = [{
+      "Nombre Estudiante": sol.nombre || '',
+      Carnet: sol.carnet || '',
+      "Fecha de Solicitud": sol.fecha || '',
+      "Curso a matricular": sol.curso || '',
+      "Requisito a levantar": sol.requisito || '',
+      Estado: sol.estado || '',
+      Correo: sol.correo || '',
+      "Estado Solicitud": sol.estado || '',
+      Carrera: sol.carrera || '',
+      Consideraciones: sol.consideraciones || '',
+      "Tipo de solicitud": sol.tiposolicitud || '',
+      "Plan de estudio": sol.planestudio || '',
+      Sede: sol.sede || '',
+      Comentarios: sol.comentario || '',
+    }];
 
-    const exportSingleToExcel = (sol) => {
-      // Preparar los datos para exportar (como array con un solo elemento)
-      const datosExportar = [{
-  
-        "Nombre Estudiante": sol.nombre || '',
-        Carnet: sol.carnet || '',
-        "Fecha de Solicitud": sol.fecha || '',
-        "Curso a matricular": sol.curso || '',
-        "Requisito a levantar": sol.requisito || '',
-        Estado: sol.estado || '',
-        Correo: sol.correo || '',
-        "Estado Solicitud": sol.estado || '',
-        Carrera: sol.carrera || '',
-        Consideraciones: sol.consideraciones || '',
-        "Tipo de solicitud": sol.tiposolicitud || '',
-        "Plan de estudio": sol.planestudio || '',
-        Sede: sol.sede || '',
-        Comentarios: sol.comentario || '',
-  
-      }];
-  
-      try {
-        // Crear hoja de trabajo
-        const ws = XLSX.utils.json_to_sheet(datosExportar);
-  
-        // Crear libro de trabajo
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "DatosLevantamiento");
-  
-        // Exportar el archivo con nombre personalizado
-        XLSX.writeFile(wb, `levantamiento_${sol.carnet || 'estudiante'}.xlsx`);
-      } catch (error) {
-        console.error("Error al exportar a Excel:", error);
-        alert("Ocurrió un error al exportar los datos");
-      }
-    };
+    try {
+      const ws = XLSX.utils.json_to_sheet(datosExportar);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "DatosLevantamiento");
+      XLSX.writeFile(wb, `levantamiento_${sol.carnet || 'estudiante'}.xlsx`);
+    } catch (error) {
+      console.error("Error al exportar a Excel:", error);
+      setSnackbar({
+        open: true,
+        message: "Ocurrió un error al exportar los datos",
+        severity: 'error',
+      });
+    }
+  };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{ display: 'flex', height: '100vh' }} role="main">
       {/* Navegación lateral */}
-      <Box component="nav" sx={{ width: '260px', backgroundColor: '#fff', borderRight: '1px solid #ddd', p: 3 }}>
+      <Box 
+        component="nav" 
+        aria-label="Menú principal"
+        sx={{ width: '260px', backgroundColor: '#fff', borderRight: '1px solid #ddd', p: 3 }}
+      >
         <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <img src={imagenRegistro} alt="Logo del TEC" style={{ height: 60 }} />
+          <img 
+            src={imagenRegistro} 
+            alt="Logo del Tecnológico de Costa Rica" 
+            style={{ height: 60 }}
+            aria-hidden="false"
+          />
         </Box>
-        <List>
+        <List aria-label="Opciones del menú">
           {menuItems.map((item) => (
-            <ListItem button key={item.text} onClick={() => navigate(item.path)} selected={location.pathname === item.path} sx={{ color: '#001B3D', mb: 1, borderRadius: '8px' }}>
-              <ListItemIcon sx={{ color: '#001B3D' }}>{item.icon}</ListItemIcon>
+            <ListItem 
+              button 
+              key={item.text} 
+              onClick={() => navigate(item.path)} 
+              selected={location.pathname === item.path} 
+              sx={{ color: '#001B3D', mb: 1, borderRadius: '8px' }}
+              aria-current={location.pathname === item.path ? 'page' : undefined}
+            >
+              <ListItemIcon sx={{ color: '#001B3D' }} aria-hidden="true">
+                {item.icon}
+              </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItem>
           ))}
@@ -243,15 +246,20 @@ const LevantamientosRN = () => {
       </Box>
 
       {/* Contenido principal */}
-      <Box component="main" sx={{ flexGrow: 1, p: 5 }}>
-        <Typography variant="h4" fontWeight="bold" color="#062043">
+      <Box 
+        component="main" 
+        sx={{ flexGrow: 1, p: 5 }}
+        aria-labelledby="page-title"
+      >
+        <Typography variant="h4" fontWeight="bold" color="#062043" id="page-title">
           Levantamiento de requisitos y condición RN
         </Typography>
         <Typography variant="body1" sx={{ mt: 1, mb: 4 }}>
           A continuación, se listan los levantamientos registrados, su estado y tipo
         </Typography>
 
-        <Grid container spacing={6} mb={4}>
+        {/* Resumen estadístico */}
+        <Grid container spacing={6} mb={4} aria-label="Resumen estadístico de levantamientos">
           <Grid item xs={12} sm={6}>
             <Card sx={{ height: '100%' }}>
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: 150 }}>
@@ -262,14 +270,27 @@ const LevantamientosRN = () => {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Todos los levantamientos registrados
                   </Typography>
-                  <Typography variant="h5" fontWeight="bold">
+                  <Typography variant="h5" fontWeight="bold" aria-live="polite">
                     {resumen.total}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
                     I Semestre 2025
                   </Typography>
                 </Box>
-                <Box sx={{ width: 40, height: 40, backgroundColor: '#002B5C', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22 }}>
+                <Box 
+                  sx={{ 
+                    width: 40, 
+                    height: 40, 
+                    backgroundColor: '#002B5C', 
+                    borderRadius: '50%', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    color: '#fff', 
+                    fontSize: 22 
+                  }}
+                  aria-hidden="true"
+                >
                   <DescriptionIcon />
                 </Box>
               </CardContent>
@@ -286,14 +307,27 @@ const LevantamientosRN = () => {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Levantamientos que requieren revisión
                   </Typography>
-                  <Typography variant="h5" fontWeight="bold">
+                  <Typography variant="h5" fontWeight="bold" aria-live="polite">
                     {resumen.pendientes}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
                     I Semestre 2025
                   </Typography>
                 </Box>
-                <Box sx={{ width: 40, height: 40, backgroundColor: '#002B5C', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22 }}>
+                <Box 
+                  sx={{ 
+                    width: 40, 
+                    height: 40, 
+                    backgroundColor: '#002B5C', 
+                    borderRadius: '50%', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    color: '#fff', 
+                    fontSize: 22 
+                  }}
+                  aria-hidden="true"
+                >
                   <AccessTimeIcon />
                 </Box>
               </CardContent>
@@ -310,14 +344,27 @@ const LevantamientosRN = () => {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Levantamientos aprobados automáticamente
                   </Typography>
-                  <Typography variant="h5" fontWeight="bold">
+                  <Typography variant="h5" fontWeight="bold" aria-live="polite">
                     {resumen.automaticos}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
                     I Semestre 2025
                   </Typography>
                 </Box>
-                <Box sx={{ width: 40, height: 40, backgroundColor: '#002B5C', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22 }}>
+                <Box 
+                  sx={{ 
+                    width: 40, 
+                    height: 40, 
+                    backgroundColor: '#002B5C', 
+                    borderRadius: '50%', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    color: '#fff', 
+                    fontSize: 22 
+                  }}
+                  aria-hidden="true"
+                >
                   <SettingsIcon />
                 </Box>
               </CardContent>
@@ -325,29 +372,41 @@ const LevantamientosRN = () => {
           </Grid>
         </Grid>
 
-        <Tabs value={filtroActual} onChange={(e, v) => setFiltroActual(v)} variant="scrollable" scrollButtons="auto" sx={{ mb: 2, bgcolor: '#405F90', color: '#fff' }}>
+        {/* Filtros */}
+        <Tabs 
+          value={filtroActual} 
+          onChange={(e, v) => setFiltroActual(v)} 
+          variant="scrollable" 
+          scrollButtons="auto" 
+          sx={{ mb: 2, bgcolor: '#405F90', color: '#fff' }}
+          aria-label="Filtros de levantamientos"
+        >
           {['Todos', 'Pendientes', 'Aprobados', 'Rechazados'].map((filtro) => (
-            <Tab key={filtro} label={filtro} value={filtro} sx={{ fontSize: '0.85rem', fontWeight: 500, color: '#fff' }} />
+            <Tab 
+              key={filtro} 
+              label={filtro} 
+              value={filtro} 
+              sx={{ fontSize: '0.85rem', fontWeight: 500, color: '#fff' }}
+              id={`tab-${filtro}`}
+              aria-controls={`tabpanel-${filtro}`}
+            />
           ))}
         </Tabs>
-        {/* 
-  Sin conectar 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-          <Paper component="form" sx={{ display: 'flex', alignItems: 'center', width: 250, height: 40, pl: 1 }}>
-            <SearchIcon />
-            <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Buscar..." inputProps={{ 'aria-label': 'Buscar' }} />
-          </Paper>
-          <Select size="small" defaultValue="recientes" sx={{ height: 40, ml: 2 }}>
-            <MenuItem value="recientes">Más recientes</MenuItem>
-            <MenuItem value="antiguos">Más antiguos</MenuItem>
-          </Select>
-        </Box>
-*/}
-        {loading && <Typography align="center" sx={{ mt: 4 }}>Cargando levantamientos...</Typography>}
-        {error && <Alert severity="error">Error al cargar los datos: {error}</Alert>}
 
-        <TableContainer component={Paper}>
-          <Table>
+        {loading && (
+          <Typography align="center" sx={{ mt: 4 }} aria-live="polite" aria-busy="true">
+            Cargando levantamientos...
+          </Typography>
+        )}
+        {error && (
+          <Alert severity="error" aria-live="assertive">
+            Error al cargar los datos: {error}
+          </Alert>
+        )}
+
+        {/* Tabla de levantamientos */}
+        <TableContainer component={Paper} aria-label="Lista de levantamientos">
+          <Table aria-label="Tabla de levantamientos de requisitos">
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 'bold' }}>Sede</TableCell>
@@ -361,28 +420,37 @@ const LevantamientosRN = () => {
             </TableHead>
             <TableBody>
               {filtrados.map((item, i) => (
-                <TableRow key={i}>
-                  <TableCell>{item.sede}</TableCell>
-                  <TableCell>{item.carnet}</TableCell>
-                  <TableCell>{item.nombre}</TableCell>
-                  <TableCell>{item.curso}</TableCell>
-                  <TableCell>{item.requisito}</TableCell>
+                <TableRow key={i} aria-rowindex={i+1}>
+                  <TableCell>{item.sede || 'No especificado'}</TableCell>
+                  <TableCell>{item.carnet || 'No especificado'}</TableCell>
+                  <TableCell>{item.nombre || 'No especificado'}</TableCell>
+                  <TableCell>{item.curso || 'No especificado'}</TableCell>
+                  <TableCell>{item.requisito || 'No especificado'}</TableCell>
                   <TableCell>{getEstadoChip(item.estado)}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleAccion('aprobar', i)}><CheckIcon /></IconButton>
-                    <IconButton onClick={() => handleAccion('rechazar', i)}><CloseIcon /></IconButton>
-                    <IconButton aria-label="Ver detalles de la solicitud"
+                    <IconButton 
+                      onClick={() => handleAccion('aprobar', i)}
+                      aria-label={`Aprobar solicitud de ${item.nombre || 'estudiante'}`}
+                    >
+                      <CheckIcon />
+                    </IconButton>
+                    <IconButton 
+                      onClick={() => handleAccion('rechazar', i)}
+                      aria-label={`Rechazar solicitud de ${item.nombre || 'estudiante'}`}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                    <IconButton 
+                      aria-label={`Ver detalles de la solicitud de ${item.nombre || 'estudiante'}`}
                       color="primary"
                       size="small"
-                      onClick={() => navigate('/administrativo/vista/levantamiento', { state: { sol: item } })}>
-
+                      onClick={() => navigate('/administrativo/vista/levantamiento', { state: { sol: item } })}
+                    >
                       <VisibilityIcon />
-
                     </IconButton>
                     <IconButton
-                      aria-label="Descargar"
+                      aria-label={`Descargar solicitud de ${item.nombre || 'estudiante'} en formato Excel`}
                       color="secondary"
-
                       onClick={(e) => {
                         e.stopPropagation();
                         exportSingleToExcel(item);
@@ -391,7 +459,6 @@ const LevantamientosRN = () => {
                     >
                       <DownloadIcon fontSize="small" />
                     </IconButton>
-                    
                   </TableCell>
                 </TableRow>
               ))}
@@ -399,28 +466,56 @@ const LevantamientosRN = () => {
           </Table>
         </TableContainer>
 
-        <Pagination count={3} page={1} color="primary" sx={{ mt: 3, display: 'flex', justifyContent: 'center' }} />
+        <Pagination 
+          count={3} 
+          page={1} 
+          color="primary" 
+          sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
+          aria-label="Paginación de resultados"
+        />
 
-        <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
-          <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>{snackbar.message}</Alert>
+        <Snackbar 
+          open={snackbar.open} 
+          autoHideDuration={4000} 
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          aria-live="assertive"
+        >
+          <Alert 
+            onClose={() => setSnackbar({ ...snackbar, open: false })} 
+            severity={snackbar.severity}
+            aria-atomic="true"
+          >
+            {snackbar.message}
+          </Alert>
         </Snackbar>
 
-        <Dialog open={detalleAbierto} onClose={manejarCerrarDetalles}>
-          <DialogTitle>Detalle del levantamiento</DialogTitle>
-          <DialogContent dividers>
+        <Dialog 
+          open={detalleAbierto} 
+          onClose={manejarCerrarDetalles}
+          aria-labelledby="detalle-dialog-title"
+          aria-describedby="detalle-dialog-description"
+        >
+          <DialogTitle id="detalle-dialog-title">Detalle del levantamiento</DialogTitle>
+          <DialogContent dividers id="detalle-dialog-description">
             {seleccionado && (
-              <Box>
-                <Typography><strong>Sede:</strong> {seleccionado.sede}</Typography>
-                <Typography><strong>Carnet:</strong> {seleccionado.carnet}</Typography>
-                <Typography><strong>Nombre:</strong> {seleccionado.nombre}</Typography>
-                <Typography><strong>Curso:</strong> {seleccionado.curso}</Typography>
-                <Typography><strong>Requisito:</strong> {seleccionado.requisito}</Typography>
-                <Typography><strong>Estado:</strong> {seleccionado.estado}</Typography>
+              <Box component="div" role="document">
+                <Typography><strong>Sede:</strong> {seleccionado.sede || 'No especificado'}</Typography>
+                <Typography><strong>Carnet:</strong> {seleccionado.carnet || 'No especificado'}</Typography>
+                <Typography><strong>Nombre:</strong> {seleccionado.nombre || 'No especificado'}</Typography>
+                <Typography><strong>Curso:</strong> {seleccionado.curso || 'No especificado'}</Typography>
+                <Typography><strong>Requisito:</strong> {seleccionado.requisito || 'No especificado'}</Typography>
+                <Typography><strong>Estado:</strong> {seleccionado.estado || 'No especificado'}</Typography>
               </Box>
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={manejarCerrarDetalles}>Cerrar</Button>
+            <Button 
+              onClick={manejarCerrarDetalles}
+              autoFocus
+              aria-label="Cerrar diálogo de detalles"
+            >
+              Cerrar
+            </Button>
           </DialogActions>
         </Dialog>
       </Box>
