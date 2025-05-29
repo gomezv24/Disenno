@@ -255,6 +255,9 @@ const AdministrativosVista = () => {
           </CardContent>
         </Card>
       </Container>
+      <footer style={{ textAlign: 'center', padding: '1rem', fontSize: '0.9rem' }}>
+        <p>© 2025 Curso Diseño de software. Todos los derechos reservados.</p>
+      </footer>
     </Box>
   );
 

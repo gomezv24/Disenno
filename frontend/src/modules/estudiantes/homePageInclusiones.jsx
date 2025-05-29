@@ -9,6 +9,7 @@
 // Permite acceso directo al formulario para realizar la solicitud de inclusión.
 //------------------------------------------------------------------------------
 
+// Versión accesible estructurada de HomePageInclusiones
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -41,8 +42,7 @@ const HomePageInclusiones = () => {
       try {
         const response = await fetch('http://localhost:5000/procesos/Inclusi%C3%B3n%20de%20curso');
         const data = await response.json();
-        console.log("Data inclusión:", data);
-        setInfo(data[0]); 
+        setInfo(data[0]);
       } catch (error) {
         console.error('Error al obtener la información de inclusión:', error);
       }
@@ -50,8 +50,6 @@ const HomePageInclusiones = () => {
 
     fetchInclusionInfo();
   }, []);
-
-    
 
   const menuItems = [
     { text: 'Inicio', icon: <HomeIcon />, path: '/' },
@@ -64,22 +62,15 @@ const HomePageInclusiones = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <a href="#contenido-principal" className="sr-only focus:not-sr-only" style={{ position: 'absolute', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>Saltar al contenido principal</a>
+
       {/* Menú lateral */}
-      <nav
-        aria-label="Menú principal"
-        style={{
-          width: '250px',
-          backgroundColor: '#ffffff',
-          color: '#062043',
-          padding: '32px 0',
-          boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
-          borderRight: '1px solid #ddd',
-          height: '100vh'
-        }}
-      >
-        <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
-        </Box>
+      <nav aria-label="Menú principal" style={{ width: '250px', backgroundColor: '#ffffff', color: '#062043', padding: '32px 0', boxShadow: '2px 0 5px rgba(0,0,0,0.1)', borderRight: '1px solid #ddd', height: '100vh' }}>
+        <header>
+          <Box sx={{ mb: 4, textAlign: 'center' }}>
+            <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
+          </Box>
+        </header>
 
         <List>
           {menuItems.map((item) => (
@@ -104,12 +95,8 @@ const HomePageInclusiones = () => {
       </nav>
 
       {/* Cuerpo principal */}
-      <main style={{ flex: 1 }}>
-        <header>
-          <Container sx={{ px: 5, pt: 6 }} />
-        </header>
-
-        <Container sx={{ px: 5, py: 2 }}>
+      <main id="contenido-principal" style={{ flex: 1 }}>
+        <Container sx={{ px: 5, pt: 6 }}>
           <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mb: 3 }}>
             Inclusiones a cursos
           </Typography>
@@ -122,7 +109,7 @@ const HomePageInclusiones = () => {
 
           <section aria-labelledby="info-importante">
             <Box sx={{ backgroundColor: '#E0E7FF', p: 2, borderRadius: 2, mb: 2 }}>
-              <Typography id="info-importante" variant="h2" sx={{ mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
+              <Typography id="info-importante" component="h2" variant="h6" sx={{ mb: 1, fontWeight: 'bold' }}>
                 Información
               </Typography>
               <ul>
@@ -134,9 +121,8 @@ const HomePageInclusiones = () => {
             </Box>
           </section>
 
-          {/* Periodo de solicitud */}
           <section>
-            <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
+            <Typography component="h2" variant="h6" sx={{ mt: 4, mb: 1, fontWeight: 'bold' }}>
               Periodo de solicitud
             </Typography>
             <Typography sx={{ mb: 2 }}>
@@ -145,7 +131,7 @@ const HomePageInclusiones = () => {
                 : 'Cargando fechas...'}
             </Typography>
 
-            <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
+            <Typography component="h2" variant="h6" sx={{ mt: 4, mb: 1, fontWeight: 'bold' }}>
               Consultas
             </Typography>
             <Typography>
@@ -158,6 +144,7 @@ const HomePageInclusiones = () => {
             <Button
               variant="contained"
               size="large"
+              aria-label="Ir al formulario de solicitud de inclusión"
               sx={{
                 mt: 5,
                 backgroundColor: '#3b5998',
@@ -172,6 +159,10 @@ const HomePageInclusiones = () => {
             </Button>
           </Box>
         </Container>
+
+        <footer style={{ textAlign: 'center', padding: '1rem', fontSize: '0.9rem' }}>
+          <p>© Curso Diseño de software. Todos los derechos reservados.</p>
+        </footer>
       </main>
     </Box>
   );

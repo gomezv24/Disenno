@@ -1,17 +1,19 @@
 import React from 'react';
-import { Container, Button, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, List, ListItem, ListItemIcon, ListItemText, Tabs, Tab } from '@mui/material';
-import { Delete, Visibility, Home, School, TrendingUp, ExitToApp, AssignmentTurnedIn } from '@mui/icons-material';
+import {
+  Container, Button, Typography, Box, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, IconButton, List, ListItem, ListItemIcon, ListItemText,
+  Tabs, Tab, TablePagination
+} from '@mui/material';
+import {
+  Visibility
+} from '@mui/icons-material';
 import imagenRegistro from '../../assets/logoTec.png';
 import imagenUsuario from '../../assets/imagenUsuario.png';
-import { Link, useLocation } from 'react-router-dom';
-import { TablePagination } from '@mui/material';
-import { informacion } from './Funciones/usuarios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import GroupIcon from '@mui/icons-material/Group';
 import SchoolIcon from '@mui/icons-material/School';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import { informacion } from './Funciones/usuarios';
 
 const AdministradorUsuarios = () => {
   const location = useLocation();
@@ -22,20 +24,13 @@ const AdministradorUsuarios = () => {
   const [error, setError] = React.useState(null);
   const [filteredSolicitudes, setFilteredSolicitudes] = React.useState([]);
   const [tabValue, setTabValue] = React.useState('1');
-
-  // Estados para paginación
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  // Cargar datos al montar el componente
   const cargarDatos = async (tipo) => {
-
     try {
       setLoading(true);
-      let datos;
-
-      datos = await informacion(tipo);
-
+      const datos = await informacion(tipo);
       setSolicitudes(datos);
       setFilteredSolicitudes(datos);
       setError(null);
@@ -60,7 +55,6 @@ const AdministradorUsuarios = () => {
         '2': 'Pendiente',
         '3': 'Aprobado',
         '4': 'Rechazado',
-
       };
       const filtered = solicitudes.filter(sol => sol.estado === estadoMap[tabValue]);
       setFilteredSolicitudes(filtered);
@@ -88,145 +82,125 @@ const AdministradorUsuarios = () => {
     setPage(0);
   };
 
-
-
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      <nav
-        aria-label="Menú principal"
-        style={{
-          width: '300px',
-          backgroundColor: '#ffffff',
-          color: '#062043',
-          padding: '32px 0',
-          boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
-          borderRight: '1px solid #ddd',
-          height: '100vh'
-        }}
-      >
-        <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
-        </Box>
-        <List>
-          {menuItems.map((item) => (
-            <ListItem
-              button
-              key={item.text}
-              component={Link}
-              to={item.path}
-              selected={location.pathname === item.path}
-              sx={{
-                color: '#062043',
-                minHeight: '3.5rem',
-                '&.Mui-selected': { backgroundColor: '#f0f0f0', fontWeight: 'bold' },
-                '&:hover': { backgroundColor: '#f9f9f9' }
-              }}
-            >
-              <ListItemIcon sx={{ color: '#062043' }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItem>
-          ))}
-        </List>
-      </nav>
-      {/* Contenido principal */}
-      <Box sx={{
-        flexGrow: 1,
-        marginLeft: '10px',
-        padding: 3,
-        width: 'calc(100% - 250px)'
-      }}>
-        <Container maxWidth="xl" sx={{ py: 5 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 5, flexDirection: { xs: 'column', md: 'row' }, position: 'relative' }}>
-            <Box sx={{ flex: 1, minWidth: '50%', mb: { xs: 2, md: 0 }, order: 1 }}>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mt: 1 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ display: 'flex', flexGrow: 1 }}>
+        <nav
+          aria-label="Menú principal"
+          style={{
+            width: '300px',
+            backgroundColor: '#ffffff',
+            color: '#062043',
+            padding: '32px 0',
+            boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
+            borderRight: '1px solid #ddd',
+            height: '100vh'
+          }}
+        >
+          <Box sx={{ mb: 4, textAlign: 'center' }}>
+            <img src={imagenRegistro} alt="Logo del Instituto Tecnológico de Costa Rica" style={{ height: '60px' }} />
+          </Box>
+          <List>
+            {menuItems.map((item) => (
+              <ListItem
+                button
+                key={item.text}
+                component={Link}
+                to={item.path}
+                selected={location.pathname === item.path}
+                sx={{
+                  color: '#062043',
+                  minHeight: '3.5rem',
+                  '&.Mui-selected': { backgroundColor: '#f0f0f0', fontWeight: 'bold' },
+                  '&:hover': { backgroundColor: '#f9f9f9' }
+                }}
+              >
+                <ListItemIcon sx={{ color: '#062043' }}>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItem>
+            ))}
+          </List>
+        </nav>
+
+        <Box sx={{ flexGrow: 1, padding: 3 }}>
+          <Container maxWidth="xl" sx={{ py: 5 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 5 }}>
+              <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#062043' }}>
                 Usuarios
               </Typography>
-            </Box >
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              order: { xs: 2, md: 3 }
-            }}>
-
-              <img src={imagenUsuario} alt="Usuario" style={{ height: '50px', borderRadius: '50%' }}
-              />
+              <img src={imagenUsuario} alt="Usuario" style={{ height: '50px', borderRadius: '50%' }} />
             </Box>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
 
-          </Box>
+            {/* Descripción accesible */}
+            <Typography
+              id="descripcion-tabla"
+              variant="body1"
+              sx={{ mb: 2 }}
+            >
+              Esta tabla muestra los usuarios registrados, con sus datos de identificación, estado y rol. Puede filtrar y revisar la información correspondiente.
+            </Typography>
 
-
-          <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-            <Table aria-label="Tabla de información histórica de inclusiones">
-              <TableHead sx={{ backgroundColor: '#E3EAFD' }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Sede</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Identificacion</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Rol</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {loading ? (
+            <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
+              <Table aria-label="Tabla de usuarios registrados" aria-describedby="descripcion-tabla">
+                <TableHead sx={{ backgroundColor: '#E3EAFD' }}>
                   <TableRow>
-                    <TableCell colSpan={8} align="center">
-                      Cargando datos...
-                    </TableCell>
+                    <TableCell>Sede</TableCell>
+                    <TableCell>Identificación</TableCell>
+                    <TableCell>Nombre</TableCell>
+                    <TableCell>Rol</TableCell>
+                    <TableCell>Estado</TableCell>
                   </TableRow>
-                ) : error ? (
-                  <TableRow>
-                    <TableCell colSpan={8} align="center" sx={{ color: 'error.main' }}>
-                      Error: {error}
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filteredSolicitudes
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((sol, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{sol.sede}</TableCell>
-                        <TableCell>{sol.identificacion}</TableCell>
-                        <TableCell>{sol.nombre}</TableCell>
-                        <TableCell>{sol.tipo}</TableCell>
-                        <TableCell>
-                          <Box sx={colorEstado(sol.estado)}>
-                            {sol.estado}
-                          </Box>
-                        </TableCell>
-                        
-                      </TableRow>
-                    ))
-                )}
-              </TableBody>
-            </Table>
+                </TableHead>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={8} align="center">Cargando datos...</TableCell>
+                    </TableRow>
+                  ) : error ? (
+                    <TableRow>
+                      <TableCell colSpan={8} align="center" sx={{ color: 'error.main' }}>Error: {error}</TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredSolicitudes
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((sol, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{sol.sede}</TableCell>
+                          <TableCell>{sol.identificacion}</TableCell>
+                          <TableCell>{sol.nombre}</TableCell>
+                          <TableCell>{sol.tipo}</TableCell>
+                          <TableCell>
+                            <Box sx={colorEstado(sol.estado)}>
+                              {sol.estado}
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  )}
+                </TableBody>
+              </Table>
 
-            {!loading && !error && (
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 50]}
-                component="div"
-                count={solicitudes.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                labelRowsPerPage="Filas por página:"
-              />
-            )}
-          </TableContainer>
-
-        </Container>
-        <Container maxWidth="xl" sx={{ py: 5 }}>
-
-        </Container>
+              {!loading && !error && (
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 50]}
+                  component="div"
+                  count={solicitudes.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  labelRowsPerPage="Filas por página:"
+                />
+              )}
+            </TableContainer>
+          </Container>
+        </Box>
       </Box>
+        <footer style={{ textAlign: 'center', padding: '1rem', fontSize: '0.9rem' }}>
+          <p>© 2025 Curso Diseño de software. Todos los derechos reservados.</p>
+        </footer>
     </Box>
   );
 };
-
-
-
 
 export default AdministradorUsuarios;

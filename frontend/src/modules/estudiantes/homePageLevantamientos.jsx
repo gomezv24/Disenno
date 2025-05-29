@@ -1,3 +1,4 @@
+// Versión accesible estructurada de HomePageLevantamientos
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -30,13 +31,11 @@ const HomePageLevantamientos = () => {
       try {
         const response = await fetch('http://localhost:5000/procesos/Levantamiento%20de%20requisitos');
         const data = await response.json();
-        console.log("📦 Data levantamientos:", data);
-        setInfo(data[0]); // ✅ toma el primer objeto del array
+        setInfo(data[0]);
       } catch (error) {
-        console.error('❌ Error al obtener la información de levantamientos:', error);
+        console.error('Error al obtener la información de levantamientos:', error);
       }
     };
-
     fetchLevantamientoInfo();
   }, []);
 
@@ -51,6 +50,8 @@ const HomePageLevantamientos = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <a href="#contenido-principal" className="sr-only focus:not-sr-only" style={{ position: 'absolute', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>Saltar al contenido principal</a>
+
       <nav aria-label="Menú principal">
         <Box
           sx={{
@@ -93,12 +94,8 @@ const HomePageLevantamientos = () => {
         </Box>
       </nav>
 
-      <main style={{ flex: 1 }}>
-        <header>
-          <Container sx={{ px: 5, pt: 6 }} />
-        </header>
-
-        <Container sx={{ px: 5, py: 2 }}>
+      <main id="contenido-principal" style={{ flex: 1 }}>
+        <Container sx={{ px: 5, pt: 6 }}>
           <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mb: 3 }}>
             Levantamiento de requisitos y condición RN
           </Typography>
@@ -107,9 +104,9 @@ const HomePageLevantamientos = () => {
             {info?.informacion || 'Cargando información del proceso...'}
           </Typography>
 
-          <section>
+          <section aria-labelledby="info-title">
             <Box sx={{ backgroundColor: '#E0E7FF', p: 2, borderRadius: 2, mb: 2 }}>
-              <Typography variant="h2" sx={{ fontWeight: 'bold', fontSize: '1.3rem', mb: 1 }}>
+              <Typography id="info-title" component="h2" variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
                 Información
               </Typography>
               <ul>
@@ -121,7 +118,7 @@ const HomePageLevantamientos = () => {
           </section>
 
           <section>
-            <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
+            <Typography component="h2" variant="h6" sx={{ mt: 4, mb: 1, fontWeight: 'bold' }}>
               Periodo de solicitud
             </Typography>
             <Typography sx={{ mb: 2 }}>
@@ -130,7 +127,7 @@ const HomePageLevantamientos = () => {
                 : 'Cargando fechas...'}
             </Typography>
 
-            <Typography variant="h2" sx={{ mt: 4, mb: 1, fontWeight: 'bold', fontSize: '1.3rem' }}>
+            <Typography component="h2" variant="h6" sx={{ mt: 4, mb: 1, fontWeight: 'bold' }}>
               Consultas
             </Typography>
             <Typography>
@@ -142,6 +139,7 @@ const HomePageLevantamientos = () => {
             <Button
               variant="contained"
               size="large"
+              aria-label="Ir al formulario de levantamiento de requisitos"
               sx={{
                 mt: 5,
                 backgroundColor: '#3b5998',
@@ -156,6 +154,10 @@ const HomePageLevantamientos = () => {
             </Button>
           </Box>
         </Container>
+
+        <footer style={{ textAlign: 'center', padding: '1rem', fontSize: '0.9rem' }}>
+          <p>© Curso Diseño de software. Todos los derechos reservados</p>
+        </footer>
       </main>
     </Box>
   );

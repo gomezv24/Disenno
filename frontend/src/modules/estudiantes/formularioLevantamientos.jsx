@@ -22,7 +22,8 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Snackbar
 } from '@mui/material';
 
 import { Link, useLocation } from 'react-router-dom';
@@ -32,6 +33,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import imagenRegistro from '../../assets/logoTec.png';
 import PersonIcon from '@mui/icons-material/Person';
@@ -53,7 +55,6 @@ const FormularioLevantamiento = () => {
 
   const [academicDetails, setAcademicDetails] = useState({
     curso: '',
-    grupo: '',
     plan: '',
     tipoSolicitud: '',
     requisito: '',
@@ -61,6 +62,8 @@ const FormularioLevantamiento = () => {
     detalle: ''
   });
   const [cursosDisponibles, setCursosDisponibles] = useState([]);
+  const [mensaje, setMensaje] = useState("");
+  const [mensajeExito, setMensajeExito] = useState(false);
 
   useEffect(() => {
     const fetchUsuarioDetallado = async () => {
@@ -147,19 +150,20 @@ const FormularioLevantamiento = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        alert('Solicitud enviada correctamente');
+        setMensajeExito(true);
+        setMensaje('¡Solicitud enviada exitosamente! Pronto podrás ver el seguimiento en la sección correspondiente.');
         setActiveStep(0);
       } else {
-        alert('Error al enviar la solicitud: ' + (data.error || 'Error desconocido'));
+        setMensaje('Error al enviar la solicitud: ' + (data.error || 'Error desconocido'));
       }
     } catch (error) {
-      alert('Error de red al enviar la solicitud');
+      setMensaje('Error de red al enviar la solicitud');
     }
   };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-
+      <a href="#contenido-principal" className="sr-only focus:not-sr-only" style={{ position: 'absolute', left: '-10000px' }}>Saltar al contenido principal</a>
       {/*--------------------------------*/}
       {/*           MENÚ LATERAL         */}
       {/*--------------------------------*/}
@@ -206,8 +210,7 @@ const FormularioLevantamiento = () => {
       {/*--------------------------------*/}
       {/*       CONTENIDO PRINCIPAL      */}
       {/*--------------------------------*/}
-      <main style={{ flex: 1 }}>
-
+      <main id="contenido-principal" style={{ flex: 1 }}>
         {/* ENCABEZADO */}
         <header>
           <Container sx={{ px: 5, pt: 6 }}></Container>
@@ -222,150 +225,152 @@ const FormularioLevantamiento = () => {
           </Typography>
 
           <Box sx={{ backgroundColor: '#EAF0FF', p: 4, borderRadius: 2 }}>
-            <Typography variant="h6" align="center" sx={{ mb: 3, fontWeight: 'bold', backgroundColor: '#DDE8FF', py: 1, borderRadius: 1 }}>
-              Formulario solicitud de Levantamiento - Sede Cartago
-            </Typography>
-
             <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
+              {steps.map((label, index) => (
+                <Step key={label}><StepLabel>{label}</StepLabel></Step>
               ))}
             </Stepper>
+            <form aria-labelledby={`paso-${activeStep}`}> {/* Paso accesible */}
+              <Typography id={`paso-${activeStep}`} component="h2" variant="h6" sx={{ mb: 2 }}>{steps[activeStep]}</Typography>
+              {activeStep === 0 && (
+                <form>
+                  <fieldset>
+                    <legend className="visuallyhidden">Datos personales</legend>
+                    <label htmlFor="carnet" className="visuallyhidden">Carnet</label>
+                    <TextField id="carnet" fullWidth value={formValues.carnet} disabled sx={{ mb: 2 }} />
+                    <label htmlFor="nombre" className="visuallyhidden">Nombre completo</label>
+                    <TextField id="nombre" fullWidth value={formValues.nombre} disabled sx={{ mb: 2 }} />
+                    <label htmlFor="correo" className="visuallyhidden">Correo electrónico</label>
+                    <TextField id="correo" fullWidth value={formValues.correo} disabled sx={{ mb: 2 }} />
+                    <label htmlFor="carrera" className="visuallyhidden">Carrera</label>
+                    <TextField id="carrera" fullWidth value={formValues.carrera} disabled sx={{ mb: 2 }} />
+                    <label htmlFor="sede" className="visuallyhidden">Sede</label>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <Select id="sede" value={formValues.sede} disabled inputProps={{ 'aria-label': 'Sede' }}>
+                        <MenuItem value={1}>Cartago</MenuItem>
+                        <MenuItem value={2}>San José</MenuItem>
+                        <MenuItem value={3}>San Carlos</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </fieldset>
+                </form>
+              )}
 
-            {activeStep === 0 && (
-              <form>
-                <fieldset>
-                  <Typography component="legend" sx={{ fontWeight: 'bold', mb: 1 }}>Datos personales</Typography>
+              {activeStep === 1 && (
+                <form>
+                  <fieldset>
+                    <legend className="visuallyhidden">Detalles académicos</legend>
+                    <label htmlFor="curso" className="visuallyhidden">Curso a matricular</label>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <Select id="curso" name="curso" value={academicDetails.curso} onChange={handleAcademicChange} inputProps={{ 'aria-label': 'Curso a matricular' }}>
+                        {cursosDisponibles.map((curso) => (
+                          <MenuItem key={curso.codigo} value={curso.codigo}>
+                            {`${curso.codigo} - ${curso.nombre}`}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <label htmlFor="plan" className="visuallyhidden">Plan de estudio</label>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <Select id="plan" name="plan" value={academicDetails.plan} onChange={handleAcademicChange} inputProps={{ 'aria-label': 'Plan de estudio' }}>
+                        <MenuItem value="410">410</MenuItem>
+                        <MenuItem value="411">411</MenuItem>
+                        <MenuItem value="412">412</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <label htmlFor="tipoSolicitud" className="visuallyhidden">Tipo de solicitud</label>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <Select id="tipoSolicitud" name="tipoSolicitud" value={academicDetails.tipoSolicitud} onChange={handleAcademicChange} inputProps={{ 'aria-label': 'Tipo de solicitud' }}>
+                        <MenuItem value="Levantamiento de requisitos">Levantamiento de requisitos</MenuItem>
+                        <MenuItem value="RN">RN</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <label htmlFor="requisito" className="visuallyhidden">Requisito a levantar</label>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <Select id="requisito" name="requisito" value={academicDetails.requisito} onChange={handleAcademicChange} inputProps={{ 'aria-label': 'Requisito a levantar' }}>
+                        {cursosDisponibles.map((curso) => (
+                          <MenuItem key={curso.codigo} value={curso.codigo}>
+                            {`${curso.codigo} - ${curso.nombre}`}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </fieldset>
+                </form>
+              )}
 
-                  <Typography sx={{ mt: 2 }}>Carnet</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} value={formValues.carnet} disabled />
-
-                  <Typography>Nombre completo</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} value={formValues.nombre} disabled />
-
-                  <Typography>Correo electrónico</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} value={formValues.correo} disabled />
-
-                  <Typography>Carrera</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} value={formValues.carrera} disabled />
-
-                  <Typography>Sede</Typography>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select value={formValues.sede} disabled>
-                      <MenuItem value={1}>Cartago</MenuItem>
-                      <MenuItem value={2}>San José</MenuItem>
-                      <MenuItem value={3}>San Carlos</MenuItem>
-                    </Select>
-                  </FormControl>
-                </fieldset>
-              </form>
-            )}
-
-            {activeStep === 1 && (
-              <form>
-                <fieldset>
-                  <Typography component="legend" sx={{ fontWeight: 'bold', mb: 1 }}>Detalles académicos</Typography>
-
-                  <Typography>Seleccione el curso que necesita matricular</Typography>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select name="curso" value={academicDetails.curso} onChange={handleAcademicChange}>
-                      {cursosDisponibles.map((curso) => (
-                        <MenuItem key={curso.codigo} value={curso.codigo}>
-                          {`${curso.codigo} - ${curso.nombre}`}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  <Typography>Grupo</Typography>
-                  <TextField fullWidth sx={{ mb: 2 }} name="grupo" value={academicDetails.grupo} onChange={handleAcademicChange} />
-
-                  <Typography>Plan de estudio</Typography>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select name="plan" value={academicDetails.plan} onChange={handleAcademicChange}>
-                      <MenuItem value="410">410</MenuItem>
-                      <MenuItem value="411">411</MenuItem>
-                      <MenuItem value="412">412</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <Typography>Tipo de solicitud</Typography>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select name="tipoSolicitud" value={academicDetails.tipoSolicitud} onChange={handleAcademicChange}>
-                      <MenuItem value="Levantamiento de requisitos">Levantamiento de requisitos</MenuItem>
-                      <MenuItem value="RN">RN</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <Typography>Requisito a levantar</Typography>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select name="requisito" value={academicDetails.requisito} onChange={handleAcademicChange}>
-                      {cursosDisponibles.map((curso) => (
-                        <MenuItem key={curso.codigo} value={curso.codigo}>
-                          {`${curso.codigo} - ${curso.nombre}`}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </fieldset>
-              </form>
-            )}
-
-            {activeStep === 2 && (
-              <form>
-                <fieldset>
-                  <Typography component="legend" sx={{ fontWeight: 'bold', mb: 1 }}>
-                    Motivo de la solicitud
-                  </Typography>
-
-                  <Typography sx={{ mt: 2, mb: 2 }}>
-                    Comentario por el que solicita el Levantamiento de Requisitos.
-                  </Typography>
-
+              {activeStep === 2 && (
+                <>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, mt: 2 }}>Motivo de la solicitud</Typography>
                   <TextField
+                    id="motivo"
+                    name="motivo"
                     fullWidth
                     multiline
                     rows={3}
                     sx={{ mb: 2 }}
-                    name="motivo"
                     value={academicDetails.motivo}
                     onChange={handleMotivoChange}
+                    InputLabelProps={{ shrink: false }}
+                    label=""
+                    placeholder="Motivo de la solicitud"
                   />
-                  <Typography sx={{ mt: 3 }}>Cualquier otro detalle que desee ampliar:</Typography>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, mt: 2 }}>Detalle adicional</Typography>
                   <TextField
+                    id="detalle"
+                    name="detalle"
                     fullWidth
                     multiline
                     rows={2}
                     sx={{ mb: 2 }}
-                    name="detalle"
                     value={academicDetails.detalle}
                     onChange={handleMotivoChange}
+                    InputLabelProps={{ shrink: false }}
+                    label=""
+                    placeholder="Detalle adicional"
                   />
-                </fieldset>
-              </form>
-            )}
+                </>
+              )}
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-              <Button
-                variant="contained"
-                onClick={handleBack}
-                disabled={activeStep === 0}
-                sx={{ backgroundColor: '#3b5998', textTransform: 'none', fontWeight: 'bold' }}
-              >
-                Atrás
-              </Button>
-              <Button
-                variant="contained"
-                onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-                sx={{ backgroundColor: '#3b5998', textTransform: 'none', fontWeight: 'bold' }}
-              >
-                {activeStep === steps.length - 1 ? 'Enviar solicitud' : 'Siguiente'}
-              </Button>
-            </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+                <Button
+                  variant="contained"
+                  onClick={handleBack}
+                  disabled={activeStep === 0}
+                  sx={{ backgroundColor: '#3b5998', textTransform: 'none', fontWeight: 'bold' }}
+                >
+                  Atrás
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
+                  sx={{ backgroundColor: '#3b5998', textTransform: 'none', fontWeight: 'bold' }}
+                >
+                  {activeStep === steps.length - 1 ? 'Enviar solicitud' : 'Siguiente'}
+                </Button>
+              </Box>
+            </form>
           </Box>
         </Container>
+        <Snackbar
+          open={mensajeExito}
+          autoHideDuration={6000}
+          onClose={() => setMensajeExito(false)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          ContentProps={{
+            sx: { backgroundColor: '#43a047', color: 'white', display: 'flex', alignItems: 'center', fontWeight: 'bold', fontSize: 18 },
+            role: 'alert'
+          }}
+          message={
+            <span style={{ display: 'flex', alignItems: 'center' }}>
+              <CheckCircleIcon sx={{ mr: 1, fontSize: 28 }} />
+              {mensaje}
+            </span>
+          }
+        />
+        <footer style={{ textAlign: 'center', padding: '1rem', fontSize: '0.9rem' }}>
+          <p>© 2025 Curso Diseño de software. Todos los derechos reservados.</p>
+        </footer>
       </main>
     </Box>
   );

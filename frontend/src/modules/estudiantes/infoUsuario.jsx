@@ -95,71 +95,34 @@ const InfoUsuario = () => {
       {/* CONTENIDO PRINCIPAL */}
       <main style={{ flex: 1 }}>
         <Container sx={{ px: 5, py: 6 }}>
-          <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mb: 4 }}>
-            Información del Usuario
+          <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: '#062043', mb: 2 }}>
+            Información Personal
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#757575', mb: 3, display: 'block', textAlign: 'left', pl: 0.5 }}>
+            Nota: Si alguno de estos datos es incorrecto, por favor contacte con el Departamento de Admisión y Registro (DAR).
           </Typography>
 
           {usuario ? (
-            <Paper sx={{ p: 4, backgroundColor: '#f7faff' }}>
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                  Nombre:
-                </Typography>
-                <Typography variant="body1">{usuario.nombre}</Typography>
-              </Box>
-
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                  Correo institucional:
-                </Typography>
-                <Typography variant="body1">{usuario.correoinstitucional}</Typography>
-              </Box>
-
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                  Teléfono:
-                </Typography>
-                <Typography variant="body1">{usuario.telefono}</Typography>
-              </Box>
-
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                  Sede:
-                </Typography>
-                <Typography variant="body1">{sedes[usuario.idsede] || 'Sede desconocida'}</Typography>
-              </Box>
-
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                  Rol:
-                </Typography>
-                <Typography variant="body1">{roles[usuario.idtipousuario] || 'Rol desconocido'}</Typography>
-              </Box>
-
-              {usuario.estudiante && (
-                <>
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                      Carrera:
-                    </Typography>
-                    <Typography variant="body1">{usuario.estudiante.carrera || 'No registrada'}</Typography>
+            <Paper sx={{ p: 4, background: 'linear-gradient(135deg, #f7faff 60%, #e3f0ff 100%)', borderRadius: 4, boxShadow: 3, maxWidth: 700, ml: 0, mt: 4 }} role="region" aria-label="Datos personales del usuario">
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
+                <Box sx={{ mr: 4 }}>
+                  <Box sx={{ width: 110, height: 110, borderRadius: '50%', background: '#e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 1 }}>
+                    <PersonIcon sx={{ fontSize: 70, color: '#bdbdbd' }} />
                   </Box>
-
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                      Plan de estudio:
-                    </Typography>
-                    <Typography variant="body1">{usuario.estudiante.plan || 'No registrado'}</Typography>
-                  </Box>
-
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#062043' }}>
-                      Beca:
-                    </Typography>
-                    <Typography variant="body1">{usuario.estudiante.beca || 'Sin beca'}</Typography>
-                  </Box>
-                </>
-              )}
+                </Box>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#062043', mb: 0.5 }}>Nombre Completo</Typography>
+                  <Typography variant="body1" sx={{ mb: 1 }}>{usuario.nombre}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#062043', mb: 0.5 }}>Correo institucional</Typography>
+                  <Typography variant="body1" sx={{ mb: 1 }}>{usuario.correoinstitucional}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#062043', mb: 0.5 }}>Teléfono</Typography>
+                  <Typography variant="body1" sx={{ mb: 1 }}>{usuario.telefono}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#062043', mb: 0.5 }}>Sede</Typography>
+                  <Typography variant="body1" sx={{ mb: 1 }}>{sedes[usuario.idsede] || 'Sede desconocida'}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#062043', mb: 0.5 }}>Rol</Typography>
+                  <Typography variant="body1">{roles[usuario.idtipousuario] || 'Rol desconocido'}</Typography>
+                </Box>
+              </Box>
             </Paper>
           ) : (
             <Typography color="error">No se ha iniciado sesión o no hay datos disponibles.</Typography>
