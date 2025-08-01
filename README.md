@@ -33,7 +33,6 @@ This project develops an automated academic management system for the School of 
 **Frontend**: React + Material UI  
 **Backend**: Node.js + Express.js  
 **Database**: PostgreSQL (Supabase)  
-**Authentication**: JWT with institutional credentials  
 **Version Control**: GitHub  
 
 ## Installation
