@@ -45,5 +45,8 @@ git clone https://github.com/gomezv24/Disenno.git
 cd frontend && npm install
 cd ../backend && npm install
 
+# Configure environment variables
+# Create .env files in both frontend and backend directories
+
 # Run development servers
 npm start # in both frontend and backend directories
