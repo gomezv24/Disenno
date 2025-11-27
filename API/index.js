@@ -18,7 +18,7 @@ const app = express(); // ✅ debe ir ANTES de cualquier `app.use(...)`
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: 'https://disenno-inw6.vercel.app/', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
