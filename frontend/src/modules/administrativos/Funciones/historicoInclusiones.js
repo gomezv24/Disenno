@@ -2,7 +2,7 @@
 
 export async function Sedes() {
   try {
-    const response = await fetch("http://localhost:5000/estadisticas/sede");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/sede");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -19,7 +19,7 @@ export async function Sedes() {
 
 export async function informacion(tipo) {
     try {
-        const response = await fetch("http://localhost:5000/formularios/inclusionesF");
+        const response = await fetch("https://disenno-api.vercel.app/api/formularios/inclusionesF");
         if (!response.ok) {
         throw new Error('Error en la respuesta de la API');
         }
@@ -44,7 +44,7 @@ export async function informacion(tipo) {
           }));
 
         for (let i = 0; i < solicitudes.length; i++) {
-            const response = await fetch(`http://localhost:5000/formularios/seguimiento/${solicitudes[i].idformulario}`);
+            const response = await fetch(`https://disenno-api.vercel.app/api/formularios/seguimiento/${solicitudes[i].idformulario}`);
             if (!response.ok) {
                 throw new Error('Error en la respuesta de la API');
             }
@@ -53,11 +53,11 @@ export async function informacion(tipo) {
             let estadodata = await response.json();
             //console.log("estado id",estadodata);
 
-            const estado = await fetch(`http://localhost:5000/formularios/estado/${estadodata[0].idestado}`);
+            const estado = await fetch(`https://disenno-api.vercel.app/api/formularios/estado/${estadodata[0].idestado}`);
             let estadoString = await estado.json();
             solicitudes[i].estado = estadoString[0].nombre;
 
-            const sede = await fetch(`http://localhost:5000/formularios/sede/${solicitudes[i].sede}`);
+            const sede = await fetch(`https://disenno-api.vercel.app/api/formularios/sede/${solicitudes[i].sede}`);
             let sedeString = await sede.json();
            
 
@@ -82,7 +82,7 @@ export async function informacion(tipo) {
             if (solicitudes[i].beca === null) {
                 solicitudes[i].beca = "No";
             }else {
-                const beca = await fetch(`http://localhost:5000/formularios/tipobeca/${solicitudes[i].beca}`);
+                const beca = await fetch(`https://disenno-api.vercel.app/api/formularios/tipobeca/${solicitudes[i].beca}`);
                 let becaString = await beca.json();
                 solicitudes[i].beca = becaString[0].tipo;
             }
