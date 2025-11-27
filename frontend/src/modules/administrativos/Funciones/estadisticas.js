@@ -1,6 +1,6 @@
 export async function Sedes() {
   try {
-    const response = await fetch("http://localhost:5000/estadisticas/sede");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/sede");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -19,7 +19,7 @@ export async function Sedes() {
 export async function levantamientos(semestral) {
   let semestre = [];
   try {
-    const response = await fetch("http://localhost:5000/estadisticas/levantamientos");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/levantamientos");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -77,7 +77,7 @@ export async function levantamientos(semestral) {
 export async function totallevantamientos(semestral) {
   let semestre = [];
   try {
-    const response = await fetch("http://localhost:5000/estadisticas/levantamientos");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/levantamientos");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -118,7 +118,7 @@ export async function totallevantamientos(semestral) {
 export async function levantamientosAprobados(semestral) {
   let semestre = [];
   try{
-    const response = await fetch("http://localhost:5000/estadisticas/seguimiento/levantamientos");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/seguimiento/levantamientos");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -177,7 +177,7 @@ export async function levantamientosAprobados(semestral) {
 export async function levantamientosAprobadosTotal(semestral) {
   let semestre = [];
   try{
-    const response = await fetch("http://localhost:5000/estadisticas/seguimiento/levantamientos/data");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/seguimiento/levantamientos/data");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -234,7 +234,7 @@ export async function levantamientosAprobadosTotal(semestral) {
 export async function totallevAprobados(semestral) {
   let semestre = [];
   try {
-    const response = await fetch("http://localhost:5000/estadisticas/seguimiento/levantamientos");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/seguimiento/levantamientos");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -275,7 +275,7 @@ export async function totallevAprobados(semestral) {
 export async function totallevRN(semestral) {
   let semestre = [];
   try {
-    const response = await fetch("http://localhost:5000/estadisticas/seguimiento/levantamientos/rn");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/seguimiento/levantamientos/rn");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -316,7 +316,7 @@ export async function totallevRN(semestral) {
 export async function inclusiones(semestral) {
   let semestre = [];
   try {
-    const response = await fetch("http://localhost:5000/estadisticas/inclusiones");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/inclusiones");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -375,7 +375,7 @@ export async function inclusiones(semestral) {
 export async function totalinclusiones(semestral) {
   let semestre = [];
   try {
-    const response = await fetch("http://localhost:5000/estadisticas/inclusiones");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/inclusiones");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -415,7 +415,7 @@ export async function totalinclusiones(semestral) {
 export async function inclusionesAprobadas(semestral) {
   let semestre = [];
   try{
-    const response = await fetch("http://localhost:5000/estadisticas/seguimiento/inclusiones");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/seguimiento/inclusiones");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
@@ -471,7 +471,7 @@ export async function inclusionesAprobadas(semestral) {
 export async function totalincluAprob(semestral) {
   let semestre = [];
   try {
-    const response = await fetch("http://localhost:5000/estadisticas/seguimiento/inclusiones");
+    const response = await fetch("https://disenno-api.vercel.app/api/estadisticas/seguimiento/inclusiones");
     if (!response.ok) {
       throw new Error('Error en la respuesta de la API');
     }
