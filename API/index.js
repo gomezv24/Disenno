@@ -14,33 +14,31 @@ import levantamientoPostRoutes from './src/endpoints/FormularioLevantamientoPost
 import cursosRoutes from './src/endpoints/Cursos.js';
 import coordinadoraRoutes from './src/endpoints/Coordinadora.js';
 
-const app = express(); // ✅ debe ir ANTES de cualquier `app.use(...)`
-const PORT = process.env.PORT || 5000;
+const app = express(); // 
 
 app.use(cors({
-  origin: 'https://disenno-inw6.vercel.app/', 
+  origin: 'https://disenno-inw6.vercel.app', // ← sin / al final
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
 
 // Endpoints
-app.use('/usuarios', routerUsuarios);
-app.use('/estudiantes', routerEstudiantes);
-app.use('/formularios', routerFormularios);
-app.use('/estadisticas', routerEstadisticas);
-app.use('/usuariodetallado', usuarioDetalladoRouter);
-app.use('/formularios/inclusiones', inclusionPostRoutes); 
-app.use('/formularios/levantamientos', levantamientoPostRoutes); 
-app.use('/procesos', procesosRouter);
-app.use('/seguimientoUsuario', seguimientoUsuarioRouter);
-app.use('/cursos', cursosRoutes); // ✅ ahora está en la posición correcta
-app.use('/coordinadora', coordinadoraRoutes);
+app.use('/api/usuarios', routerUsuarios);
+app.use('/api/estudiantes', routerEstudiantes);
+app.use('/api/formularios', routerFormularios);
+app.use('/api/estadisticas', routerEstadisticas);
+app.use('/api/usuariodetallado', usuarioDetalladoRouter);
+app.use('/api/formularios/inclusiones', inclusionPostRoutes); 
+app.use('/api/formularios/levantamientos', levantamientoPostRoutes); 
+app.use('/api/procesos', procesosRouter);
+app.use('/api/seguimientoUsuario', seguimientoUsuarioRouter);
+app.use('/api/cursos', cursosRoutes);
+app.use('/api/coordinadora', coordinadoraRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Welcome to the API!');
+app.get('/api', (req, res) => {
+  res.json({ message: 'Welcome to the API!' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+
+export default app;
