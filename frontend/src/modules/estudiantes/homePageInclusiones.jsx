@@ -40,7 +40,7 @@ const HomePageInclusiones = () => {
   useEffect(() => {
     const fetchInclusionInfo = async () => {
       try {
-        const response = await fetch('http://localhost:5000/procesos/Inclusi%C3%B3n%20de%20curso');
+        const response = await fetch('https://disenno-api.vercel.app/api/procesos/Inclusi%C3%B3n%20de%20curso');
         const data = await response.json();
         setInfo(data[0]);
       } catch (error) {
