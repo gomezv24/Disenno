@@ -28,7 +28,7 @@ const HomePageRetiros = () => {
   useEffect(() => {
     const fetchRetiroInfo = async () => {
       try {
-        const response = await fetch('http://localhost:5000/procesos/Retiro');
+        const response = await fetch('https://disenno-api.vercel.app/api/procesos/Retiro');
         const data = await response.json();
         setInfo(data[0]);
       } catch (error) {
