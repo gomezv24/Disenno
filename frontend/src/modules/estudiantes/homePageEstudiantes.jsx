@@ -33,9 +33,9 @@ const HomePageEstudiantes = () => {
     const fetchData = async () => {
       try {
         const responses = await Promise.all([
-          fetch('http://localhost:5000/procesos/Inclusión de curso'),
-          fetch('http://localhost:5000/procesos/Levantamiento de requisitos'),
-          fetch('http://localhost:5000/procesos/Retiro')
+          fetch('https://disenno-api.vercel.app/api/procesos/Inclusión de curso'),
+          fetch('https://disenno-api.vercel.app/api/procesos/Levantamiento de requisitos'),
+          fetch('https://disenno-api.vercel.app/api/procesos/Retiro')
         ]);
 
         const [dataInclusion, dataLevantamiento, dataRetiro] = await Promise.all(
