@@ -1,6 +1,6 @@
 export async function obtenerLevantamientos(tipo) {
   try {
-    const res = await fetch("http://localhost:5000/formularios/levantamientosF");
+    const res = await fetch("https://disenno-api.vercel.app/api/formularios/levantamientosF");
     if (!res.ok) throw new Error("Error en la respuesta de la API");
 
     const data = await res.json();
@@ -22,15 +22,15 @@ export async function obtenerLevantamientos(tipo) {
 
     // Fetch seguimiento y estado igual que en la función `informacion`
     for (let i = 0; i < solicitudes.length; i++) {
-      const seguimientoRes = await fetch(`http://localhost:5000/formularios/seguimiento/${solicitudes[i].idformulario}`);
+      const seguimientoRes = await fetch(`https://disenno-api.vercel.app/api/formularios/seguimiento/${solicitudes[i].idformulario}`);
       const seguimientoData = await seguimientoRes.json();
 
-      const estadoRes = await fetch(`http://localhost:5000/formularios/estado/${seguimientoData[0].idestado}`);
+      const estadoRes = await fetch(`https://disenno-api.vercel.app/api/formularios/estado/${seguimientoData[0].idestado}`);
       const estadoData = await estadoRes.json();
 
       solicitudes[i].estado = estadoData[0].nombre;
 
-      const sedeRes = await fetch(`http://localhost:5000/formularios/sede/${solicitudes[i].sede}`);
+      const sedeRes = await fetch(`https://disenno-api.vercel.app/api/formularios/sede/${solicitudes[i].sede}`);
       const sedeData = await sedeRes.json();
       solicitudes[i].sede = sedeData[0].nombre;
     }
@@ -48,7 +48,7 @@ export async function obtenerLevantamientos(tipo) {
 
 export async function actualizarEstado(idformulario, idestado) {
   try {
-    const res = await fetch('http://localhost:5000/coordinadora/actualizarEstado', {
+    const res = await fetch('https://disenno-api.vercel.app/api/coordinadora/actualizarEstado', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export async function actualizarEstado(idformulario, idestado) {
 
 export const obtenerRequisitosAutomaticos = async () => {
   try {
-    const response = await fetch('http://localhost:5000/coordinadora/requerimientosLevAuto'); 
+    const response = await fetch('https://disenno-api.vercel.app/api/coordinadora/requerimientosLevAuto'); 
     const data = await response.json();
     return data;
   } catch (error) {
@@ -80,7 +80,7 @@ export const obtenerRequisitosAutomaticos = async () => {
 
 export const obtenerCursos = async () => {
   try {
-    const response = await fetch('http://localhost:5000/cursos/getIdcurso'); 
+    const response = await fetch('https://disenno-api.vercel.app/api/cursos/getIdcurso'); 
     const data = await response.json();
     return data;
   } catch (error) {
@@ -91,7 +91,7 @@ export const obtenerCursos = async () => {
 
 export const insertarRequisitoAutomatico = async (requisito) => {
   try {
-    const response = await fetch('http://localhost:5000/coordinadora/insertarLenvAuto', {
+    const response = await fetch('https://disenno-api.vercel.app/api/coordinadora/insertarLenvAuto', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ export const insertarRequisitoAutomatico = async (requisito) => {
 
 export const eliminarRequisitoAutomatico = async (id) => {
   try {
-    const response = await fetch(`http://localhost:5000/coordinadora/deleRequiAuto/${id}`, {
+    const response = await fetch(`https://disenno-api.vercel.app/api/coordinadora/deleRequiAuto/${id}`, {
       method: 'DELETE'
     });
 
@@ -123,13 +123,13 @@ export const eliminarRequisitoAutomatico = async (id) => {
 };
 
 export const obtenerRequisitoPorId = async (id) => {
-  const response = await fetch(`http://localhost:5000/coordinadora/getrequisitosAutomaticos/${id}`);
+  const response = await fetch(`https://disenno-api.vercel.app/api/coordinadora/getrequisitosAutomaticos/${id}`);
   if (!response.ok) throw new Error('No se pudo obtener el requisito');
   return await response.json();
 };
 
 export const actualizarRequisito = async (id, datos) => {
-  const response = await fetch(`http://localhost:5000/coordinadora/updateRequisitoAuto/${id}`, {
+  const response = await fetch(`https://disenno-api.vercel.app/api/coordinadora/updateRequisitoAuto/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(datos)
