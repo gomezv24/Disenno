@@ -31,7 +31,7 @@ const PageSeguimiento = () => {
     const obtenerSeguimiento = async () => {
       if (!usuario?.idusuario) return;
       try {
-        const res = await fetch(`http://localhost:5000/seguimientoUsuario/${usuario.idusuario}`);
+        const res = await fetch(`https://disenno-api.vercel.app/api/seguimientoUsuario/${usuario.idusuario}`);
         const data = await res.json();
         setSolicitudes(data);
       } catch (error) {
