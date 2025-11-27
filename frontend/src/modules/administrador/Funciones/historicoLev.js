@@ -1,7 +1,7 @@
 
 export async function informacion(tipo) {
     try {
-        const response = await fetch("http://localhost:5000/formularios/levantamientosF");
+        const response = await fetch("https://disenno-api.vercel.app/api/formularios/levantamientosF");
         if (!response.ok) {
         throw new Error('Error en la respuesta de la API');
         }
@@ -25,7 +25,7 @@ export async function informacion(tipo) {
           }));
 
         for (let i = 0; i < solicitudes.length; i++) {
-            const response = await fetch(`http://localhost:5000/formularios/seguimiento/${solicitudes[i].idformulario}`);
+            const response = await fetch(`https://disenno-api.vercel.app/api/formularios/seguimiento/${solicitudes[i].idformulario}`);
             if (!response.ok) {
                 throw new Error('Error en la respuesta de la API');
             }
@@ -36,12 +36,12 @@ export async function informacion(tipo) {
             let estadodata = await response.json();
 
 
-            const estado = await fetch(`http://localhost:5000/formularios/estado/${estadodata[0].idestado}`);
+            const estado = await fetch(`https://disenno-api.vercel.app/api/formularios/estado/${estadodata[0].idestado}`);
             let estadoString = await estado.json();
             solicitudes[i].estado = estadoString[0].nombre;
 
 
-            const sede = await fetch(`http://localhost:5000/formularios/sede/${solicitudes[i].sede}`);
+            const sede = await fetch(`https://disenno-api.vercel.app/api/formularios/sede/${solicitudes[i].sede}`);
             let sedeString = await sede.json();
 
            solicitudes[i].sede = sedeString[0].nombre;
