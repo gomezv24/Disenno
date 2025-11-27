@@ -1,7 +1,7 @@
 
 export async function informacion(tipo) {
     try {
-        const response = await fetch("http://localhost:5000/usuarios");
+        const response = await fetch("https://disenno-api.vercel.app/api/usuarios");
         if (!response.ok) {
         throw new Error('Error en la respuesta de la API');
         }
@@ -19,11 +19,11 @@ export async function informacion(tipo) {
 
         for (let i = 0; i < solicitudes.length; i++) {
            
-            const estado = await fetch(`http://localhost:5000/usuarios/tipo/${solicitudes[i].tipo}`);
+            const estado = await fetch(`https://disenno-api.vercel.app/api/usuarios/tipo/${solicitudes[i].tipo}`);
             let tipoString = await estado.json();
             solicitudes[i].tipo = tipoString.nombre;
 
-            const sede = await fetch(`http://localhost:5000/formularios/sede/${solicitudes[i].sede}`);
+            const sede = await fetch(`https://disenno-api.vercel.app/api/formularios/sede/${solicitudes[i].sede}`);
             let sedeString = await sede.json();
            solicitudes[i].sede = sedeString[0].nombre;
 
