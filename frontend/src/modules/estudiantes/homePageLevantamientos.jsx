@@ -29,7 +29,7 @@ const HomePageLevantamientos = () => {
   useEffect(() => {
     const fetchLevantamientoInfo = async () => {
       try {
-        const response = await fetch('http://localhost:5000/procesos/Levantamiento%20de%20requisitos');
+        const response = await fetch('https://disenno-api.vercel.app/api/procesos/Levantamiento%20de%20requisitos');
         const data = await response.json();
         setInfo(data[0]);
       } catch (error) {
