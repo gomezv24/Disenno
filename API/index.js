@@ -17,7 +17,12 @@ import coordinadoraRoutes from './src/endpoints/Coordinadora.js';
 const app = express();
 
 app.use(cors({
-  origin: ['https://disenno-inw6.vercel.app', 'http://localhost:3000'],
+  origin: ['https://disenno-inw6.vercel.app', 
+           'https://disenno-s6mb.vercel.app',
+           'https://disenno-api.vercel.app',
+           'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
