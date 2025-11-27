@@ -17,7 +17,7 @@ import coordinadoraRoutes from './src/endpoints/Coordinadora.js';
 const app = express(); // 
 
 app.use(cors({
-  origin: 'https://disenno-inw6.vercel.app', // ← sin / al final
+  origin: 'https://disenno-inw6.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
