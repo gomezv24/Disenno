@@ -3,6 +3,15 @@ import cors from 'cors';
 
 import routerUsuarios from './src/endpoints/Usuarios.js';
 import routerEstudiantes from './src/endpoints/Estudiantes.js';
+import routerFormularios from './src/endpoints/Formulario.js'; // ← Este es el problema
+import routerEstadisticas from './src/endpoints/Estadisticas.js';
+import usuarioDetalladoRouter from './src/endpoints/usuarioDetallado.js';
+import seguimientoUsuarioRouter from './src/endpoints/seguimientoUsuario.js';
+import procesosRouter from './src/endpoints/Procesos.js';
+import inclusionPostRoutes from './src/endpoints/FormularioInclusionPost.js';
+import levantamientoPostRoutes from './src/endpoints/FormularioLevantamientoPost.js';
+import cursosRoutes from './src/endpoints/Cursos.js';
+import coordinadoraRoutes from './src/endpoints/Coordinadora.js';
 
 
 const app = express();
