@@ -31,7 +31,6 @@ const PageSeguimiento = () => {
     const obtenerSeguimiento = async () => {
       if (!usuario?.idusuario) return;
       try {
-        console.log(usuario)
         const res = await fetch(`https://disenno-api.vercel.app/api/seguimientoUsuario/${usuario.idusuario}`);
         const data = await res.json();
         setSolicitudes(data);
@@ -74,7 +73,7 @@ const PageSeguimiento = () => {
       const res = await fetch(`http://localhost:5000/seguimientoUsuario/${solicitud.idformulario}`, { method: 'DELETE' });
       if (res.ok) {
         // Refresca la lista desde el backend para asegurar que está actualizada
-        const res2 = await fetch(`http://localhost:5000/seguimientoUsuario/${usuario.idusuario}`);
+        const res2 = await fetch(`https://disenno-api.vercel.app/api/seguimientoUsuario/${usuario.idusuario}`);
         const data2 = await res2.json();
         setSolicitudes(data2);
         alert('Solicitud eliminada correctamente');
